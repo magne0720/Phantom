@@ -14,6 +14,7 @@ public:
 	PlayerHuman* pHuman;
 	PlayerDog* pDog;
 
+	DrawNode* infraredLine;
 
 	static PlayerPhantom* create(Vec2 humanPos,Vec2 dogPos);
 	bool init(Vec2 humanPos, Vec2 dogPos);

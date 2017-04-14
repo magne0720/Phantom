@@ -68,7 +68,6 @@ bool PlayerDog::onTouchBegan(const Touch * touch, Event *unused_event)
 	//Œ¢‚ªˆÚ“®‰Â”\”ÍˆÍ‚É‚ ‚é‚È‚ç
 	if (canMoveRange(touch->getLocation(),moveStartRange)) 
 	{
-		isMoveWait = true;
 		moveStartRangeSp->setVisible(false);
 		moveRangeSp->setVisible(true);
 	};
@@ -87,7 +86,6 @@ void PlayerDog::onTouchEnded(const Touch * touch, Event *unused_event)
 	{
 		targetPosition = touch->getLocation();
 	}
-	isMoveWait = false;
 	moveStartRangeSp->setVisible(true);
 	moveRangeSp->setVisible(false);
 };

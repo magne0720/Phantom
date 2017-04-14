@@ -28,6 +28,10 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	pDog = PlayerDog::create(dogPos);
 	addChild(pDog);
 
+	infraredLine = DrawNode::create();
+	addChild(infraredLine);
+	
+
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->onTouchBegan = CC_CALLBACK_2(PlayerPhantom::onTouchBegan, this);
@@ -35,30 +39,30 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerPhantom::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-
+	scheduleUpdate();
 
 	return true;
 };
 
 void PlayerPhantom::update(float delta)
 {
-
-
-
+	infraredLine->clear();
+	infraredLine->drawSegment(pDog->myPosition, pHuman->myPosition, 1.0f, Color4F::RED);
 };
 
-bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event) 
+bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	//犬優先の動きを見せる
-	if ((pHuman->myPosition.x - pDog->myPosition.x)*(pHuman->myPosition.x - pDog->myPosition.x) +
-		(pHuman->myPosition.y - pDog->myPosition.y)*(pHuman->myPosition.y - pDog->myPosition.y)
-		<= ((pHuman->moveRange + pDog->moveStartRange)*(pHuman->moveRange + pDog->moveStartRange)))
+	if(pDog->canMoveRange(touch->getLocation(), pDog->moveStartRange))
 	{
-		pHuman->targetPosition = touch->getLocation();
+		pDog->isMoveWait = true;
 	}
 	else
 	{
-		pDog->targetPosition = touch->getLocation();
+		if (pHuman->canMoveRange(touch->getLocation())) 
+		{
+			pHuman->targetPosition = touch->getLocation();
+		}
 	}
 
 
@@ -72,5 +76,5 @@ void PlayerPhantom::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerPhantom::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
-
+	pDog->isMoveWait = false;
 };

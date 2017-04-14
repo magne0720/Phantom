@@ -51,7 +51,6 @@ bool PlayerHuman::onTouchBegan(const Touch * touch, Event *unused_event)
 	if (canMoveRange(touch->getLocation()))
 	{
 		isMoveWait = true;
-		//targetPosition = touch->getLocation();
 	}
 	else
 	{
