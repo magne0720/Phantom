@@ -24,7 +24,7 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	}
 
 	myPosition = spawnPos;
-	targetPosition = Vec2(0, 0);
+	targetPosition = spawnPos;
 	moveSpeed = 12.0f;
 	moveRange = 500.0f;
 
@@ -33,6 +33,8 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	moveRangeSp = DrawNode::create();
 	moveRangeSp->drawCircle(getPosition(), moveRange, 0, 360, false, Color4F::MAGENTA);
 	addChild(moveRangeSp);
+
+	setPosition(spawnPos);
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -44,6 +46,12 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	scheduleUpdate();
 
 	return true;
+};
+
+//行動
+void PlayerHuman::action() 
+{
+
 };
 
 bool PlayerHuman::onTouchBegan(const Touch * touch, Event *unused_event)

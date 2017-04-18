@@ -19,13 +19,19 @@ public:
 	virtual bool init(Vec2 spawnPos);
 	//基本的に移動管理のみなので継承する必要がなさそう。
 	void update(float delta);
+	//移動可能判定
+	bool canMoveRange(Point target);
+	//各キャラクターの行動
+	virtual void action();
 	//移動
 	virtual void move();
 	//衝突判定
 	virtual void onCollision(float deg);
-	//移動可能判定
-	bool canMoveRange(Point target);
-	
+	//移動可能範囲変更
+	void setMoveRange(float range);
+	//方向変更
+	void setDirection(float seta);
+
 	//移動待機状態かどうか
 	bool isMoveWait;
 	//移動可能範囲を示す円環
@@ -36,8 +42,8 @@ public:
 	Vec2 myPosition;
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
-	//画像の中心までに必要なベクトル
-	Vec2 centerPosition;
+	//向きを保持する
+	DIRECTION myDirection;
 	//移動速度
 	float moveSpeed;
 	//移動可能範囲半径

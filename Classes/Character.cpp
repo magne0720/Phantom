@@ -23,7 +23,7 @@ bool Character::init(Vec2 spawnPos)
 		return false;
 	}
 	myPosition =spawnPos;
-	targetPosition = Vec2(0, 0);
+	targetPosition = spawnPos;
 	moveSpeed = 12.0f;
 
 	("CloseNormal.png");
@@ -42,6 +42,7 @@ bool Character::init(Vec2 spawnPos)
 void Character::update(float delta) 
 {
 	move();
+	action();
 };
 
 //画像を中央にして自身の画像を置く
@@ -63,21 +64,43 @@ bool Character::canMoveRange(Point target)
 	return false;
 };
 
+//マイフレーム起こす移動以外の行動
+void Character::action() 
+{
+
+};
+
 //ターゲットに向かって等速で移動する
 void Character::move() 
 {
-	float x = targetPosition.x - myPosition.x;
-	float y = targetPosition.y - myPosition.y;
-	float length = sqrt(x*x + y*y);
+	//移動に必要
+	float ax = targetPosition.x - myPosition.x;
+	float ay = targetPosition.y - myPosition.y;
+	//向きを調べるのに必要
+	float bx = 1.0f;
+	float by = 0;
 
-	if (length <= moveSpeed)return;
+	//AYの長さ
+	float lengthA = sqrt(ax*ax + ay*ay);
+	//AYの長さ
+	float lengthB = sqrt(bx*bx + by*by);
 
-	length = 1.0 / length*moveSpeed;
-	x *= length;
-	y *= length;
+	if (lengthA <= moveSpeed)return;
 
-	myPosition.x += x;
-	myPosition.y += y;
+	//向き(右方向が０度)
+	float s = (ax*bx+ay*by)/(lengthA*lengthB);
+	float seta = acos(s)*180.0f / M_PI;
+	if (ay < 0)
+		seta = seta*(-1);
+
+	setDirection(seta);
+
+	lengthA = 1.0 / lengthA*moveSpeed;
+	ax *= lengthA;
+	ay *= lengthA;
+
+	myPosition.x += ax;
+	myPosition.y += ay;
 
 	setPosition(myPosition);
 };
@@ -86,6 +109,33 @@ void Character::move()
 void Character::onCollision(float deg) 
 {
 
+};
+
+void Character::setMoveRange(float range)
+{
+	moveRange = range;
+};
+
+//X(４５度刻みで方向確認)
+void Character::setDirection(float seta)
+{
+	log("seta=%f", seta);
+	if (seta > 0) {
+		if (seta <= 45)
+			myDirection = DIRECTION::DIR_RIGHT;
+		else if (seta <= 135)
+			myDirection = DIRECTION::DIR_UP;
+		else
+			myDirection = DIRECTION::DIR_LEFT;
+	}
+	else if (seta < 0) {
+		if (seta >= -45)
+			myDirection = DIRECTION::DIR_RIGHT;
+		else if (seta >= -135)
+			myDirection = DIRECTION::DIR_DOWN;
+		else
+			myDirection = DIRECTION::DIR_LEFT;
+	}
 };
 
 bool Character::onTouchBegan(const Touch * touch, Event *unused_event) 

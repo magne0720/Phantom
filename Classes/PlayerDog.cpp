@@ -25,20 +25,19 @@ bool PlayerDog::init(Vec2 spawnPos)
 	}
 
 	myPosition = spawnPos;
-	targetPosition = Vec2(0, 0);
-	moveSpeed = 12.0f;
-	moveStartRange = 200.0f;
-	moveRange = 800.0f;
+	targetPosition =spawnPos;
+	moveSpeed = 16.0f;
+	rangeSpeed = 50.0f;
+	moveStartRange = 150.0f;
+	moveRange = 750.0f;
+	rangeTimer = moveStartRange;
 	initWithFileCenter("CloseNormal.png");
 
-	moveStartRangeSp = DrawNode::create();
-	moveStartRangeSp->drawCircle(getPosition(), moveStartRange, 0, 360, false, Color4F::YELLOW);
-	addChild(moveStartRangeSp);
-	
 	moveRangeSp = DrawNode::create();
-	moveRangeSp->drawCircle(getPosition(), moveRange, 0, 360, false, Color4F::YELLOW);
+	moveRangeSp->drawCircle(getPosition(), moveStartRange, 0, 360, false, Color4F::YELLOW);
 	addChild(moveRangeSp);
-	moveRangeSp->setVisible(false);
+
+	setPosition(spawnPos);
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -63,13 +62,33 @@ bool PlayerDog::canMoveRange(Point target,float range)
 	return false;
 };
 
+//行動
+void PlayerDog::action() 
+{
+	if (isMoveWait) 
+	{
+		if (rangeTimer < moveRange)
+		{
+			rangeTimer += rangeSpeed;
+			moveRangeSp->setScale(rangeTimer/moveStartRange);
+		}
+	}
+	else
+	{
+		if (rangeTimer > moveStartRange) 
+		{
+			rangeTimer -= rangeSpeed;
+			moveRangeSp->setScale(rangeTimer/moveStartRange);
+		}
+	}
+};
+
 bool PlayerDog::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	//犬が移動可能範囲にあるなら
-	if (canMoveRange(touch->getLocation(),moveStartRange)) 
+	if (canMoveRange(touch->getLocation(),rangeTimer/moveStartRange)) 
 	{
-		moveStartRangeSp->setVisible(false);
-		moveRangeSp->setVisible(true);
+		isMoveWait = true;
 	};
 
 	return true;
@@ -86,6 +105,5 @@ void PlayerDog::onTouchEnded(const Touch * touch, Event *unused_event)
 	{
 		targetPosition = touch->getLocation();
 	}
-	moveStartRangeSp->setVisible(true);
-	moveRangeSp->setVisible(false);
+	isMoveWait = false;
 };
