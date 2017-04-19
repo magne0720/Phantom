@@ -26,7 +26,9 @@ public:
 	//移動
 	virtual void move();
 	//衝突判定
-	virtual void onCollision(float deg);
+	virtual bool onCollision(float deg);
+	//赤外線判定
+	virtual bool onCollision(Vec2 start, Vec2 end);
 	//移動可能範囲変更
 	void setMoveRange(float range);
 	//方向変更

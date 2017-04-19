@@ -25,11 +25,11 @@ bool MainGameScene::init(int num)
 	}
 
 	
-	p = PlayerPhantom::create(Vec2(designResolutionSize.width*0.3f, designResolutionSize.height*0.5f),
-		Vec2(designResolutionSize.width*0.8f, designResolutionSize.height*0.5f));
+	p = PlayerPhantom::create(Vec2(designResolutionSize.width*0.3f, designResolutionSize.height*0.8f),
+		Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
 	addChild(p);
 
-	enemy = Enemy::create(Vec2(designResolutionSize.width*0.2f,designResolutionSize.height*0.8f));
+	enemy = Enemy::create(Vec2(designResolutionSize.width*0.5f,designResolutionSize.height*0.5f));
 	addChild(enemy);
 
 	scheduleUpdate();
@@ -40,4 +40,5 @@ bool MainGameScene::init(int num)
 void MainGameScene::update(float delta) 
 {
 	enemy->checkPlayer(p->pHuman->myPosition);
+	enemy->onCollision(p->pHuman->myPosition, p->pDog->myPosition);
 };

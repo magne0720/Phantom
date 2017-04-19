@@ -26,7 +26,7 @@ bool Character::init(Vec2 spawnPos)
 	targetPosition = spawnPos;
 	moveSpeed = 12.0f;
 
-	("CloseNormal.png");
+	initWithFileCenter("CloseNormal.png");
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->onTouchBegan = CC_CALLBACK_2(Character::onTouchBegan, this);
@@ -48,9 +48,9 @@ void Character::update(float delta)
 //画像を中央にして自身の画像を置く
 void Character::initWithFileCenter(std::string name) 
 {
-	Sprite* sp = Sprite::create(name);
-	sp->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	addChild(sp);
+	mySprite = Sprite::create(name);
+	mySprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	addChild(mySprite,5);
 };
 
 //タッチした位置が移動範囲かどうか
@@ -106,9 +106,58 @@ void Character::move()
 };
 
 //衝突判定
-void Character::onCollision(float deg) 
+bool Character::onCollision(float deg) 
 {
+	return false;
+};
 
+//赤外線に当たっているかどうか
+bool Character::onCollision(Vec2 start, Vec2 end)
+{
+	Vec2 AB = end - start;
+	Vec2 AP = myPosition - start;
+	Vec2 BP = myPosition - end;
+
+	//float XX = sqrt(AP.x * AB.y - AP.y * AB.x) / sqrt((AB.x*AB.x) + (AB.y*AB.y));
+
+	//外積
+	float APxAB = AB.x*AP.y - AP.x*AB.y;
+	if (APxAB < 0)APxAB = APxAB*(-1);
+
+	//内積
+	float DotAP = AP.x*AB.x + AP.y*AB.y;
+	float DotBP = BP.x*AB.x + BP.y*AB.y;
+
+	float ans = APxAB / sqrt(AB.x*AB.x + AB.y*AB.y);
+	
+	if (ans <= 100.0f)
+	{
+		if (DotAP*DotBP <= 0)
+		{
+			mySprite->setColor(Color3B::RED);
+			moveRangeSp->setVisible(true);
+			return true;
+		}
+		else 
+		{
+			if (ans > sqrt(AP.x*AP.x + AP.y*AP.y)||ans>sqrt(BP.x*BP.x+BP.y*BP.y)) 
+			{
+				mySprite->setColor(Color3B::RED);
+				moveRangeSp->setVisible(true);
+				return true;
+			}
+			mySprite->setColor(Color3B::WHITE);
+			moveRangeSp->setVisible(false);
+			return false;
+		}
+	}
+	else 
+	{
+		mySprite->setColor(Color3B::WHITE);
+		moveRangeSp->setVisible(false);
+		return false;
+	}
+	return false;
 };
 
 void Character::setMoveRange(float range)
@@ -119,7 +168,6 @@ void Character::setMoveRange(float range)
 //X(４５度刻みで方向確認)
 void Character::setDirection(float seta)
 {
-	log("seta=%f", seta);
 	if (seta > 0) {
 		if (seta <= 45)
 			myDirection = DIRECTION::DIR_RIGHT;

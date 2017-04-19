@@ -28,13 +28,13 @@ bool PlayerDog::init(Vec2 spawnPos)
 	targetPosition =spawnPos;
 	moveSpeed = 16.0f;
 	rangeSpeed = 50.0f;
-	moveStartRange = 150.0f;
+	moveStartRange = 250.0f;
 	moveRange = 750.0f;
 	rangeTimer = moveStartRange;
-	initWithFileCenter("CloseNormal.png");
+	initWithFileCenter("Dog.png");
 
 	moveRangeSp = DrawNode::create();
-	moveRangeSp->drawCircle(getPosition(), moveStartRange, 0, 360, false, Color4F::YELLOW);
+	moveRangeSp->drawCircle(getPosition(), moveStartRange, 0, 360, false, Color4F::ORANGE);
 	addChild(moveRangeSp);
 
 	setPosition(spawnPos);

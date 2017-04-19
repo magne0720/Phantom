@@ -24,7 +24,7 @@ bool Enemy::init(Vec2 spawnPos)
 	moveSpeed = 3.0f;
 	moveRange = 300.0f;
 	doubtRange = moveRange;
-	initWithFileCenter("sphere.png");
+	initWithFileCenter("Enemy.png");
 	setColor(Color3B::BLACK);
 
 	moveRangeSp = DrawNode::create();
@@ -46,6 +46,8 @@ void Enemy::action()
 
 };
 
+
+
 //プレイヤーがいるかどうか確認
 bool Enemy::checkPlayer(Vec2 playerPos) 
 {
@@ -65,8 +67,6 @@ bool Enemy::checkPlayer(Vec2 playerPos)
 		return true;
 	}
 
-
-	//扇状に敵を認知する
 
 
 

@@ -26,13 +26,14 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	myPosition = spawnPos;
 	targetPosition = spawnPos;
 	moveSpeed = 12.0f;
-	moveRange = 500.0f;
+	moveRange =	500.0f;
 
-	initWithFileCenter("HelloWorld.png");
+	initWithFileCenter("Human.png");
 
 	moveRangeSp = DrawNode::create();
-	moveRangeSp->drawCircle(getPosition(), moveRange, 0, 360, false, Color4F::MAGENTA);
-	addChild(moveRangeSp);
+	//moveRangeSp->drawDot(getPosition(), moveRange, Color4F::BLUE);
+	moveRangeSp->drawCircle(getPosition(),moveRange,0,360,false,Color4F::GREEN);
+	addChild(moveRangeSp,0);
 
 	setPosition(spawnPos);
 
