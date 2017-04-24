@@ -25,8 +25,9 @@ bool PlayerHuman::init(Vec2 spawnPos)
 
 	myPosition = spawnPos;
 	targetPosition = spawnPos;
-	moveSpeed = 12.0f;
+	setSpeed(10.0f);
 	moveRange =	500.0f;
+	doubtDegree = 1.0f;
 
 	initWithFileCenter("Human.png");
 

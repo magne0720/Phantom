@@ -10,22 +10,26 @@ USING_NS_CC;
 class Enemy :public Character 
 {
 private:
-
 	//プレイヤー確認範囲
-	float doubtRange,doubtDegree;
+	float doubtRange;
 	STATUS myState;
 
 public:
-	static Enemy* create(Vec2 spawnPos);
-	virtual bool init(Vec2 spawnPos);
+	static Enemy* create(Vec2 spawnPos,DIR_DEGREE dir=DIR_DEGREE::DIR_DOWN);
+	virtual bool init(Vec2 spawnPos,DIR_DEGREE dir);
+	virtual void update(float delta);
 
 	virtual void action();
 	
+	//主人公たちがいないか確かめる
 	bool checkPlayer(Vec2 playerPos);
-	bool checkPlayerRight(float Range);
-	bool checkPlayerLeft(float Range);
-	void setState(STATUS state);
+	//視認距離の変更
+	void changeRange(float range);
+	//視認範囲の変更
+	void changeDegree(float degree);
 
+	//状態変化
+	void setState(STATUS state);
 
 };
 

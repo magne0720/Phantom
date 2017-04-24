@@ -26,11 +26,12 @@ bool PlayerDog::init(Vec2 spawnPos)
 
 	myPosition = spawnPos;
 	targetPosition =spawnPos;
-	moveSpeed = 16.0f;
+	setSpeed(16.0f);
 	rangeSpeed = 50.0f;
 	moveStartRange = 250.0f;
 	moveRange = 750.0f;
 	rangeTimer = moveStartRange;
+	doubtDegree = 1.0f;
 	initWithFileCenter("Dog.png");
 
 	moveRangeSp = DrawNode::create();

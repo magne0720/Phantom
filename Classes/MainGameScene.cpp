@@ -23,13 +23,11 @@ bool MainGameScene::init(int num)
 	{
 		return false;
 	}
-
-	
 	p = PlayerPhantom::create(Vec2(designResolutionSize.width*0.3f, designResolutionSize.height*0.8f),
 		Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
 	addChild(p);
 
-	enemy = Enemy::create(Vec2(designResolutionSize.width*0.5f,designResolutionSize.height*0.5f));
+	enemy = Enemy::create(Vec2(designResolutionSize.width*0.5f,designResolutionSize.height*0.5f),DIR_DEGREE::DIR_RIGHT);
 	addChild(enemy);
 
 	scheduleUpdate();

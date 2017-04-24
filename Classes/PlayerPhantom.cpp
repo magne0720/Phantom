@@ -31,7 +31,6 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	infraredLine = DrawNode::create();
 	addChild(infraredLine);
 	
-
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->onTouchBegan = CC_CALLBACK_2(PlayerPhantom::onTouchBegan, this);
@@ -64,8 +63,6 @@ bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
 			pHuman->targetPosition = touch->getLocation();
 		}
 	}
-
-
 	return true;
 };
 
