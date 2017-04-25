@@ -3,10 +3,11 @@
 
 #include "cocos2d.h"
 
-class TitleSelectScene : cocos2d::Scene
+class TitleSelectScene : public cocos2d::Scene
 {
 public:
-	cocos2d::Scene* createScene();
+	static cocos2d::Scene* createScene();
+	CREATE_FUNC(TitleSelectScene);
 };
 
 #endif
