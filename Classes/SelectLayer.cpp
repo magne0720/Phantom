@@ -1,5 +1,5 @@
 #include "SelectLayer.h"
-#include "NoticeManager.h"
+#include "PictureManager.h"
 
 using namespace cocos2d;
 
@@ -26,8 +26,8 @@ bool SelectLayer::init()
 		return false;
 	}
 
-	NoticeManager* noticeManager = NoticeManager::create();
-	this->addChild(noticeManager);
+	PictureManager* pictureManager = PictureManager::create();
+	this->addChild(pictureManager);
 
 	return true;
 }
