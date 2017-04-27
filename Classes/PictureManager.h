@@ -8,10 +8,12 @@ class PictureManager : public cocos2d::Node
 public:
 	static PictureManager* create();
 	bool init();
+	void touchEnded(cocos2d::Touch* pTouch);
 
-	virtual bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	virtual void onTouchMoved(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	virtual void onTouchEnded(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+	// タッチイベント処理
+	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+	void onTouchMoved(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+	void onTouchEnded(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
 
 private:
 	cocos2d::Sprite* _Pictures[3];

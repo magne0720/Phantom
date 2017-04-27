@@ -1,24 +1,34 @@
 #include "TapDetection.h"
 
 USING_NS_CC;
+TapDetection* TapDetection::tapDetection = NULL;
 
-TapDetection* TapDetection::create(e_Scene scene)
+TapDetection* TapDetection::sharedTap()
 {
-	TapDetection *pRet = new TapDetection();
-	if (pRet && pRet->init(scene))
+	if (tapDetection == NULL)
 	{
-		pRet->autorelease();
-		return pRet;
+		tapDetection = new TapDetection();
+		if (tapDetection && tapDetection->init())
+		{
+			tapDetection->autorelease();
+			return tapDetection;
+		}
+		else
+		{
+			delete tapDetection;
+			tapDetection = NULL;
+			return NULL;
+		}
 	}
-	else
-	{
-		delete pRet;
-		pRet = NULL;
-		return NULL;
-	}
+	return tapDetection;
 }
 
-bool TapDetection::init(e_Scene scene)
+TapDetection::TapDetection()
+{
+
+}
+
+bool TapDetection::init()
 {
 	if (!Node::init())
 	{
@@ -28,11 +38,12 @@ bool TapDetection::init(e_Scene scene)
 	listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 
-	listener->onTouchBegan = CC_CALLBACK_2(TapDetection::playTouchBegan, this);
+	outSideBlock = &TapDetection::outSideBlockT;
+	listener->onTouchBegan = CC_CALLBACK_2(TapDetection::titleTouchBegan, this);
 	//listener->onTouchMoved = CC_CALLBACK_2(TapDetection::onTouchMoved, this);
 	listener->onTouchEnded = CC_CALLBACK_2(TapDetection::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
+	
 	this->scheduleUpdate();
 
 	return true;
@@ -43,43 +54,27 @@ void TapDetection::update(float delta)
 
 }
 
+void TapDetection::outSideBlockT()
+{
+
+}
+
 void TapDetection::outSideBlockS()
 {
 	
 }
 
-void TapDetection::outSideBlockT()
+bool TapDetection::titleTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	
-}
-
-void TapDetection::outSideBlockR()
-{
-	
-}
-
-bool TapDetection::startTouchBegan(Touch* pTouch, Event* pEvent)
-{
-	
+	log("title");
 	return true;
 }
 
-bool TapDetection::tutrialTouchBegan(Touch* pTouch, Event* pEvent)
-{
-	
-	return true;
-}
-
-bool TapDetection::playTouchBegan(Touch* pTouch, Event* pEvent)
+bool TapDetection::selectTouchBegan(Touch* pTouch, Event* pEvent)
 {
 	_touchPos = pTouch->getLocation();
-	(this->*outSideBlock)();	// タップ箇所がブロックの外側か
-	return true;
-}
-
-bool TapDetection::resultTouchBegan(Touch* pTouch, Event* pEvent)
-{
-
+	log("select");
+	//(this->*outSideBlock)();	// タップ箇所がブロックの外側か
 	return true;
 }
 
@@ -91,14 +86,11 @@ bool TapDetection::resultTouchBegan(Touch* pTouch, Event* pEvent)
 
 void TapDetection::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	
-	//changePhase(&TapDetection::playTouchBegan);
+	//PictureManager::touchEnded(pTouch);
+	//changeBegan(&TapDetection::selectTouchBegan);
 }
 
-void TapDetection::changePhase(bool (TapDetection::*method)(Touch* pTouch, Event* pEvent))
+void TapDetection::changeBegan(bool (BaseTap::*method)(Touch* pTouch, Event* pEvent))
 {
 	listener->onTouchBegan = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
-	//std::bind(クラスの呼びたいメンバ関数, クラスのインスタンス, onTouchBeganの第１引数を呼びたいメンバ関数の第１引数へ, onTouchBeganの第2引数を呼びたいメンバ関数の第2引数へ);
-	// std::placeholders::_1は呼ばれた時の第１引数。これを呼びたい関数の第ナニ引数に入れるかは順番さえ変えれば自由。
-	//onTouchBeganは、bool onTouchBegan(Touch* pTouch, Event* pEvent)　これが呼ばれたら、bool method(Touch* pTouch, Event* pEvent)を呼ぶ。(methodは関数名)
 }

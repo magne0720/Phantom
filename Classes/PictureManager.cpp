@@ -1,5 +1,7 @@
 #include "PictureManager.h"
 #include "AllTags.h"
+#include "TapDetection.h"
+#include "BaseTap.h"
 
 using namespace cocos2d;
 
@@ -26,24 +28,34 @@ bool PictureManager::init()
 		return false;
 	}
 
-	auto listener = EventListenerTouchOneByOne::create();
-	listener->setSwallowTouches(true);
-	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
-	listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
-	listener->onTouchEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
-
 	for (int i = 0; i < _stageNum; i++)
 	{
 		_Pictures[i] = Sprite::create("HelloWorld.png");
 		_Pictures[i]->setPosition(designResolutionSize.width*0.3f*i, designResolutionSize.height*0.5f);
 		this->addChild(_Pictures[i]);
 	}
+
+	template<class T>;
+	
+
 	return true;
+}
+
+void PictureManager::touchEnded(Touch* pTouch)
+{
+	for (int i = 0; i < _stageNum; i++)
+	{
+		Rect rect = _Pictures[i]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			log("atatta!");
+		}
+	}
 }
 
 bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
+	log("Began");
 	return true;
 }
 
@@ -54,12 +66,5 @@ void PictureManager::onTouchMoved(Touch* pTouch, Event* pEvent)
 
 void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	for (int i = 0; i < _stageNum; i++)
-	{
-		Rect rect = _Pictures[i]->getBoundingBox();
-		if (rect.containsPoint(pTouch->getLocation()))
-		{
-			log("atatta!");
-		}
-	}
+
 }
