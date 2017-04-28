@@ -33,6 +33,7 @@ bool Enemy::init(Vec2 spawnPos,DIR_DEGREE dir)
 	changeDegree(doubtDegree);
 	addChild(moveRangeSp);
 
+	setState(STATUS::MOVE);
 
 	scheduleUpdate();
 
@@ -41,6 +42,10 @@ bool Enemy::init(Vec2 spawnPos,DIR_DEGREE dir)
 
 void Enemy::update(float delta) 
 {
+	checkPlayer(targets.at(PLAYER_AI)->myPosition);
+	checkPlayer(targets.at(PLAYER_HANSOME)->myPosition);
+	onCollision(targets.at(PLAYER_AI)->myPosition, targets.at(PLAYER_HANSOME)->myPosition);
+	checkWall(walls);
 	action();
 };
 //次ここやる
@@ -49,6 +54,7 @@ void Enemy::action()
 	switch (myState)
 	{
 	case STAND:
+		moveThink(1.0f);
 		break;
 	case MOVE:
 		move();
@@ -71,21 +77,23 @@ void Enemy::action()
 bool Enemy::checkPlayer(Vec2 playerPos)
 {
 	//自身とプレイヤーの距離を求める
-	float x = playerPos.x - myPosition.x;
-	float y = playerPos.y - myPosition.y;
+	Vec2 pos = playerPos - myPosition;
 
-	float length = sqrt(x*x + y*y);
+	float len = length(pos);
 
 	//その距離が判定内なら
-	if (length <= doubtRange)
+	if (len <= doubtRange)
 	{
 		//扇形の判定をする
-		if (getDirectionLeft(playerPos - myPosition) && getDirectionRight(playerPos - myPosition)) 
+		if (getDirectionLeft(playerPos - myPosition) && getDirectionRight(playerPos - myPosition))
 		{
 			targetPosition = playerPos;
 			//追う状態へ。
 			changeDegree(75);
-			setState(STATUS::CHASE);
+			if (myState != STATUS::STAND)
+			{
+				setState(STATUS::CHASE);
+			}
 		}
 		return true;
 	}
@@ -103,14 +111,19 @@ void Enemy::changeDegree(float degree)
 	moveRangeSp->clear();
 	for (int deg = 0; deg < degree; deg++)
 	{
-		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(deg, moveRange), 3, Color4F::WHITE);
-		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(-deg, moveRange), 3, Color4F::WHITE);
+		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(targetPosition-myPosition,deg, moveRange), 5, Color4F::MAGENTA);
+		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(targetPosition-myPosition,-deg, moveRange), 5, Color4F::MAGENTA);
 	}
 };
 
-//状態変化
-void Enemy::setState(STATUS state)
+//移動するか試行する
+void Enemy::moveThink(float time) 
 {
-	myState = state;
-};
-
+	thinkTimer -= time;
+	if (thinkTimer < 0) 
+	{
+		setState(STATUS::MOVE);
+		//いったん20フレーム設定
+		thinkTimer = 20;
+	}
+}

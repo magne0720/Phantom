@@ -66,6 +66,8 @@ bool PlayerDog::canMoveRange(Point target,float range)
 //çsìÆ
 void PlayerDog::action() 
 {
+	checkWall(walls);
+
 	if (isMoveWait) 
 	{
 		if (rangeTimer < moveRange)

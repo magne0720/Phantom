@@ -12,7 +12,9 @@ class Enemy :public Character
 private:
 	//プレイヤー確認範囲
 	float doubtRange;
-	STATUS myState;
+
+	float thinkTimer;
+
 
 public:
 	static Enemy* create(Vec2 spawnPos,DIR_DEGREE dir=DIR_DEGREE::DIR_DOWN);
@@ -27,9 +29,9 @@ public:
 	void changeRange(float range);
 	//視認範囲の変更
 	void changeDegree(float degree);
+	//思考フェイズ
+	void moveThink(float time);
 
-	//状態変化
-	void setState(STATUS state);
 
 };
 

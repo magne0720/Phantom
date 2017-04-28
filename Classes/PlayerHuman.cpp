@@ -45,6 +45,7 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	listener->onTouchEnded = CC_CALLBACK_2(Character::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+
 	scheduleUpdate();
 
 	return true;
@@ -53,7 +54,7 @@ bool PlayerHuman::init(Vec2 spawnPos)
 //çsìÆ
 void PlayerHuman::action() 
 {
-
+	checkWall(walls);
 };
 
 bool PlayerHuman::onTouchBegan(const Touch * touch, Event *unused_event)

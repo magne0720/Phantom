@@ -25,18 +25,25 @@ bool MainGameScene::init(int num)
 	}
 	p = PlayerPhantom::create(Vec2(designResolutionSize.width*0.3f, designResolutionSize.height*0.8f),
 		Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
-	addChild(p);
+	addChild(p,3);
 
-	enemy = Enemy::create(Vec2(designResolutionSize.width*0.5f,designResolutionSize.height*0.5f),DIR_DEGREE::DIR_RIGHT);
-	addChild(enemy);
+	enemy = Enemy::create(Vec2(designResolutionSize.width*0.4f,designResolutionSize.height*0.7f),DIR_DEGREE::DIR_RIGHT);
+	addChild(enemy,2);
+
+	w = Wall::create(Vec2(designResolutionSize.width*0.7f, designResolutionSize.height*0.6f));
+	addChild(w,3);
+
+	enemy->setTarget(p->pHuman);
+	enemy->setTarget(p->pDog);
+	enemy->setTarget(w);
+	p->pHuman->setTarget(w);
+	p->pDog->setTarget(w);
 
 	scheduleUpdate();
 
 	return true;
 };
 
-void MainGameScene::update(float delta) 
+void MainGameScene::update(float delta)
 {
-	enemy->checkPlayer(p->pHuman->myPosition);
-	enemy->onCollision(p->pHuman->myPosition, p->pDog->myPosition);
 };

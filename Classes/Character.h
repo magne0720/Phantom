@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "AllTags.h"
+#include "Wall.h"
 
 USING_NS_CC;
 
@@ -34,14 +35,30 @@ public:
 	void setMoveRange(float range);
 	//方向変更
 	void setDirection(float seta,float alpha=1.0f);
+	//当たり判定のあるものを設定
+	void setTarget(Character* p);
+	//当たり判定のあるものを設定
+	void setTarget(Wall* p);
 	//方向取得
 	Vec2 getDirectionVector(Vec2 target,float range=1.0f);
 	//方向ベクトルから指定角度で自身の視認範囲のベクトルを取得する
-	Vec2 getDirectionDegree(float deg, float range = 1.0f);
+	Vec2 getDirectionDegree(Vec2 target,float deg, float range = 1.0f);
 	//右側にあるか
 	bool getDirectionRight(Vec2 target);
 	//左側にあるか
 	bool getDirectionLeft(Vec2 target);
+	//進む方向が壁かどうか
+	bool checkWall(Vector<Wall*> quad);
+	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める
+	void checkEvasionWall(Vec2 wall, Vec2 target);
+	//状態変化
+	void setState(STATUS state);
+	//正規化
+	Vec2 normalize(Vec2 &pos);
+	//内積
+	float dot(Vec2 from, Vec2 to);
+	//長さ
+	float length(Vec2 pos);
 
 
 	//移動待機状態かどうか
@@ -54,6 +71,7 @@ public:
 	Vec2 myPosition;
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
+
 	//自身の向き
 	DIR_DEGREE myDirection;
 	//移動速度
@@ -62,6 +80,15 @@ public:
 	float moveRange;
 	//視認範囲
 	float doubtDegree;
+	//自身と当たり判定のある物
+	Vector<Character*> targets;
+	//壁
+	Vector<Wall*> walls;
+	//自身の状態
+	STATUS myState;
+
+
+
 
 	//プレイヤーの操作が異なるので仮想化
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);

@@ -8,6 +8,9 @@ USING_NS_CC;
 using namespace CocosDenshion;
 
 #define DIR_CHECK 45
+#define PLAYER_AI 0
+#define PLAYER_HANSOME 1
+#define MASS_SIZE 50
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1080);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
@@ -15,6 +18,7 @@ static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 static float gameSpeed = 1.0f;
+static float viewSize = 1.0f;
 
 //キャラクターの動き
 enum STATUS

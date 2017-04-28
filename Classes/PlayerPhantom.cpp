@@ -23,9 +23,11 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 		return false;
 	}
 	pHuman = PlayerHuman::create(humanPos);
+	pHuman->setTag(PLAYER_AI);
 	addChild(pHuman);
 
 	pDog = PlayerDog::create(dogPos);
+	pDog->setTag(PLAYER_HANSOME);
 	addChild(pDog);
 
 	infraredLine = DrawNode::create();
@@ -55,12 +57,14 @@ bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
 	if(pDog->canMoveRange(touch->getLocation(), pDog->moveStartRange))
 	{
 		pDog->isMoveWait = true;
+		pDog->setState(STATUS::MOVE);
 	}
 	else
 	{
 		if (pHuman->canMoveRange(touch->getLocation())) 
 		{
 			pHuman->targetPosition = touch->getLocation();
+			pHuman->setState(STATUS::MOVE);
 		}
 	}
 	return true;
