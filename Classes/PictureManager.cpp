@@ -1,7 +1,7 @@
 #include "PictureManager.h"
 #include "AllTags.h"
-#include "TapDetection.h"
-#include "BaseTap.h"
+//#include "TapDetection.h"
+
 
 using namespace cocos2d;
 
@@ -27,17 +27,20 @@ bool PictureManager::init()
 	{
 		return false;
 	}
-
+	//template<class T>;
 	for (int i = 0; i < _stageNum; i++)
 	{
 		_Pictures[i] = Sprite::create("HelloWorld.png");
 		_Pictures[i]->setPosition(designResolutionSize.width*0.3f*i, designResolutionSize.height*0.5f);
 		this->addChild(_Pictures[i]);
 	}
-
-	template<class T>;
 	
-
+	//baseTap.changeBegan(&PictureManager::onTouchBegan);
+	//baseTap.me = &PictureManager::onTouchBegan;
+	//baseTap.tapper = this;
+	//baseTap.began();
+	//baseTap = BaseTap();
+	_baseTap.changeBegan(&PictureManager::onTouchBegan, this);
 	return true;
 }
 
