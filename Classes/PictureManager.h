@@ -2,7 +2,7 @@
 #define _PictureManager_
 
 #include "cocos2d.h"
-#include "BaseTap.h"
+#include "Picture.h"
 
 class PictureManager : public cocos2d::Node
 {
@@ -15,9 +15,9 @@ public:
 	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
 	void onTouchMoved(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
 	void onTouchEnded(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	BaseTap<PictureManager> _baseTap;
+	
 private:
-	cocos2d::Sprite* _Pictures[3];
+	Picture* _Pictures[3];
 	int _stageNum = 3;
 };
 

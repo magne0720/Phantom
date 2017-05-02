@@ -11,8 +11,17 @@ bool Picture::init()
 	}
 
 	this->initWithFile("HelloWorld.png");
-	_clip = Sprite::create("CloseSelected.png");
-	_clip->setPosition(this->getPositionX(), this->getPositionY() + this->getContentSize().height*0.5f);
+
+	_clip = Sprite::create("CloseNormal.png");
+	_clip->setPosition(this->getContentSize().width*0.5f, this->getContentSize().height);
+	this->addChild(_clip);
+
+	_shadow = Sprite::create("HelloWorld.png");
+	_shadow->setPosition(this->getContentSize().width*0.6f, this->getContentSize().height*0.45f);
+	_shadow->setColor(Color3B::BLACK);
+	_shadow->setOpacity(133);
+	_shadow->setZOrder(-1);
+	this->addChild(_shadow);
 
 	return true;
 }

@@ -10,7 +10,7 @@ public:
 	cocos2d::Sprite* _clip;
 
 	bool init();
-	Picture* create();
+	static Picture* create();
 };
 
 #endif

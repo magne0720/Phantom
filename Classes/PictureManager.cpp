@@ -1,7 +1,5 @@
 #include "PictureManager.h"
 #include "AllTags.h"
-//#include "TapDetection.h"
-
 
 using namespace cocos2d;
 
@@ -30,17 +28,26 @@ bool PictureManager::init()
 	//template<class T>;
 	for (int i = 0; i < _stageNum; i++)
 	{
-		_Pictures[i] = Sprite::create("HelloWorld.png");
-		_Pictures[i]->setPosition(designResolutionSize.width*0.3f*i, designResolutionSize.height*0.5f);
+		_Pictures[i] = Picture::create();
+		float x = designResolutionSize.width / (_stageNum + 1);
+		_Pictures[i]->setPosition(x*(i+1), designResolutionSize.height*0.5f);
 		this->addChild(_Pictures[i]);
 	}
-	
-	//baseTap.changeBegan(&PictureManager::onTouchBegan);
-	//baseTap.me = &PictureManager::onTouchBegan;
-	//baseTap.tapper = this;
-	//baseTap.began();
-	//baseTap = BaseTap();
-	_baseTap.changeBegan(&PictureManager::onTouchBegan, this);
+
+	// タッチされたことを取得するオブジェクト
+	auto listener = EventListenerTouchOneByOne::create();
+
+	// 対象のイベントが実行された後、下位のイベントは発動されなくする
+	listener->setSwallowTouches(true);
+
+	// タッチされた瞬間に呼ばれるメソッドを登録
+	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
+	// タッチされている間呼ばれるメソッドを登録
+	listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
+	// タッチが離された瞬間に呼ばれるメソッドを登録
+	listener->onTouchEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
+	// イベントの実行の優先順位をノードの重なり順に依存させる
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	return true;
 }
 
