@@ -42,7 +42,7 @@ public:
 	//方向取得
 	Vec2 getDirectionVector(Vec2 target,float range=1.0f);
 	//方向ベクトルから指定角度で自身の視認範囲のベクトルを取得する
-	Vec2 getDirectionDegree(Vec2 target,float deg, float range = 1.0f);
+	Vec2 changeDirectionDegree(Vec2 target,float deg, float range = 1.0f);
 	//右側にあるか
 	bool getDirectionRight(Vec2 target);
 	//左側にあるか
@@ -54,7 +54,7 @@ public:
 	//状態変化
 	void setState(STATUS state);
 	//正規化
-	Vec2 normalize(Vec2 &pos);
+	Vec2 normalize(Vec2 pos);
 	//内積
 	float dot(Vec2 from, Vec2 to);
 	//長さ

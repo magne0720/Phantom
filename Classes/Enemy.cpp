@@ -111,8 +111,8 @@ void Enemy::changeDegree(float degree)
 	moveRangeSp->clear();
 	for (int deg = 0; deg < degree; deg++)
 	{
-		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(targetPosition-myPosition,deg, moveRange), 5, Color4F::MAGENTA);
-		moveRangeSp->drawSegment(getPosition() - myPosition, getDirectionDegree(targetPosition-myPosition,-deg, moveRange), 5, Color4F::MAGENTA);
+		moveRangeSp->drawSegment(getPosition() - myPosition, changeDirectionDegree(targetPosition-myPosition,deg, moveRange), 5, Color4F::MAGENTA);
+		moveRangeSp->drawSegment(getPosition() - myPosition, changeDirectionDegree(targetPosition-myPosition,-deg, moveRange), 5, Color4F::MAGENTA);
 	}
 };
 

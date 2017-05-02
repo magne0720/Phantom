@@ -16,7 +16,6 @@ PlayerDog* PlayerDog::create(Vec2 spawnPos)
 	};
 };
 
-
 bool PlayerDog::init(Vec2 spawnPos) 
 {
 	if (!Node::init()) 
