@@ -9,7 +9,6 @@ class PictureManager : public cocos2d::Node
 public:
 	static PictureManager* create();
 	bool init();
-	void touchEnded(cocos2d::Touch* pTouch);
 
 	// タッチイベント処理
 	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
@@ -17,8 +16,11 @@ public:
 	void onTouchEnded(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
 	
 private:
-	Picture* _Pictures[3];
-	int _stageNum = 3;
+	cocos2d::Sprite* _Pictures[5];
+	int _stageNum = 5;
+
+	cocos2d::Vec2 bezier(float per, cocos2d::Vec2 pos0, cocos2d::Vec2 pos1, cocos2d::Vec2 po2);
+	void drawBezier(cocos2d::DrawNode* dn, int seg, cocos2d::Vec2 pos0, cocos2d::Vec2 pos1, cocos2d::Vec2 pos2);
 };
 
 #endif
