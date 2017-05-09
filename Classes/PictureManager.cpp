@@ -26,12 +26,12 @@ bool PictureManager::init()
 		return false;
 	}
 
+	_LINE_MAX = _stageNum * 0.5f;
+
 	// タッチされたことを取得するオブジェクト
 	auto listener = EventListenerTouchOneByOne::create();
-
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->setSwallowTouches(true);
-
 	// タッチされた瞬間に呼ばれるメソッドを登録
 	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
 	// タッチされている間呼ばれるメソッドを登録
@@ -41,32 +41,89 @@ bool PictureManager::init()
 	// イベントの実行の優先順位をノードの重なり順に依存させる
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	
+	_bezierPos[0] = Vec2(0, -designResolutionSize.height*0.1f);
+	_bezierPos[1] = Vec2(designResolutionSize.width*0.5f, -designResolutionSize.height*0.2f);
+	_bezierPos[2] = Vec2(designResolutionSize.width, -designResolutionSize.height*0.1f);
+
+	// ベジェ曲線を引く
 	float f = 0.0f;
 	Vec2 vec, vec1;
-	Vec2 v1 = Vec2(0,designResolutionSize.height), v2 = Vec2(designResolutionSize.width*0.5f,designResolutionSize.height*0.7f), v3 = Vec2(designResolutionSize.width,designResolutionSize.height);
+	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
-	drawBezier(node, 50, v1, v2, v3);
+	if (_stageNum <= _LINE_MAX)
+	{
+		basePos.y = designResolutionSize.height*0.75f;
+		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+		/*v1 = Vec2(0, designResolutionSize.height*0.5f);
+		v2 = Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f);
+		v3 = Vec2(designResolutionSize.width, designResolutionSize.height*0.5f);*/
+	}
+	else
+	{
+		basePos.y = designResolutionSize.height;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+		basePos.y = designResolutionSize.height*0.5f;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+	}
 	this->addChild(node);
 
-	for (int i = 0; i < _stageNum; i++)
+
+	// ステージ画像表示
+	if (_stageNum <= _LINE_MAX)
 	{
-		_Pictures[i] = Picture::create();
-		float p = 1.0f / (_stageNum + 1);
-		Vec2 b = bezier(p*(i + 1), v1, v2, v3);
-		b.y -= _Pictures[i]->getContentSize().width / 2;
-		_Pictures[i]->setPosition(b);
-		//float x = designResolutionSize.width / (_stageNum + 1);
-		//_Pictures[i]->setPosition(x*(i+1), designResolutionSize.height*0.5f);
-		this->addChild(_Pictures[i]);
+		basePos.y = designResolutionSize.height*0.75f;
+		for (int i = 0; i < _stageNum; i++)
+		{
+			_Pictures[i] = Picture::create();
+			float p = 1.0f / (_stageNum + 1);
+			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+			b.y -= _Pictures[i]->getContentSize().width / 2;
+			_Pictures[i]->setPosition(b);
+			this->addChild(_Pictures[i]);
+		}
 	}
+	else
+	{
+		basePos.y = designResolutionSize.height;
+		for (int i = 0; i < _LINE_MAX; i++)
+		{
+			_Pictures[i] = Picture::create();
+			float p = 1.0f / (_LINE_MAX + 1);
+			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+			b.y -= _Pictures[i]->getContentSize().width / 2;
+			_Pictures[i]->setPosition(b);
+			this->addChild(_Pictures[i]);
+		}
+		basePos.y = designResolutionSize.height*0.5f;
+		for (int i = _LINE_MAX; i < _stageNum; i++)
+		{
+			_Pictures[i] = Picture::create();
+			float p = 1.0f / (_stageNum - _LINE_MAX + 1);
+			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
+			b.y -= _Pictures[i]->getContentSize().width / 2;
+			_Pictures[i]->setPosition(b);
+			this->addChild(_Pictures[i]);
+		}
+	}
+	
 	
 	return true;
 }
 
 bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	//log("Began");
-	return true;
+	for (int i = 0; i < _stageNum; i++)
+	{
+		Rect rect = _Pictures[i]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			_selectStage = i;
+			_Pictures[i]->setColor(Color3B::GRAY);
+			_Pictures[i]->setScale(1.2f);
+			return true;
+		}
+	}
+	return false;
 }
 
 void PictureManager::onTouchMoved(Touch* pTouch, Event* pEvent)
@@ -74,15 +131,26 @@ void PictureManager::onTouchMoved(Touch* pTouch, Event* pEvent)
 
 }
 
+void PictureManager::onTouchCancelled(Touch* pTouch, Event* pEvent)
+{
+	_Pictures[_selectStage]->setColor(Color3B::WHITE);
+	_Pictures[_selectStage]->setScale(1.0f);
+}
+
 void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	for (int i = 0; i < _stageNum; i++)
+	_Pictures[_selectStage]->setColor(Color3B::WHITE);
+	Rect rect = _Pictures[_selectStage]->getBoundingBox();
+	if (rect.containsPoint(pTouch->getLocation()))
 	{
-		Rect rect = _Pictures[i]->getBoundingBox();
-		if (rect.containsPoint(pTouch->getLocation()))
-		{
-			log("atatta!");
-		}
+		_Pictures[_selectStage]->setColor(Color3B::WHITE);
+		_Pictures[_selectStage]->setScale(1.0f);
+		log("atatta!");
+	}
+	else
+	{
+		_Pictures[_selectStage]->setColor(Color3B::WHITE);
+		_Pictures[_selectStage]->setScale(1.0f);
 	}
 }
 
