@@ -3,11 +3,12 @@
 
 #include "cocos2d.h"
 
-class TitleCharacter : public cocos2d::Node
+class TitleCharacter : public cocos2d::Sprite
 {
 public:
 	bool init();
 	static TitleCharacter* create();
+	cocos2d::Animation* anim;
 };
 
 #endif // !_TitleCharacter_h_
