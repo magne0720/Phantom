@@ -1,6 +1,7 @@
 #include "TitleLayer.h"
 #include "TitleCharacter.h"
 #include "AllTags.h"
+#include "TitleBackground.h"
 
 using namespace cocos2d;
 
@@ -11,6 +12,10 @@ bool TitleLayer::init()
 	TitleCharacter* titleCharacter = TitleCharacter::create();
 	titleCharacter->setPosition(designResolutionSize*0.5f);
 	this->addChild(titleCharacter);
+
+
+	auto tbg = TitleBackground::create();
+	this->addChild(tbg);
 
 	return true;
 }
