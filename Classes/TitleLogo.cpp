@@ -1,10 +1,24 @@
 #include "TitleLogo.h"
+#include "AllTags.h"
 
 using namespace cocos2d;
 
 bool TitleLogo::init()
 {
 	if (!Node::init()) return false;
+
+	_logoSp = Sprite::create("HelloWorld.png");
+	_logoSp->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*1.2f);
+	auto move = MoveTo::create(3, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.7f));
+	_logoSp->runAction(move);
+	this->addChild(_logoSp);
+
+	_shadowSp = Sprite::create("HelloWorld.png");
+	_shadowSp->setColor(Color3B::BLACK);
+	_shadowSp->setOpacity(133);
+	_shadowSp->setScale(1.05f);
+	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.4f);
+	_logoSp->addChild(_shadowSp, -1);
 
 	return true;
 }
