@@ -9,7 +9,7 @@ bool TitleBackground::init()
 {
 	if (!Node::init()) return false;
 
-	auto scSp = ScrollSprite::create("HelloWorld.png", -5);
+	auto scSp = ScrollSprite::create("HelloWorld.png", 5);
 	this->addChild(scSp);
 
 	return true;
