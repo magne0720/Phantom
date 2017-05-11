@@ -15,7 +15,7 @@ public:
 	static PlayerHuman* create(Vec2 spawnPos);
 	bool init(Vec2 spawnPos);
 
-	void action();
+	void plusAction();
 
 	bool onTouchBegan(const Touch * touch, Event *unused_event);
 	void onTouchMoved(const Touch * touch, Event *unused_event);

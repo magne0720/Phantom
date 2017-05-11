@@ -30,14 +30,18 @@ bool MainGameScene::init(int num)
 	enemy = Enemy::create(Vec2(designResolutionSize.width*0.4f,designResolutionSize.height*0.7f),DIR_DEGREE::DIR_RIGHT);
 	addChild(enemy,2);
 
-	w = Wall::create(Vec2(designResolutionSize.width*0.7f, designResolutionSize.height*0.6f));
-	addChild(w,3);
+	//w = Wall::create(Vec2(designResolutionSize.width*0.7f, designResolutionSize.height*0.6f));
+	//addChild(w,3);
 
 	enemy->setTarget(p->pHuman);
 	enemy->setTarget(p->pDog);
-	enemy->setTarget(w);
+	/*enemy->setTarget(w);
 	p->pHuman->setTarget(w);
 	p->pDog->setTarget(w);
+*/
+
+	MapCreator* ma = MapCreator::create();
+	addChild(ma);
 
 	scheduleUpdate();
 

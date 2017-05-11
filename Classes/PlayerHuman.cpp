@@ -22,21 +22,18 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	{
 		return false;
 	}
-
-	myPosition = spawnPos;
-	targetPosition = spawnPos;
 	setSpeed(10.0f);
-	moveRange =	500.0f;
-	doubtDegree = 1.0f;
+	setMoveRange(500.0f);
+	setDoubtDgree(1.0f);
+
 
 	initWithFileCenter("Human.png");
 
 	moveRangeSp = DrawNode::create();
-	//moveRangeSp->drawDot(getPosition(), moveRange, Color4F::BLUE);
-	moveRangeSp->drawCircle(getPosition(),moveRange,0,360,false,Color4F::GREEN);
-	addChild(moveRangeSp,0);
+	moveRangeSp->drawCircle(Vec2(0,0), moveRange, 0, 360, true, Color4F::GREEN);
+	addChild(moveRangeSp, 0);
 
-	setPosition(spawnPos);
+	initialize(spawnPos);
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -45,21 +42,17 @@ bool PlayerHuman::init(Vec2 spawnPos)
 	listener->onTouchEnded = CC_CALLBACK_2(Character::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-
-	scheduleUpdate();
-
 	return true;
 };
 
-//行動
-void PlayerHuman::action() 
+void PlayerHuman::plusAction() 
 {
-	checkWall(walls);
+	onWall(walls);
 };
 
 bool PlayerHuman::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-	if (canMoveRange(touch->getLocation()))
+	if (onMoveRange(touch->getLocation()))
 	{
 		isMoveWait = true;
 	}

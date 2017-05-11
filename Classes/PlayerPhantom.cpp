@@ -40,6 +40,8 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerPhantom::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+	pHuman->scheduleUpdate();
+	pDog->scheduleUpdate();
 	scheduleUpdate();
 
 	return true;
@@ -53,18 +55,19 @@ void PlayerPhantom::update(float delta)
 
 bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-	//Œ¢—Dæ‚Ì“®‚«‚ðŒ©‚¹‚é
-	if(pDog->canMoveRange(touch->getLocation(), pDog->moveStartRange))
-	{
-		pDog->isMoveWait = true;
-		pDog->setState(STATUS::MOVE);
-	}
-	else
-	{
-		if (pHuman->canMoveRange(touch->getLocation())) 
+	touchCount++;
+	if (touchCount <= 1) {
+		//Œ¢—Dæ‚Ì“®‚«‚ðŒ©‚¹‚é
+		if (pDog->canMoveRange(touch->getLocation(), pDog->moveStartRange))
 		{
-			pHuman->targetPosition = touch->getLocation();
-			pHuman->setState(STATUS::MOVE);
+			pDog->isMoveWait = true;
+		}
+		else
+		{
+			if (pHuman->onMoveRange(touch->getLocation()))
+			{
+				pHuman->setTargetPosition(touch->getLocation());
+			}
 		}
 	}
 	return true;
@@ -77,5 +80,6 @@ void PlayerPhantom::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerPhantom::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
+	touchCount--;
 	pDog->isMoveWait = false;
 };

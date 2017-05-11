@@ -18,8 +18,13 @@ public:
 	//移動可能判定
 	bool canMoveRange(Point target,float range);
 
-	//行動
-	void action();
+	//初期移動範囲設定
+	void setMoveStartRange(float range);
+	//移動範囲拡大速度設定
+	void setRangeSpeed(float range);
+
+	void plusAction();
+
 
 	//タップして移動待機するかの判定半径
 	float moveStartRange;

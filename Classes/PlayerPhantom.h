@@ -11,6 +11,8 @@ USING_NS_CC;
 class PlayerPhantom :public Node 
 {
 public:
+	int touchCount;
+
 	PlayerHuman* pHuman;
 	PlayerDog* pDog;
 

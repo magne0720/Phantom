@@ -7,6 +7,7 @@
 #include "PlayerPhantom.h"
 #include "Enemy.h"
 #include "Wall.h"
+#include "MapCreator.h"
 
 USING_NS_CC;
 

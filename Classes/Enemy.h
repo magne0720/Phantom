@@ -19,9 +19,7 @@ private:
 public:
 	static Enemy* create(Vec2 spawnPos,DIR_DEGREE dir=DIR_DEGREE::DIR_DOWN);
 	virtual bool init(Vec2 spawnPos,DIR_DEGREE dir);
-	virtual void update(float delta);
-
-	virtual void action();
+	void plusAction();
 	
 	//主人公たちがいないか確かめる
 	bool checkPlayer(Vec2 playerPos);
@@ -31,7 +29,8 @@ public:
 	void changeDegree(float degree);
 	//思考フェイズ
 	void moveThink(float time);
-
+	//衝突判定まとめ
+	void allCollision();
 
 };
 
