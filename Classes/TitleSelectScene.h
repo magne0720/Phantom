@@ -8,13 +8,13 @@
 class TitleSelectScene : public cocos2d::Scene
 {
 public:
-	static cocos2d::Scene* createScene();
+	static cocos2d::Scene* createSelectScene();
+	static cocos2d::Scene* createTitleScene();
 	CREATE_FUNC(TitleSelectScene);
 	void replaceTitle();
 	void replaceSelect();
 
-	TitleLayer* titleLayer;
-	SelectLayer* selectLayer;;
+	cocos2d::Sprite* createFadeRect();
 
 };
 
