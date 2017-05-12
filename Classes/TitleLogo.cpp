@@ -15,9 +15,10 @@ bool TitleLogo::init()
 
 	_shadowSp = Sprite::create("HelloWorld.png");
 	_shadowSp->setColor(Color3B::BLACK);
-	_shadowSp->setOpacity(133);
-	_shadowSp->setScale(1.05f);
-	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.4f);
+	_shadowSp->setOpacity(70);
+	_shadowSp->setScale(1.02f);
+	_shadowSp->setScaleX(1.1f);
+	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.45f);
 	_logoSp->addChild(_shadowSp, -1);
 
 	return true;
