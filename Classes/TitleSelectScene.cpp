@@ -3,17 +3,26 @@
 
 using namespace cocos2d;
 
-Scene* TitleSelectScene::createTitleScene()
+bool TitleSelectScene::init()
 {
-	Scene* scene = Scene::create();
+	if (!Scene::init()) return false;
+
+	_replacedLayer = false;
+
+	return true;
+}
+
+TitleSelectScene* TitleSelectScene::createTitleScene()
+{
+	TitleSelectScene* scene = TitleSelectScene::create();
 	auto layer = TitleLayer::create();
 	scene->addChild(layer);
 	return scene;
 }
 
-Scene* TitleSelectScene::createSelectScene()
+TitleSelectScene* TitleSelectScene::createSelectScene()
 {
-	Scene* scene = Scene::create();
+	TitleSelectScene* scene = TitleSelectScene::create();
 	auto layer = SelectLayer::create();
 	scene->addChild(layer);
 	return scene;
@@ -46,8 +55,11 @@ void TitleSelectScene::replaceSelect()
 {
 	for (auto c : getChildren())
 	{
-		if (typeid(*c) == typeid(TitleLayer))
+		if (typeid(*c) == typeid(TitleLayer) && !_replacedLayer)
 		{
+			auto flg0 = CallFunc::create([&]() {
+				_replacedLayer = true;
+			});
 			auto fadeIn = FadeIn::create(0.5f);
 			auto callFunc = CallFunc::create([&]() {
 				this->removeChild(c, true);
@@ -55,7 +67,10 @@ void TitleSelectScene::replaceSelect()
 				this->addChild(scene);
 			});
 			auto fadeOut = FadeOut::create(0.5f);
-			auto seq = Sequence::create(fadeIn, callFunc, fadeOut, NULL);
+			auto flg1 = CallFunc::create([&]() {
+				_replacedLayer = false;
+			});
+			auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
 			createFadeRect()->runAction(seq);
 			break;
 		}
