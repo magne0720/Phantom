@@ -1,9 +1,9 @@
 #include "TitleLayer.h"
 #include "TitleCharacter.h"
 #include "AllTags.h"
-
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
+#include "CharacterAnimation.h"
 
 using namespace cocos2d;
 
@@ -16,7 +16,7 @@ bool TitleLayer::init()
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	tbg = TitleBackground::create();
+	/*tbg = TitleBackground::create();
 	this->addChild(tbg);
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
@@ -25,6 +25,10 @@ bool TitleLayer::init()
 
 	TitleLogo* titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
+*/
+	CharacterAnimation* charAnim = CharacterAnimation::create("Character/AnimChip.png", Size(60, 60));
+	charAnim->setPosition(designResolutionSize*0.5f);
+	this->addChild(charAnim);
 
 	return true;
 }
@@ -47,7 +51,7 @@ TitleLayer* TitleLayer::create()
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
-	((TitleSelectScene*)this->getParent())->replaceSelect();
+	//((TitleSelectScene*)this->getParent())->replaceSelect();
 
 	return true;
 }
