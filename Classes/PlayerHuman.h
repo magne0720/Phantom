@@ -12,8 +12,8 @@ class PlayerHuman : public Character
 private :
 public:
 
-	static PlayerHuman* create(Vec2 spawnPos);
-	bool init(Vec2 spawnPos);
+	static PlayerHuman* create(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
+	bool init(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 
 	void plusAction();
 

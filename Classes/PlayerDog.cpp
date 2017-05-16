@@ -1,9 +1,9 @@
 #include "PlayerDog.h"
 
-PlayerDog* PlayerDog::create(Vec2 spawnPos)
+PlayerDog* PlayerDog::create(Vec2 spawnPos,DIR_DEGREE dir)
 {
 	PlayerDog *pRet = new PlayerDog();
-	if (pRet && pRet->init(spawnPos))
+	if (pRet && pRet->init(spawnPos,dir))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,7 @@ PlayerDog* PlayerDog::create(Vec2 spawnPos)
 	};
 };
 
-bool PlayerDog::init(Vec2 spawnPos) 
+bool PlayerDog::init(Vec2 spawnPos,DIR_DEGREE dir) 
 {
 	if (!Node::init()) 
 	{
@@ -29,11 +29,10 @@ bool PlayerDog::init(Vec2 spawnPos)
 	setRangeSpeed(50.0f);
 	initWithFileCenter("Dog.png");
 
-	moveRangeSp = DrawNode::create();
-	moveRangeSp->drawCircle(Vec2(0,0), moveStartRange, 0, 360, true, Color4F::ORANGE);
-	addChild(moveRangeSp);
+	initialize(spawnPos,dir);
 
-	initialize(spawnPos);
+	moveRangeSp->drawCircle(Vec2(0,0), moveStartRange, 0, 360, true, Color4F::ORANGE);
+	
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -71,6 +70,8 @@ void PlayerDog::setRangeSpeed(float range)
 
 void PlayerDog::plusAction() 
 {
+	moveRangeSp->clear();
+	moveRangeSp->drawCircle(Vec2(0, 0), moveStartRange,myDirection, 360, false, Color4F::ORANGE);
 
 	onWall(walls);
 

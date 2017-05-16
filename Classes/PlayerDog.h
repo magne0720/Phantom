@@ -13,8 +13,8 @@ private:
 	float rangeTimer;
 	float rangeSpeed;
 public:
-	static PlayerDog* create(Vec2 spawnPos);
-	bool init(Vec2 spawnPos);
+	static PlayerDog* create(Vec2 spawnPos,  DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
+	bool init(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//ˆÚ“®‰Â”\”»’è
 	bool canMoveRange(Point target,float range);
 

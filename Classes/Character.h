@@ -13,15 +13,15 @@ USING_NS_CC;
 class Character:public Node
 {
 public:
-	static Character* create(Vec2 spawnPos);
+	static Character* create(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//初期画像を中心に配置
 	void initWithFileCenter(std::string name);
 	//初期設定
-	virtual bool init(Vec2 spawnPos);
+	virtual bool init(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//更新
 	virtual void update(float delta);
 	//初期設定
-	void initialize(Vec2 pos);
+	void initialize(Vec2 pos,DIR_DEGREE dir);
 
 
 
@@ -87,11 +87,19 @@ public:
 	void setTargetPosition(Vec2 pos);
 	//360度の向き変更
 	void setDirection(float degree);
+	//360度の向き変更
+	void setDirection(DIR_DEGREE degree);
 	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める
 	void setEvasionWall(Vec2 wall, Vec2 target);
 	//-----------------------------------------
 
-	
+	//画像処理
+
+	//void changeTexture(DIR_DEGREE);
+
+	//-----------------------------------------
+
+
 	//計算処理
 	//-----------------------------------------
 	//正規化

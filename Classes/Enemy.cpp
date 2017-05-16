@@ -23,16 +23,9 @@ bool Enemy::init(Vec2 spawnPos,DIR_DEGREE dir)
 	doubtRange = moveRange;
 	doubtDegree = 30;
 	initWithFileCenter("Enemy.png");
-	setColor(Color3B::BLACK);
-	myDirection = dir;
 
-	initialize(spawnPos);
-	targetPosition.x += 1.0f;
-	
-
-	moveRangeSp = DrawNode::create();
+	initialize(spawnPos,dir);
 	changeDegree(doubtDegree);
-	addChild(moveRangeSp);
 
 	setState(STATUS::STAND);
 
@@ -46,12 +39,12 @@ void Enemy::plusAction()
 	switch (myState)
 	{
 	case STAND:
+		moveThink(5.0f);
 		allCollision();
 		break;
 	case MOVE:
 		allCollision();
 		onWall(walls);
-		move();
 		break;
 	case DOUBT:
 		allCollision();
@@ -109,7 +102,7 @@ void Enemy::changeDegree(float degree)
 	for (int deg = 0; deg < degree; deg++)
 	{
 		moveRangeSp->drawSegment(Vec2(0, 0), getDirectionDegree(targetPosition - myPosition, -deg, moveRange), 5, Color4F::MAGENTA);
-		moveRangeSp->drawSegment(Vec2(0, 0), getDirectionDegree(targetPosition - myPosition,  deg, moveRange), 5, Color4F::MAGENTA);
+		moveRangeSp->drawSegment(Vec2(0, 0), getDirectionDegree(targetPosition - myPosition, deg, moveRange), 5, Color4F::MAGENTA);
 	}
 };
 
@@ -119,9 +112,7 @@ void Enemy::moveThink(float time)
 	thinkTimer -= time;
 	if (thinkTimer < 0) 
 	{
-		setState(STATUS::MOVE);
-		//‚¢‚Á‚½‚ñ20ƒtƒŒ[ƒ€Ý’è
-		thinkTimer = 20;
+
 	}
 }
 
@@ -135,7 +126,7 @@ void Enemy::allCollision()
 	}
 	if (onCollision(targets.at(PLAYER_AI)->myPosition, targets.at(PLAYER_HANSOME)->myPosition))
 	{
-		setState(STATUS::DEATH);
+		//setState(STATUS::DEATH);
 	}
 };
 

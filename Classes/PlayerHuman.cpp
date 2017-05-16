@@ -1,9 +1,9 @@
 #include "PlayerHuman.h"
 
-PlayerHuman* PlayerHuman::create(Vec2 spawnPos)
+PlayerHuman* PlayerHuman::create(Vec2 spawnPos,DIR_DEGREE dir)
 {
 	PlayerHuman *pRet = new PlayerHuman();
-	if (pRet && pRet->init(spawnPos))
+	if (pRet && pRet->init(spawnPos,dir))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,24 +16,22 @@ PlayerHuman* PlayerHuman::create(Vec2 spawnPos)
 	};
 };
 
-bool PlayerHuman::init(Vec2 spawnPos) 
+bool PlayerHuman::init(Vec2 spawnPos,DIR_DEGREE dir) 
 {
 	if (!Node::init()) 
 	{
 		return false;
 	}
+
 	setSpeed(10.0f);
 	setMoveRange(500.0f);
-	setDoubtDgree(1.0f);
-
+	setDoubtDgree(50.0f);
 
 	initWithFileCenter("Human.png");
 
-	moveRangeSp = DrawNode::create();
-	moveRangeSp->drawCircle(Vec2(0,0), moveRange, 0, 360, true, Color4F::GREEN);
-	addChild(moveRangeSp, 0);
+	initialize(spawnPos, dir);
 
-	initialize(spawnPos);
+	moveRangeSp->drawCircle(Vec2(0,0), moveRange, 0, 360, true, Color4F::GREEN);
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -47,6 +45,9 @@ bool PlayerHuman::init(Vec2 spawnPos)
 
 void PlayerHuman::plusAction() 
 {
+	moveRangeSp->clear();
+	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, myDirection, 360, false, Color4F::GREEN);
+
 	onWall(walls);
 };
 

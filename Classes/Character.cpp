@@ -1,6 +1,6 @@
 #include "Character.h"
 
-Character* Character::create(Vec2 spawnPos)
+Character* Character::create(Vec2 spawnPos, DIR_DEGREE dir)
 {
 	Character *pRet = new Character();
 	if (pRet && pRet->init(spawnPos))
@@ -16,14 +16,13 @@ Character* Character::create(Vec2 spawnPos)
 	};
 };
 
-bool Character::init(Vec2 spawnPos)
+bool Character::init(Vec2 spawnPos, DIR_DEGREE dir)
 {
 	if (!Node::init()) 
 	{
 		return false;
 	}
-	initialize(spawnPos);
-
+	initialize(spawnPos,dir);
 
 	initWithFileCenter("CloseNormal.png");
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
@@ -53,13 +52,16 @@ void Character::initWithFileCenter(std::string name)
 };
 
 //初期設定位置
-void Character::initialize(Vec2 pos) 
+void Character::initialize(Vec2 pos,DIR_DEGREE dir) 
 {
+	moveRangeSp = DrawNode::create();
+	addChild(moveRangeSp,5);
 	myPosition = pos;
 	targetPosition = pos;
 	lastTargetPosition = pos;
 	setPosition(pos);
 	setState(STATUS::STAND);
+	setDirection(dir);
 };
 
 
@@ -79,11 +81,10 @@ void Character::action()
 		if (length(targetPosition - myPosition) > moveSpeed) { setState(STATUS::MOVE); }
 		break;
 	case MOVE:
-		move();
 		if (length(targetPosition - myPosition) < moveSpeed) { setState(STATUS::STAND); }
+		move();
 		break;
 	case DOUBT:
-		
 		break;
 	case FIND:
 		break;
@@ -110,23 +111,18 @@ void Character::move(float plusSpeed)
 {
 	//移動に必要
 	Vec2 aPos = targetPosition - myPosition;
-	Vec2 bPos = lastTargetPosition - myPosition;
 
 	//向き(右方向が０度)
-	float s = (aPos.x*bPos.y+bPos.x*aPos.y)/(length(aPos)*length(bPos));
-	float seta = acos(s)*180.0f / M_PI;
+	float seta =atan2(aPos.y,aPos.x);
 
 	setDirection(seta);
 
-	if (seta < 0)
-		seta = seta*(-1);
-
-	//if (onLastTargetPosition(targetPosition)) { return; }
+	if (onLastTargetPosition(targetPosition)) { return; }
 	
 	moveRangeSp->drawSegment(Vec2(0,0),normalize(targetPosition),5,Color4F::BLACK);
 
 	myPosition += normalize(aPos)*moveSpeed*plusSpeed;
-	
+
 	setPosition(myPosition);
 };
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -136,7 +132,7 @@ void Character::move(float plusSpeed)
 //今lastTargetPositionにいるか
 bool Character::onLastTargetPosition(Vec2 pos) 
 {
-	if (onCollision(pos, 50.0f)) 
+	if (onCollision(pos, 10.0f)) 
 	{
 		return true;
 	}
@@ -154,7 +150,7 @@ bool Character::onCollision(Vec2 pos,float range)
 {
 	if (length(pos - myPosition)*length(pos-myPosition)<= range*moveRange)
 	{
-		//log("length=%f,range=%f",length(pos-myPosition),range);
+		////log("length=%f,range=%f",length(pos-myPosition),range);
 		return true;
 	}
 	return false;
@@ -220,7 +216,7 @@ bool Character::onDirectionRight(const Vec2 target)
 
 	if (v.x*t.y - t.x*v.y < 0)
 	{
-		log("right");
+		//log("right");
 		return true;
 	}
 	return false;
@@ -236,7 +232,7 @@ bool Character::onDirectionLeft(const Vec2 target)
 
 	if (v.x*t.y - t.x*v.y > 0)
 	{
-		log("left");
+		//log("left");
 		return true;
 	}
 	return false;
@@ -265,7 +261,7 @@ bool Character::onWall(Vector<Wall*> quad)
 						}
 						if (ans != movement)
 						{
-							//log("wall!!");
+							////log("wall!!");
 							setEvasionWall(ans,targetPosition - myPosition);
 							return true;
 						}
@@ -320,10 +316,36 @@ void Character::setTargetPosition(Vec2 pos)
 }
 
 //360度の向き変更
-void Character::setDirection(float degree) 
+void Character::setDirection(float degree)
 {
 	myDirection = degree;
-	moveRangeSp->setRotation(degree/doubtDegree);
+};
+
+//固定値に向き変更
+void Character::setDirection(DIR_DEGREE degree)
+{
+	switch (degree)
+	{
+	case DIR_RIGHT:
+		targetPosition.x += 1.0f;
+		lastTargetPosition.x += 1.0f;
+		break;
+	case DIR_UP:
+		targetPosition.y += 1.0f;
+		lastTargetPosition.y += 1.0f;
+		break;
+	case DIR_LEFT:
+		targetPosition.x -= 1.0f;
+		lastTargetPosition.x -= 1.0f;
+		break;
+	case DIR_DOWN:
+		targetPosition.y -= 1.0f;
+		lastTargetPosition.y -= 1.0f;
+		break;
+	default:
+		break;
+	}
+	myDirection = (float)degree;
 };
 
 //当たり判定のあるものを設定
@@ -371,6 +393,11 @@ void Character::setEvasionWall(Vec2 wall, Vec2 target)
 //自身の向いている方向を指しているvectorを返す
 Vec2 Character::getDirectionVector()
 {
+	if(myDirection>0&&myDirection<45||myDirection>315&&myDirection<=360)
+	{
+
+	}
+
 	return normalize(myPosition-targetPosition);
 };
 
