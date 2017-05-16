@@ -7,6 +7,7 @@ class SelectLayer : public cocos2d::Layer
 {
 public:
 	bool init();
+	static SelectLayer* create();
 };
 
 #endif
