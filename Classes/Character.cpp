@@ -44,10 +44,9 @@ void Character::update(float delta)
 };
 
 //‰æ‘œ‚ð’†‰›‚É‚µ‚ÄŽ©g‚Ì‰æ‘œ‚ð’u‚­
-void Character::initWithFileCenter(std::string name) 
+void Character::initWithFileCenter(std::string name,Size chipSize) 
 {
-	mySprite = Sprite::create(name);
-	mySprite->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	mySprite = CharacterAnimation::create(name, chipSize);
 	addChild(mySprite,5);
 };
 

@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "AllTags.h"
 #include "Wall.h"
+#include "CharacterAnimation.h"
 
 USING_NS_CC;
 
@@ -15,7 +16,7 @@ class Character:public Node
 public:
 	static Character* create(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//初期画像を中心に配置
-	void initWithFileCenter(std::string name);
+	void initWithFileCenter(std::string name,Size chipSize=Size(100,100));
 	//初期設定
 	virtual bool init(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//更新
@@ -116,7 +117,7 @@ public:
 	//移動可能範囲を示す円環
 	DrawNode* moveRangeSp;
 	//自身の画像
-	Sprite* mySprite;
+	CharacterAnimation* mySprite;
 	//自身の場所
 	Vec2 myPosition;
 	//次に向かう場所。これに向かうために移動を行う。

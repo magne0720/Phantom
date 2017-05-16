@@ -2,6 +2,7 @@
 #include "MainGameScene.h"
 #include "HelloWorldScene.h"
 #include "TitleSelectScene.h"
+#include "GateScene.h"
 
 USING_NS_CC;
 
@@ -72,8 +73,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	register_all_packages();
 
 	// create a scene. it's an autorelease object
-	auto scene = TitleSelectScene::createTitleScene();
+	//auto scene = TitleSelectScene::createTitleScene();
 	//auto scene = HelloWorldScene::createScene(0);
+	auto scene = GateScene::createScene();
 
 	// run
 	director->runWithScene(scene);
