@@ -9,7 +9,7 @@ public:
 	bool init(std::string fileName, cocos2d::Size chipSize);
 	static CharacterAnimation* create(std::string fileName, cocos2d::Size chipSize);
 	
-	void setAnimation(std::string dirName);
+	void changeAnimation(std::string dirName);
 private:
 	cocos2d::Sprite* _mySprite;
 

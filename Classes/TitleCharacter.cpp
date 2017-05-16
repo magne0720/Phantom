@@ -1,5 +1,6 @@
 #include "TitleCharacter.h"
 #include "SpriteAnimation.h"
+#include "CharacterAnimation.h"
 
 using namespace cocos2d;
 
@@ -7,8 +8,8 @@ bool TitleCharacter::init()
 {
 	if (!Sprite::init()) return false;
 
-	auto sp = SpriteAnimation::create("Character/HelloWorld%d.png", 2, 0.5f);
-	this->addChild(sp);
+	CharacterAnimation* charAnim = CharacterAnimation::create("Character/AnimChip.png", Size(60, 60));
+	this->addChild(charAnim);
 
 	return true;
 }

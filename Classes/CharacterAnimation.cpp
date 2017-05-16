@@ -34,20 +34,20 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 		_animFront->addSpriteFrame(charSp[i]);
 		_animBack->addSpriteFrame(charSp[width + i]);
 		_animLeft->addSpriteFrame(charSp[2 * width + i]);
-		_animRight->addSpriteFrame(charSp[3 * width + 1]);
+		_animRight->addSpriteFrame(charSp[3 * width + i]);
 	}
 
 	_animFront->setDelayPerUnit(0.5f);
 	_animBack->setDelayPerUnit(0.5f);
 	_animLeft->setDelayPerUnit(0.5f);
-	_animLeft->setDelayPerUnit(0.5f);
+	_animRight->setDelayPerUnit(0.5f);
 
 	_animationChache->addAnimation(_animFront, "FRONT");
 	_animationChache->addAnimation(_animBack, "BACK");
 	_animationChache->addAnimation(_animLeft, "LEFT");
 	_animationChache->addAnimation(_animRight, "RIGHT");
 
-	setAnimation("FRONT");
+	changeAnimation("FRONT");
 
 	return true;
 }
@@ -68,8 +68,9 @@ CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize)
 	}
 }
 
-void CharacterAnimation::setAnimation(string dirName)
+void CharacterAnimation::changeAnimation(string dirName)
 {
+	_mySprite->stopAllActions();
 	Animation* anim = _animationChache->animationByName(dirName);
 	auto action = RepeatForever::create(Animate::create(anim));
 	_mySprite->runAction(action);
