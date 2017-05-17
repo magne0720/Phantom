@@ -18,12 +18,16 @@ bool TitleLayer::init()
 	tbg = TitleBackground::create();
 	this->addChild(tbg);
 
-	TitleCharacter* titleCharacter = TitleCharacter::create();
+	/*TitleCharacter* titleCharacter = TitleCharacter::create();
 	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.3f);
-	this->addChild(titleCharacter);
+	this->addChild(titleCharacter);*/
 
 	TitleLogo* titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
+
+	ca = CharacterAnimation::create("Character/AnimChip.png", Size(60, 60));
+	ca->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.3f);
+	this->addChild(ca);
 
 	return true;
 }
@@ -46,7 +50,7 @@ TitleLayer* TitleLayer::create()
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
-	((TitleSelectScene*)this->getParent())->replaceSelect();
-
+	//((TitleSelectScene*)this->getParent())->replaceSelect();
+	ca->stopAnimation();
 	return true;
 }

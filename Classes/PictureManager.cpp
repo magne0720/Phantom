@@ -74,12 +74,12 @@ bool PictureManager::init()
 		basePos.y = designResolutionSize.height*0.75f;
 		for (int i = 0; i < _stageNum; i++)
 		{
-			_Pictures[i] = Picture::create();
+			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _Pictures[i]->getContentSize().width / 2;
-			_Pictures[i]->setPosition(b);
-			this->addChild(_Pictures[i]);
+			b.y -= _pictures[i]->getContentSize().width / 2;
+			_pictures[i]->setPosition(b);
+			this->addChild(_pictures[i]);
 		}
 	}
 	else
@@ -87,22 +87,22 @@ bool PictureManager::init()
 		basePos.y = designResolutionSize.height;
 		for (int i = 0; i < _LINE_MAX; i++)
 		{
-			_Pictures[i] = Picture::create();
+			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_LINE_MAX + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _Pictures[i]->getContentSize().width / 2;
-			_Pictures[i]->setPosition(b);
-			this->addChild(_Pictures[i]);
+			b.y -= _pictures[i]->getContentSize().width / 2;
+			_pictures[i]->setPosition(b);
+			this->addChild(_pictures[i]);
 		}
 		basePos.y = designResolutionSize.height*0.5f;
 		for (int i = _LINE_MAX; i < _stageNum; i++)
 		{
-			_Pictures[i] = Picture::create();
+			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _Pictures[i]->getContentSize().width / 2;
-			_Pictures[i]->setPosition(b);
-			this->addChild(_Pictures[i]);
+			b.y -= _pictures[i]->getContentSize().width / 2;
+			_pictures[i]->setPosition(b);
+			this->addChild(_pictures[i]);
 		}
 	}
 	
@@ -114,12 +114,12 @@ bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
 	for (int i = 0; i < _stageNum; i++)
 	{
-		Rect rect = _Pictures[i]->getBoundingBox();
+		Rect rect = _pictures[i]->getBoundingBox();
 		if (rect.containsPoint(pTouch->getLocation()))
 		{
 			_selectStage = i;
-			_Pictures[i]->setColor(Color3B::GRAY);
-			_Pictures[i]->setScale(1.2f);
+			_pictures[i]->setColor(Color3B::GRAY);
+			_pictures[i]->setScale(1.2f);
 			return true;
 		}
 	}
@@ -133,24 +133,24 @@ void PictureManager::onTouchMoved(Touch* pTouch, Event* pEvent)
 
 void PictureManager::onTouchCancelled(Touch* pTouch, Event* pEvent)
 {
-	_Pictures[_selectStage]->setColor(Color3B::WHITE);
-	_Pictures[_selectStage]->setScale(1.0f);
+	_pictures[_selectStage]->setColor(Color3B::WHITE);
+	_pictures[_selectStage]->setScale(1.0f);
 }
 
 void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	_Pictures[_selectStage]->setColor(Color3B::WHITE);
-	Rect rect = _Pictures[_selectStage]->getBoundingBox();
+	_pictures[_selectStage]->setColor(Color3B::WHITE);
+	Rect rect = _pictures[_selectStage]->getBoundingBox();
 	if (rect.containsPoint(pTouch->getLocation()))
 	{
-		_Pictures[_selectStage]->setColor(Color3B::WHITE);
-		_Pictures[_selectStage]->setScale(1.0f);
-		log("atatta!");
+		_pictures[_selectStage]->setColor(Color3B::WHITE);
+		_pictures[_selectStage]->setScale(1.0f);
+		log("ID = %d", _pictures[_selectStage]->_stageID);
 	}
 	else
 	{
-		_Pictures[_selectStage]->setColor(Color3B::WHITE);
-		_Pictures[_selectStage]->setScale(1.0f);
+		_pictures[_selectStage]->setColor(Color3B::WHITE);
+		_pictures[_selectStage]->setScale(1.0f);
 	}
 }
 

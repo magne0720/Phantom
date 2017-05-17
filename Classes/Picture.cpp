@@ -3,7 +3,7 @@
 
 using namespace cocos2d;
 
-bool Picture::init()
+bool Picture::init(int id)
 {
 	if (!Sprite::init())
 	{
@@ -26,12 +26,13 @@ bool Picture::init()
 	return true;
 }
 
-Picture* Picture::create()
+Picture* Picture::create(int id)
 {
 	Picture *pRet = new Picture();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(id))
 	{
 		pRet->autorelease();
+		pRet->_stageID = id;
 		return pRet;
 	}
 	else
