@@ -27,7 +27,7 @@ bool PlayerDog::init(Vec2 spawnPos,DIR_DEGREE dir)
 	setMoveStartRange(250.0f);
 	setDoubtDgree(1.0f);
 	setRangeSpeed(50.0f);
-	initWithFileCenter("Dog.png");
+	initWithFileCenter("Dog.png",Size(200,200));
 
 	initialize(spawnPos,dir);
 

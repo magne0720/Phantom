@@ -25,7 +25,19 @@ bool MapCreator::init()
 	log("openMapCreator");
 	openMapFile("test");
 
+	//scheduleUpdate();
+
 	return true;
+};
+
+void MapCreator::update(float delta) 
+{
+	checkWall(phantom->pHuman, walls, 500.0f);
+	checkWall(phantom->pDog, walls, 500.0f);
+	for (int i = 0; i < enemys.size(); i++) 
+	{
+		checkWall(enemys.at(i), walls, 500.0f);
+	}
 };
 
 //マップファイル読み込み
@@ -312,6 +324,24 @@ DIR_DEGREE MapCreator::getCharToDirction(char* dir)
 	}
 };
 
+//マップ内の衝突関係処理
+void MapCreator::checkWall(Character* obj, Vector<Wall*>wall, float range) 
+{
+	for (int i = 0; i < wall.size(); i++) 
+	{
+		//同じものを入れることはないようにする
+
+
+		if (sqrt((obj->myPosition.x - wall.at(i)->getPositionX())*(obj->myPosition.x - wall.at(i)->getPositionX()) + (obj->myPosition.y - wall.at(i)->getPositionY())*(obj->myPosition.y - wall.at(i)->getPositionY())) < range)
+		{
+			obj->setTarget(wall.at(i));
+			log("check");
+		}
+	}
+};
+
+
+
 Layer* MapCreator::printMap() 
 {
 	log("printStart\n--------------------------------------");
@@ -339,8 +369,8 @@ Layer* MapCreator::printMap()
 	{
 		layer->addChild(floors.at(i),0);
 	}
-
 	log("createEnd\n--------------------------------------");
+
 	return layer;
 };
 

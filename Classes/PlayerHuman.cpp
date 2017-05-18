@@ -27,7 +27,7 @@ bool PlayerHuman::init(Vec2 spawnPos,DIR_DEGREE dir)
 	setMoveRange(500.0f);
 	setDoubtDgree(50.0f);
 
-	initWithFileCenter("Human.png");
+	initWithFileCenter("Human.png",Size(200,200));
 
 	initialize(spawnPos, dir);
 

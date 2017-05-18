@@ -22,7 +22,7 @@ bool Enemy::init(Vec2 spawnPos,DIR_DEGREE dir)
 	moveRange = 500.0f;
 	doubtRange = moveRange;
 	doubtDegree = 30;
-	initWithFileCenter("Enemy.png");
+	initWithFileCenter("Enemy.png",Size(200,200));
 
 	initialize(spawnPos,dir);
 	changeDegree(doubtDegree);

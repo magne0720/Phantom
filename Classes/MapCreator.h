@@ -39,6 +39,7 @@ public:
 
 	static MapCreator* create();
 	bool init();
+	void update(float delta);
 
 	//解析データ置き場
 	char analyzeData[2048];
@@ -50,7 +51,7 @@ public:
 	Vector<Wall*> walls;
 	Vector<Node*> floors;
 
-
+	//マップ作成処理---------------------------------------------------------------------------
 	//マップファイル読み込み
 	void openMapFile(char* name);
 	//マップ情報管理関数
@@ -81,6 +82,15 @@ public:
 	int getFindCharNumber(char* data,char find);
 	//解析した文字に応じて方位を返す
 	DIR_DEGREE getCharToDirction(char* dir);
+	//--------------------------------------------------------------------------------------------------
+
+	//マップ内の衝突関係処理
+	void checkWall(Character* obj,Vector<Wall*>wall,float range);
+
+
+
+
+
 	//完成したマップを一つのレイヤーに統合して戻り値として返す
 	Layer* printMap();
 
