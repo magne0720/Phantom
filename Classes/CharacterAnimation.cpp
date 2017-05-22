@@ -82,7 +82,7 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 	_animationChache->addAnimation(_stopRight, "STOP_R");
 
 	_dir = eDIR::BACK;
-	changeAnimation(eDIR::RIGHT);
+	changeAnimation(eDIR::FRONT);
 
 	return true;
 }

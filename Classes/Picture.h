@@ -12,6 +12,12 @@ public:
 
 	bool init(int id);
 	static Picture* create(int id);
+
+	void setPos(cocos2d::Vec2 pos);
+	cocos2d::Vec2 getPos();
+
+private:
+	cocos2d::Vec2 _defaultPos;
 };
 
 #endif

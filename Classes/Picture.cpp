@@ -42,3 +42,13 @@ Picture* Picture::create(int id)
 		return NULL;
 	}
 }
+
+void Picture::setPos(Vec2 pos)
+{
+	_defaultPos = pos;
+}
+
+Vec2 Picture::getPos()
+{
+	return _defaultPos;
+}
