@@ -1,5 +1,4 @@
 #include "TitleCharacter.h"
-#include "SpriteAnimation.h"
 #include "CharacterAnimation.h"
 
 using namespace cocos2d;

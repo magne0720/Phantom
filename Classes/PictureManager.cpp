@@ -37,7 +37,7 @@ bool PictureManager::init()
 	// タッチされた瞬間に呼ばれるメソッドを登録
 	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
 	// タッチされている間呼ばれるメソッドを登録
-	listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
+	//listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
 	// タッチが離された瞬間に呼ばれるメソッドを登録
 	listener->onTouchEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
 	// イベントの実行の優先順位をノードの重なり順に依存させる
@@ -115,6 +115,12 @@ bool PictureManager::init()
 	return true;
 }
 
+void PictureManager::update(float delta)
+{
+	if (_selectedStage < 0) return;
+
+}
+
 bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
 	for (int i = 0; i < _stageNum; i++)
@@ -159,7 +165,6 @@ bool PictureManager::onTouchBeganP(Touch* pTouch, Event* pEvent)
 	Rect rect = _pictures[_selectedStage]->getBoundingBox();
 	if (rect.containsPoint(pTouch->getLocation()))
 	{
-		log("yeah!");
 		return true;
 	}
 	else
@@ -167,6 +172,9 @@ bool PictureManager::onTouchBeganP(Touch* pTouch, Event* pEvent)
 		defaultSize();
 		_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
 		selectedInit();
+		changeBool(&PictureManager::onTouchBegan);
+		changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
+		changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
 	}
 	return false;
 }
@@ -184,13 +192,12 @@ void PictureManager::onTouchEndedP(Touch* pTouch, Event* pEvent)
 	if (rect.containsPoint(pTouch->getLocation()))
 	{
 		_pictures[_selectedStage]->setColor(Color3B::WHITE);
-		log("YEAH!");
 	}
 	else
 	{
-		defaultSize();
-		_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
-		selectedInit();
+		//defaultSize();
+		//_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
+		//wselectedInit();
 	}
 }
 
@@ -226,6 +233,7 @@ void PictureManager::defaultSize()
 	if (_selectedStage == -1) return;
 	_pictures[_selectedStage]->setScale(1.0f);
 	_pictures[_selectedStage]->setColor(Color3B::WHITE);
+	_pictures[_selectedStage]->setZOrder(0);
 }
 void PictureManager::selectedSize()
 {
@@ -239,6 +247,7 @@ void PictureManager::popedUpSize()
 	_pictures[_selectedStage]->setScale(2.0f);
 	_pictures[_selectedStage]->setColor(Color3B::WHITE);
 	_pictures[_selectedStage]->setPosition(designResolutionSize*0.5f);
+	_pictures[_selectedStage]->setZOrder(1);
 }
 
 // タッチのフェーズ変更用関数

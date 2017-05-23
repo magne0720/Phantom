@@ -5,6 +5,18 @@
 
 #define STR(var) #var
 
+/*
+
+  〇●●●　上
+  〇●●●　下
+  〇●●●　左
+  〇●●●　右
+
+  〇　待機スプライト　1枚
+  ●　移動アニメーション　複数枚
+
+*/
+
 class CharacterAnimation : public cocos2d::Node
 {
 public:

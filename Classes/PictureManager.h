@@ -9,6 +9,7 @@ class PictureManager : public cocos2d::Node
 public:
 	static PictureManager* create();
 	bool init();
+	void update(float delta);
 
 	// タッチイベント処理
 	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
