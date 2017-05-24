@@ -26,7 +26,7 @@ private:
 	int _LINE_MAX = 5;	//　1ラインに入る枚数
 	cocos2d::Vec2 _bezierPos[3];	// 基準点とベジェ曲線の為に必要な3点の差
 	int _selectedStage = 0;	// 現在選択されているステージ
-	bool _isPopUpSelected;	// ポップアップされた上で選択されているか
+	bool _areResizing;	// リサイズ中であるか
 
 	cocos2d::EventListenerTouchOneByOne* listener;
 
@@ -48,6 +48,23 @@ private:
 
 	void changeBool(bool (PictureManager::*method)(cocos2d::Touch* pTouch, cocos2d::Event* pEvent));
 	void changeVoid(void (PictureManager::*method)(cocos2d::Touch* pTouch, cocos2d::Event* pEvent), eTOUCH eTouch);
+
+	struct PicSize
+	{
+		float scale;
+		cocos2d::Vec2 position;
+		int z;
+	};
+
+	PicSize _beforePic;
+	PicSize _afterPic;
+	float _per;
+	float _add;
+
+	void swap(float &a, float &b);
+	void swap(int &a, int &b);
+	void swap(cocos2d::Vec2 &a, cocos2d::Vec2 &b);
+	void swapA2B();
 };
 
 #endif
