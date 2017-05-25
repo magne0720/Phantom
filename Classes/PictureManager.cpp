@@ -116,7 +116,7 @@ bool PictureManager::init()
 	_afterPic.z = 1;
 
 	_per = 0.0f;
-	_add = 0.2f;
+	_add = 0.25f;
 
 	this->scheduleUpdate();
 	

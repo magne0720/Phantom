@@ -7,8 +7,9 @@ bool TitleCharacter::init()
 {
 	if (!Sprite::init()) return false;
 
-	CharacterAnimation* charAnim = CharacterAnimation::create("Character/AnimChip.png", Size(60, 60));
+	CharacterAnimation* charAnim = CharacterAnimation::create("Character/TitleAnim.png", Size(250, 250));
 	this->addChild(charAnim);
+	charAnim->changeAnimation(CharacterAnimation::eDIR::FRONT);
 
 	return true;
 }
