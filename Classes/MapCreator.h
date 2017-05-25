@@ -2,7 +2,7 @@
 #define __MAP_CREATOR_H__
 
 #include "cocos2d.h"
-#include "PlayerPhantom.h"
+#include "PlayerCloser.h"
 #include "Enemy.h"
 #include "Wall.h"
 
@@ -45,7 +45,7 @@ public:
 	char analyzeData[2048];
 
 	//É}ÉbÉvèÓïÒ
-	PlayerPhantom* phantom;
+	PlayerCloser* robot;
 	Vector<String*> names;
 	Vector<Enemy*> enemys;
 	Vector<Wall*> walls;

@@ -24,9 +24,6 @@ public:
 	//初期設定
 	void initialize(Vec2 pos,DIR_DEGREE dir);
 
-
-
-	
 	//更新処理
 	//-----------------------------------------
 	//キャラクターの基本行動
@@ -98,17 +95,6 @@ public:
 
 	//void changeTexture(DIR_DEGREE);
 
-	//-----------------------------------------
-
-
-	//計算処理
-	//-----------------------------------------
-	//正規化
-	Vec2 normalize(Vec2 pos);
-	//内積
-	float dot(Vec2 from, Vec2 to);
-	//長さ
-	float length(Vec2 pos);
 	//-----------------------------------------
 
 

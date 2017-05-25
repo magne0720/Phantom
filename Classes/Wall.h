@@ -2,9 +2,11 @@
 #define __WALL_H__
 
 #include "cocos2d.h"
+#include "AllTags.h"
 
 USING_NS_CC;
 
+//ü‚É‹²‚Ü‚ê‚½‚Æ‚«‚É–ÊÏ‚Ì­‚È‚¢‚Ù‚¤‚ªÁ–Å‚·‚é•Ç
 class Wall :public Node 
 {
 public:
@@ -15,8 +17,6 @@ public:
 	Vec2 points[5];
 
 	Sprite* mySprite;
-
-
 };
 
 #endif // !__WALL_H__

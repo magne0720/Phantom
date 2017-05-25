@@ -29,7 +29,7 @@ bool Enemy::init(Vec2 spawnPos,DIR_DEGREE dir)
 
 	setState(STATUS::STAND);
 
-	scheduleUpdate();
+	//scheduleUpdate();
 
 	return true;
 };
@@ -117,12 +117,14 @@ void Enemy::moveThink(float time)
 }
 
 //Õ“Ë”»’è‚Ü‚Æ‚ß
-void Enemy::allCollision() 
+void Enemy::allCollision()
 {
 	if (myState != STATUS::DEATH)
 	{
-		checkPlayer(targets.at(PLAYER_AI)->myPosition);
-		checkPlayer(targets.at(PLAYER_HANSOME)->myPosition);
+		for (int i = 0; i < targets.size(); i++)
+		{
+			checkPlayer(targets.at(i)->myPosition);
+		}
 	}
 	if (onCollision(targets.at(PLAYER_AI)->myPosition, targets.at(PLAYER_HANSOME)->myPosition))
 	{

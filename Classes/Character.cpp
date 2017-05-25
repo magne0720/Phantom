@@ -77,10 +77,12 @@ void Character::action()
 	switch (myState)
 	{
 	case STAND:
-		if (length(targetPosition - myPosition) > moveSpeed) { setState(STATUS::MOVE); }
+		if (length(targetPosition - myPosition) > moveSpeed) { setState(STATUS::MOVE);		log("move");
+		}
 		break;
 	case MOVE:
-		if (length(targetPosition - myPosition) < moveSpeed) { setState(STATUS::STAND); }
+		if (length(targetPosition - myPosition) < moveSpeed) { setState(STATUS::STAND); log("stand");
+		}
 		move();
 		break;
 	case DOUBT:
@@ -111,14 +113,10 @@ void Character::move(float plusSpeed)
 	//移動に必要
 	Vec2 aPos = targetPosition - myPosition;
 
-	//向き(右方向が０度)
-	float seta =atan2(aPos.y,aPos.x);
-
-	setDirection(seta);
-
 	if (onLastTargetPosition(targetPosition)) { return; }
-	
-	moveRangeSp->drawSegment(Vec2(0,0),normalize(targetPosition),5,Color4F::BLACK);
+
+	moveRangeSp->clear();
+	moveRangeSp->drawSegment(Vec2(0,0),normalize(targetPosition-myPosition)*doubtDegree,5,Color4F::GREEN);
 
 	myPosition += normalize(aPos)*moveSpeed*plusSpeed;
 
@@ -256,14 +254,10 @@ bool Character::onWall(Vector<Wall*> quad)
 						{
 							if (onCollision(quad.at(i)->points[j], quad.at(i)->points[j + 1])) {
 								ans = quad.at(i)->points[j] - quad.at(i)->points[j + 1] + quad.at(i)->getPosition();
+						setEvasionWall(ans,targetPosition - myPosition);
 							}
 						}
-						if (ans != movement)
-						{
-							////log("wall!!");
-							setEvasionWall(ans,targetPosition - myPosition);
 							return true;
-						}
 						//setState(STATUS::STAND);
 					}
 	}
@@ -284,6 +278,7 @@ void Character::allCollision()
 void Character::setState(STATUS state)
 {
 	myState = state;
+	log("setstate");
 };
 
 //速度変更
@@ -365,10 +360,10 @@ Vec2 Character::getDirectionDegree(Vec2 target, float deg, float range)
 {
 	Vec2 vector = normalize(target);
 	//ラジアンに変換
-	deg = deg * M_PI / 180;
+	float rag=degToRag(deg);
 
-	float ax = vector.x*cos(deg) - vector.y*sin(deg);
-	float ay = vector.x*sin(deg) + vector.y*cos(deg);
+	float ax = vector.x*cos(rag) - vector.y*sin(rag);
+	float ay = vector.x*sin(rag) + vector.y*cos(rag);
 
 	vector.x = ax*range;
 	vector.y = ay*range;
@@ -404,26 +399,6 @@ Vec2 Character::getDirectionVector()
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-//正規化
-Vec2 Character::normalize(Vec2 pos) 
-{
-	float mag = 1 / sqrt(pos.x*pos.x + pos.y*pos.y);
-	pos.x *= mag;
-	pos.y *= mag;
-
-	return pos;
-};
-
-float Character::length(Vec2 pos) 
-{
-	return sqrt(pos.x*pos.x + pos.y*pos.y);
-};
-
-//内積
-float Character::dot(Vec2 from, Vec2 to) 
-{
-	return from.x*to.x + from.y*to.y;
-};
 
 
 bool Character::onTouchBegan(const Touch * touch, Event *unused_event) 

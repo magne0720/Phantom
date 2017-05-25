@@ -32,34 +32,16 @@ bool MapCreator::init()
 
 void MapCreator::update(float delta) 
 {
-	checkWall(phantom->pHuman, walls, 500.0f);
-	checkWall(phantom->pDog, walls, 500.0f);
-	for (int i = 0; i < enemys.size(); i++) 
-	{
-		checkWall(enemys.at(i), walls, 500.0f);
-	}
+
 };
 
 //マップファイル読み込み
 void MapCreator::openMapFile(char* name)
 {
-	auto split = [](const std::string& input, char delimiter)
-	{
-		istringstream stream(input);
-		string field;
-		vector<string> result;
-		while (std::getline(stream, field, delimiter))
-		{
-			result.push_back(field);
-		}
-		return result;
-	};
-
 	String* filename = String::createWithFormat("Stages/%s.bin", name);
 	string fileText = FileUtils::getInstance()->getStringFromFile(filename->getCString());
 
 	loadMap(fileText);
-
 };
 
 //マップ情報管理関数
@@ -144,7 +126,7 @@ void MapCreator::analyzePlayer(char* data)
 	log("human[%f,%f]", oneP.x, oneP.y);
 	log("dog[%f,%f]", twoP.x, twoP.y);
 
-	phantom = PlayerPhantom::create(oneP,twoP);
+	robot = PlayerCloser ::create(oneP, twoP);
 	log("push-player");
 
 };
@@ -332,7 +314,7 @@ void MapCreator::checkWall(Character* obj, Vector<Wall*>wall, float range)
 		//同じものを入れることはないようにする
 
 
-		if (sqrt((obj->myPosition.x - wall.at(i)->getPositionX())*(obj->myPosition.x - wall.at(i)->getPositionX()) + (obj->myPosition.y - wall.at(i)->getPositionY())*(obj->myPosition.y - wall.at(i)->getPositionY())) < range)
+		if (length(obj->myPosition-wall.at(i)->getPosition()) < range)
 		{
 			obj->setTarget(wall.at(i));
 			log("check");
@@ -347,21 +329,21 @@ Layer* MapCreator::printMap()
 	log("printStart\n--------------------------------------");
 	Layer* layer = Layer::create();
 	log("Character\n--------------------------------------");
-	layer->addChild(phantom,4);
+	layer->addChild(robot,4);
 	log("Enemy\n--------------------------------------");
 	log("size=%d", enemys.size());
 	for (int i = 0; i < enemys.size(); i++)
 	{
 		Enemy* p = enemys.at(i);
-		p->setTarget(phantom->pHuman);
-		p->setTarget(phantom->pDog);
+		p->setTarget(robot->rightRobot);
+		p->setTarget(robot->leftRobot);
 		layer->addChild(p,3);
 	}
 	log("wall\n--------------------------------------");
 	log("size=%d", walls.size());
 	for (int i = 0; i < walls.size(); i++)
 	{
-		layer->addChild(walls.at(i),5);
+		layer->addChild(walls.at(i),2);
 	}
 	log("floor\n--------------------------------------");
 	log("size=%d", floors.size());

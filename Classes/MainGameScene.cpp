@@ -24,10 +24,11 @@ bool MainGameScene::init(int num)
 		return false;
 	}
 
-	MapCreator* ma = MapCreator::create();
-	addChild(ma);
-	Layer* layer = ma->printMap();
-	addChild(layer);
+	gm = GameManager::create();
+	addChild(gm);
+
+	gameLayer = gm->map->printMap();
+	addChild(gameLayer);
 
 	scheduleUpdate();
 
@@ -36,4 +37,5 @@ bool MainGameScene::init(int num)
 
 void MainGameScene::update(float delta)
 {
+
 };

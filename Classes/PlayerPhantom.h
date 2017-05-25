@@ -8,18 +8,20 @@
 USING_NS_CC;
 
 //人間と犬を同時にマネジメントするクラス。併せて初めて怪盗ハンサム。
-class PlayerPhantom :public Node 
+class PlayerPhantom :public Node
 {
 public:
 	int touchCount;
 
 	PlayerHuman* pHuman;
-	PlayerDog* pDog;
+	Vector<PlayerDog*> pDogs;
+	//Vector<SEGMENT> infraedSegment;
+
 
 	DrawNode* infraredLine;
 
-	static PlayerPhantom* create(Vec2 humanPos,Vec2 dogPos);
-	bool init(Vec2 humanPos, Vec2 dogPos);
+	static PlayerPhantom* create(Vec2 humanPos,Vec2 dogPos,int dogNum=1);
+	bool init(Vec2 humanPos, Vec2 dogPos,int dogNum=1);
 	void update(float delta);
 
 	bool onTouchBegan(const Touch * touch, Event *unused_event);

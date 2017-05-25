@@ -1,9 +1,9 @@
 #include "PlayerPhantom.h"
 
-PlayerPhantom* PlayerPhantom::create(Vec2 humanPos,Vec2 dogPos)
+PlayerPhantom* PlayerPhantom::create(Vec2 humanPos,Vec2 dogPos,int dogNum)
 {
 	PlayerPhantom *pRet = new PlayerPhantom();
-	if (pRet && pRet->init(humanPos,dogPos))
+	if (pRet && pRet->init(humanPos,dogPos,dogNum))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,7 @@ PlayerPhantom* PlayerPhantom::create(Vec2 humanPos,Vec2 dogPos)
 	};
 };
 
-bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos) 
+bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos,int dogNum) 
 {
 	if (!Node::init()) 
 	{
@@ -26,9 +26,13 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	pHuman->setTag(PLAYER_AI);
 	addChild(pHuman);
 
-	pDog = PlayerDog::create(dogPos);
-	pDog->setTag(PLAYER_HANSOME);
-	addChild(pDog);
+	for (int i = 0; i < dogNum; i++) {
+		PlayerDog* dog = PlayerDog::create(dogPos);
+		dog->setTag(PLAYER_HANSOME);
+		addChild(dog,dogNum-i);
+		pDogs.pushBack(dog);
+		dog->scheduleUpdate();
+	}
 
 	infraredLine = DrawNode::create();
 	addChild(infraredLine);
@@ -41,7 +45,6 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	pHuman->scheduleUpdate();
-	pDog->scheduleUpdate();
 	scheduleUpdate();
 
 	return true;
@@ -49,8 +52,12 @@ bool PlayerPhantom::init(Vec2 humanPos, Vec2 dogPos)
 
 void PlayerPhantom::update(float delta)
 {
-	infraredLine->clear();
-	infraredLine->drawSegment(pDog->myPosition, pHuman->myPosition, 1.0f, Color4F::RED);
+	//infraredLine->clear();
+	//for (int i = 0; i < pDogs.size(); i++) 
+	//{
+	//	infraedSegment.at(i) = setSegment(pHuman->myPosition, pDogs.at(i)->myPosition);
+	//	infraredLine->drawSegment(infraedSegment.at(i).v,infraedSegment.at(i).s,1.0f, Color4F::RED);
+	//}
 };
 
 bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
@@ -58,16 +65,16 @@ bool PlayerPhantom::onTouchBegan(const Touch * touch, Event *unused_event)
 	touchCount++;
 	if (touchCount <= 1) {
 		//Œ¢—Dæ‚Ì“®‚«‚ðŒ©‚¹‚é
-		if (pDog->canMoveRange(touch->getLocation(), pDog->moveStartRange))
-		{
-			pDog->isMoveWait = true;
-		}
-		else
-		{
-			if (pHuman->onMoveRange(touch->getLocation()))
+		for (int i = 0; i < pDogs.size(); i++) {
+			if (pDogs.at(i)->canMoveRange(touch->getLocation(), pDogs.at(i)->moveStartRange))
 			{
-				pHuman->setTargetPosition(touch->getLocation());
+				pDogs.at(i)->isMoveWait = true;
+				return true;
 			}
+		}
+		if (pHuman->onMoveRange(touch->getLocation()))
+		{
+			pHuman->setTargetPosition(touch->getLocation());
 		}
 	}
 	return true;
@@ -81,5 +88,7 @@ void PlayerPhantom::onTouchMoved(const Touch * touch, Event *unused_event)
 void PlayerPhantom::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
 	touchCount--;
-	pDog->isMoveWait = false;
+	for (int i = 0; i < pDogs.size(); i++) {
+		pDogs.at(i)->isMoveWait = false;
+	}
 };
