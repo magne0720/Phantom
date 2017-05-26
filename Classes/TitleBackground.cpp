@@ -9,7 +9,7 @@ bool TitleBackground::init()
 {
 	if (!Node::init()) return false;
 
-	auto scSp = ScrollSprite::create("BACK.JPG", 5);
+	auto scSp = ScrollSprite::create("BACK.JPG", -5, ScrollSprite::portrait);
 	this->addChild(scSp);
 
 	return true;
