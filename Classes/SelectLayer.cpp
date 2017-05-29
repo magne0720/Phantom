@@ -1,5 +1,6 @@
 #include "SelectLayer.h"
 #include "PictureManager.h"
+#include "SelectBackground.h"
 
 using namespace cocos2d;
 
@@ -28,6 +29,10 @@ bool SelectLayer::init()
 
 	PictureManager* pictureManager = PictureManager::create();
 	this->addChild(pictureManager);
+
+	SelectBackground* selectBackground = SelectBackground::create();
+	selectBackground->setZOrder(-1);
+	this->addChild(selectBackground);
 
 	return true;
 }

@@ -47,6 +47,5 @@ TitleLayer* TitleLayer::create()
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
 	((TitleSelectScene*)this->getParent())->replaceSelect();
-
 	return true;
 }
