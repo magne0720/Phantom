@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 
 #define STR(var) #var
+#define DIR CharacterAnimation::eDIR
 
 /*
 
