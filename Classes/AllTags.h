@@ -22,12 +22,20 @@ static float viewSize = 1.0f;
 
 struct SEGMENT
 {
+public:
 	Vec2 s, v;
+	SEGMENT() {};
+	SEGMENT(Vec2 point, Vec2 vector) 
+	{
+		s = point;
+		v = vector-point;
+	}
 };
+
 static SEGMENT setSegment(Vec2 ms, Vec2 mv) 
 {
 	SEGMENT seg;
-	seg.s = ms; seg.v = mv;
+	seg.s = ms; seg.v = mv-ms;
 	return seg;
 }
 

@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "Character.h"
 
+#define MODE 0
+
 USING_NS_CC;
 
 //なぞった方向に移動をする
@@ -36,7 +38,11 @@ public:
 	Vec2 startPosition;
 	//一定区間超えた位置
 	Vec2 endPosition;
+	//
+	Vec2 touchPosition;
 	bool isStandby;
+	bool isPut;
+	bool isStart;
 	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
 	int angleNum;

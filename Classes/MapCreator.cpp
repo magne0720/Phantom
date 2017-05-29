@@ -22,17 +22,30 @@ bool MapCreator::init()
 	{
 		return false;
 	}
-	log("openMapCreator");
+//	log("openMapCreator");
 	openMapFile("test");
 
-	//scheduleUpdate();
+	d = DrawNode::create();
+	addChild(d, 500);
+
+	scheduleUpdate();
 
 	return true;
 };
 
-void MapCreator::update(float delta) 
+void MapCreator::update(float delta)
 {
-
+	int a = 4;
+	d->clear();
+	//if (robot->rightRobot->isMoveWait)
+	for (int i = 0; i < 4; i++) {
+		if (walls.at(0)->checkPoint(&walls.at(0)->segments[a].s, walls.at(0)->segments[i], SEGMENT(robot->rightRobot->myPosition, robot->leftRobot->myPosition)) == 1)
+		{
+			d->drawDot(walls.at(0)->segments[a].s, 10, Color4F::RED);
+			//log("pos[%f,%f]", walls.at(0)->segments[4].s.x, walls.at(0)->segments[4].s.y);
+			a++;
+		}
+	}
 };
 
 //マップファイル読み込み
@@ -174,7 +187,7 @@ void MapCreator::analyzeFloor(char* data)
 	log("map=[%d%d]", maxX, maxY);
 
 	//マップチップ取得
-	SpriteBatchNode* batch = SpriteBatchNode::create("mapchip.png");
+	SpriteBatchNode* batch = SpriteBatchNode::create("mapChip.png");
 	addChild(batch);
 	int chipNum = 3;
 

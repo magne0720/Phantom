@@ -77,11 +77,13 @@ void Character::action()
 	switch (myState)
 	{
 	case STAND:
-		if (length(targetPosition - myPosition) > moveSpeed) { setState(STATUS::MOVE);		log("move");
+		if (length(targetPosition - myPosition) > moveSpeed) {
+			setState(STATUS::MOVE);		log("move");
 		}
 		break;
 	case MOVE:
-		if (length(targetPosition - myPosition) < moveSpeed) { setState(STATUS::STAND); log("stand");
+		if (length(targetPosition - myPosition) < moveSpeed) {
+			setState(STATUS::STAND); log("stand");
 		}
 		move();
 		break;
@@ -111,14 +113,12 @@ void Character::plusAction()
 void Character::move(float plusSpeed) 
 {
 	//移動に必要
-	Vec2 aPos = targetPosition - myPosition;
-
-	if (onLastTargetPosition(targetPosition)) { return; }
+	Vec2 aPos = normalize(targetPosition - myPosition);
 
 	moveRangeSp->clear();
 	moveRangeSp->drawSegment(Vec2(0,0),normalize(targetPosition-myPosition)*doubtDegree,5,Color4F::GREEN);
 
-	myPosition += normalize(aPos)*moveSpeed*plusSpeed;
+	myPosition += aPos*moveSpeed;
 
 	setPosition(myPosition);
 };
@@ -129,7 +129,7 @@ void Character::move(float plusSpeed)
 //今lastTargetPositionにいるか
 bool Character::onLastTargetPosition(Vec2 pos) 
 {
-	if (onCollision(pos, 10.0f)) 
+	if (onCollision(pos, 0.005f)) 
 	{
 		return true;
 	}
@@ -243,24 +243,24 @@ bool Character::onWall(Vector<Wall*> quad)
 	movement.normalize();
 	Vec2 forward = movement*100.0f + myPosition;
 
-	for (int i = 0; i < quad.size(); i++) {
-		//四角形の判定
-		if ((quad.at(i)->points[1].x - quad.at(i)->points[0].x)*(forward.y - quad.at(i)->points[0].y) - (forward.x - quad.at(i)->points[0].x)*(quad.at(i)->points[1].y - quad.at(i)->points[0].y)<0)
-			if ((quad.at(i)->points[2].x - quad.at(i)->points[1].x)*(forward.y - quad.at(i)->points[1].y) - (forward.x - quad.at(i)->points[1].x)*(quad.at(i)->points[2].y - quad.at(i)->points[1].y)<0)
-				if ((quad.at(i)->points[3].x - quad.at(i)->points[2].x)*(forward.y - quad.at(i)->points[2].y) - (forward.x - quad.at(i)->points[2].x)*(quad.at(i)->points[3].y - quad.at(i)->points[2].y)<0)
-					if ((quad.at(i)->points[4].x - quad.at(i)->points[3].x)*(forward.y - quad.at(i)->points[3].y) - (forward.x - quad.at(i)->points[3].x)*(quad.at(i)->points[4].y - quad.at(i)->points[3].y)<0)
-					{
-						for (int j = 0; j < 4; j++)
-						{
-							if (onCollision(quad.at(i)->points[j], quad.at(i)->points[j + 1])) {
-								ans = quad.at(i)->points[j] - quad.at(i)->points[j + 1] + quad.at(i)->getPosition();
-						setEvasionWall(ans,targetPosition - myPosition);
-							}
-						}
-							return true;
-						//setState(STATUS::STAND);
-					}
-	}
+	//for (int i = 0; i < quad.size(); i++) {
+	//	//四角形の判定
+	//	if ((quad.at(i)->points[1].x - quad.at(i)->points[0].x)*(forward.y - quad.at(i)->points[0].y) - (forward.x - quad.at(i)->points[0].x)*(quad.at(i)->points[1].y - quad.at(i)->points[0].y)<0)
+	//		if ((quad.at(i)->points[2].x - quad.at(i)->points[1].x)*(forward.y - quad.at(i)->points[1].y) - (forward.x - quad.at(i)->points[1].x)*(quad.at(i)->points[2].y - quad.at(i)->points[1].y)<0)
+	//			if ((quad.at(i)->points[3].x - quad.at(i)->points[2].x)*(forward.y - quad.at(i)->points[2].y) - (forward.x - quad.at(i)->points[2].x)*(quad.at(i)->points[3].y - quad.at(i)->points[2].y)<0)
+	//				if ((quad.at(i)->points[4].x - quad.at(i)->points[3].x)*(forward.y - quad.at(i)->points[3].y) - (forward.x - quad.at(i)->points[3].x)*(quad.at(i)->points[4].y - quad.at(i)->points[3].y)<0)
+	//				{
+	//					for (int j = 0; j < 4; j++)
+	//					{
+	//						if (onCollision(quad.at(i)->points[j], quad.at(i)->points[j + 1])) {
+	//							ans = quad.at(i)->points[j] - quad.at(i)->points[j + 1] + quad.at(i)->getPosition();
+	//					setEvasionWall(ans,targetPosition - myPosition);
+	//						}
+	//					}
+	//						return true;
+	//					//setState(STATUS::STAND);
+	//				}
+	//}
 	return false;
 };
 

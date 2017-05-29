@@ -19,5 +19,13 @@ public:
 	int touchCount;
 
 	DrawNode* infraredLine;
+	DrawNode* moveLineRight;
+	DrawNode* moveLineLeft;
+
+	Vec2 startPosition;
+	Vec2 endPosition;
+	void drawMoveLineRight(Vec2 touch);
+	void drawMoveLineLeft(Vec2 touch);
+
 };
 #endif // !__PLAYER_CLOSER_H__

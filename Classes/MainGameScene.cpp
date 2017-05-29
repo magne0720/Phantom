@@ -25,12 +25,12 @@ bool MainGameScene::init(int num)
 	}
 
 	gm = GameManager::create();
-	addChild(gm);
+	addChild(gm,5);
 
 	gameLayer = gm->map->printMap();
-	addChild(gameLayer);
+	addChild(gameLayer,1);
 
-	scheduleUpdate();
+	//scheduleUpdate();
 
 	return true;
 };
