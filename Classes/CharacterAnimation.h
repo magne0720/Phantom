@@ -37,6 +37,9 @@ public:
 	void stopAnimation(eDIR dirName);
 	void stopAnimation();
 
+	void startAnimation(eDIR dirName);
+	void startAnimation();
+
 private:
 	cocos2d::Sprite* _mySprite;
 	eDIR _dir;

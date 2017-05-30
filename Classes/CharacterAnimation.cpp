@@ -82,7 +82,7 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 	_animationChache->addAnimation(_stopRight, "STOP_R");
 
 	_dir = eDIR::BACK;
-	changeAnimation(eDIR::FRONT);
+	stopAnimation(eDIR::FRONT);
 
 	return true;
 }
@@ -188,4 +188,14 @@ void CharacterAnimation::stopAnimation()
 	}
 	auto action = RepeatForever::create(Animate::create(anim));
 	_mySprite->runAction(action);
+}
+
+void CharacterAnimation::startAnimation(eDIR dirName)
+{
+	changeAnimation(dirName);
+}
+
+void CharacterAnimation::startAnimation()
+{
+	changeAnimation(_dir);
 }

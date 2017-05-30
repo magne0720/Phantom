@@ -15,8 +15,12 @@ public:
 	void replaceTitle();
 	void replaceSelect();
 
-	cocos2d::Sprite* createFadeRect();
+private:
+	cocos2d::Sprite* createFadeRect(cocos2d::Sprite*);
+	void replace();
+
 	bool _replacedLayer;
+	cocos2d::Node* _layer;
 
 };
 
