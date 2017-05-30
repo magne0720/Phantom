@@ -28,6 +28,7 @@ bool PictureManager::init()
 
 	_LINE_MAX = _stageNum * 0.5f;
 	_areResizing = false;
+	touchIDInit();
 	selectedInit();
 
 	// タッチされたことを取得するオブジェクト
@@ -109,11 +110,11 @@ bool PictureManager::init()
 	}
 
 	// Pictureのサイズを保存
-	_beforePic.scale = 1.0f;
-	_beforePic.z = 0;
-	_afterPic.scale = 2.0f;
-	_afterPic.position = designResolutionSize*0.5f;
-	_afterPic.z = 1;
+	_defaultPic.scale = 1.0f;
+	_defaultPic.z = 0;
+	_popedUpPic.scale = 2.0f;
+	_popedUpPic.position = designResolutionSize*0.5f;
+	_popedUpPic.z = 1;
 
 	_per = 0.0f;
 	_add = 0.25f;
@@ -127,19 +128,28 @@ void PictureManager::update(float delta)
 {
 	if (!_areResizing) return;
 
-	if (_per < 1.0f)
+	_per += _add;
+
+	if ((_add > 0 && _per >= 1.0f) || (_add < 0 && _per <= 0.0f))
 	{
-		_per += _add;
+		if (_per < 0.0f)
+			_per = 0.0f;
+		else if (_per > 1.0f)
+			_per = 1.0f;
+		_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
+		_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
+		_pictures[_selectedStage]->setColor(Color3B::WHITE);
+		_areResizing = false;
+		if (_add < 0.0f) selectedInit();
+		_add *= -1;
+		return;
 	}
-	else
-	{
-		_per = 1.0f;
-	}
-	_pictures[_selectedStage]->setScale((1 - _per) * _beforePic.scale + _per * _afterPic.scale);
-	_pictures[_selectedStage]->setPosition((1 - _per) * _beforePic.position + _per * _afterPic.position);
-	_pictures[_selectedStage]->setZOrder(_afterPic.z);
+
+	_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
+	_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
 	_pictures[_selectedStage]->setColor(Color3B::WHITE);
-	if (_per == 1.0f)
+	
+	/*if (_per == 1.0f)
 	{
 		_areResizing = false;
 		swapA2B();
@@ -147,17 +157,18 @@ void PictureManager::update(float delta)
 		{
 			selectedInit();
 		}
-	}
+	}*/
 }
 
 bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 {
-	if (_areResizing) return false;
+	if (_areResizing && _touchID >= 0 && _add < 0.0f) return false;
 	for (int i = 0; i < _stageNum; i++)
 	{
 		Rect rect = _pictures[i]->getBoundingBox();
 		if (rect.containsPoint(pTouch->getLocation()))
 		{
+			_touchID = pTouch->getID();
 			_selectedStage = i;
 			selectedSize();
 			return true;
@@ -168,6 +179,7 @@ bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
 
 void PictureManager::onTouchCancelled(Touch* pTouch, Event* pEvent)
 {
+	touchIDInit();
 	defaultSize();
 	selectedInit();
 }
@@ -177,8 +189,9 @@ void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
 	Rect rect = _pictures[_selectedStage]->getBoundingBox();
 	if (rect.containsPoint(pTouch->getLocation()))
 	{
-		_beforePic.position = _pictures[_selectedStage]->getPos();
+		_defaultPic.position = _pictures[_selectedStage]->getPos();
 		_areResizing = true;
+		_pictures[_selectedStage]->setZOrder(_popedUpPic.z);
 		log("ID = %d", _pictures[_selectedStage]->_stageID);
 		changeBool(&PictureManager::onTouchBeganP);
 		changeVoid(&PictureManager::onTouchEndedP, eTOUCH::ENDED);
@@ -189,29 +202,33 @@ void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
 		defaultSize();
 		selectedInit();
 	}
+	touchIDInit();
 }
 
 bool PictureManager::onTouchBeganP(Touch* pTouch, Event* pEvent)
 {
-	if (_areResizing) return false;
+	if (_areResizing && _touchID >= 0 && _add > 0.0f) return false;
 	Rect rect = _pictures[_selectedStage]->getBoundingBox();
 	if (rect.containsPoint(pTouch->getLocation()))
 	{
+		_touchID = pTouch->getID();
 		return true;
 	}
 	else
 	{
 		_areResizing = true;
+		_pictures[_selectedStage]->setZOrder(_defaultPic.z);
 		changeBool(&PictureManager::onTouchBegan);
 		changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
 		changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
+		return false;
 	}
-	return false;
 }
 
 void PictureManager::onTouchCancelledP(Touch* pTouch, Event* pEvent)
 {
 	defaultSize();
+	touchIDInit();
 	_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
 	selectedInit();
 }
@@ -224,11 +241,17 @@ void PictureManager::onTouchEndedP(Touch* pTouch, Event* pEvent)
 		_pictures[_selectedStage]->setColor(Color3B::WHITE);
 		log("YES!");
 	}
+	touchIDInit();
 }
 
 void PictureManager::selectedInit()
 {
 	_selectedStage = -1;
+}
+
+void PictureManager::touchIDInit()
+{
+	_touchID = -1;
 }
 
 // ベジェ曲線描画用関数
@@ -320,8 +343,8 @@ void PictureManager::swap(Vec2 &a, Vec2 &b)
 
 void PictureManager::swapA2B()
 {
-	swap(_beforePic.scale, _afterPic.scale);
-	swap(_beforePic.position, _afterPic.position);
-	swap(_beforePic.z, _afterPic.z);
-	_per = 0.0f;
+	//swap(_beforePic.scale, _afterPic.scale);
+	//swap(_beforePic.position, _afterPic.position);
+	//swap(_beforePic.z, _afterPic.z);
+	//_per = 0.0f;
 }

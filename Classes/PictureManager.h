@@ -27,6 +27,7 @@ private:
 	cocos2d::Vec2 _bezierPos[3];	// 基準点とベジェ曲線の為に必要な3点の差
 	int _selectedStage = 0;	// 現在選択されているステージ
 	bool _areResizing;	// リサイズ中であるか
+	int _touchID;		// 現在判定しているタッチのID
 
 	cocos2d::EventListenerTouchOneByOne* listener;
 
@@ -37,6 +38,7 @@ private:
 	void selectedSize();
 	void popedUpSize();
 	void selectedInit();
+	void touchIDInit();
 
 	enum class eTOUCH
 	{
@@ -56,8 +58,8 @@ private:
 		int z;
 	};
 
-	PicSize _beforePic;
-	PicSize _afterPic;
+	PicSize _defaultPic;
+	PicSize _popedUpPic;
 	float _per;
 	float _add;
 
