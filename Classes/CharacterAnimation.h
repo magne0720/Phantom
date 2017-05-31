@@ -40,6 +40,9 @@ public:
 	void startAnimation(eDIR dirName);
 	void startAnimation();
 
+	void stopAction();
+	cocos2d::Sprite* getSp();
+
 private:
 	cocos2d::Sprite* _mySprite;
 	eDIR _dir;

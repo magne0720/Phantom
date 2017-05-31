@@ -199,3 +199,13 @@ void CharacterAnimation::startAnimation()
 {
 	changeAnimation(_dir);
 }
+
+void CharacterAnimation::stopAction()
+{
+	_mySprite->stopAllActions();
+}
+
+Sprite* CharacterAnimation::getSp()
+{
+	return _mySprite;
+}

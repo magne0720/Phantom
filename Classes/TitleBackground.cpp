@@ -1,6 +1,5 @@
 #include "TitleBackground.h"
 #include "AllTags.h"
-#include "ScrollSprite.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -9,8 +8,9 @@ bool TitleBackground::init()
 {
 	if (!Node::init()) return false;
 
-	auto scSp = ScrollSprite::create("BACK.JPG", 5, ScrollSprite::landscape);
-	this->addChild(scSp);
+	_scrollSpeed = 5.0f;
+	_scSp = ScrollSprite::create("BACK.JPG", _scrollSpeed, ScrollSprite::landscape);
+	this->addChild(_scSp);
 
 	return true;
 }
