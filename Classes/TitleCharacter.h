@@ -21,6 +21,7 @@ private:
 		JUMP
 	};
 	eSTATE _state;
+	void changeState();
 };
 
 #endif // !_TitleCharacter_h_

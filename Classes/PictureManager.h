@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Picture.h"
+#include <vector>
 
 class PictureManager : public cocos2d::Node
 {
@@ -12,13 +13,13 @@ public:
 	void update(float delta);
 
 	// タッチイベント処理
-	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	void onTouchCancelled(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	void onTouchEnded(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+	bool onTouchBegan(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+	void onTouchCancelled(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+	void onTouchEnded(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 
-	bool onTouchBeganP(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	void onTouchCancelledP(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
-	void onTouchEndedP(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+	bool onTouchBeganP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+	void onTouchCancelledP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+	void onTouchEndedP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 	
 private:
 	Picture* _pictures[10];
@@ -29,7 +30,7 @@ private:
 	bool _areResizing;	// リサイズ中であるか
 	int _touchID;		// 現在判定しているタッチのID
 
-	cocos2d::EventListenerTouchOneByOne* listener;
+	cocos2d::EventListenerTouchAllAtOnce* listener;
 
 	cocos2d::Vec2 bezier(float per, cocos2d::Vec2 pos0, cocos2d::Vec2 pos1, cocos2d::Vec2 po2);
 	void drawBezier(cocos2d::DrawNode* dn, int seg, cocos2d::Vec2 pos0, cocos2d::Vec2 pos1, cocos2d::Vec2 pos2);
@@ -48,8 +49,8 @@ private:
 		CANCELLED
 	};
 
-	void changeBool(bool (PictureManager::*method)(cocos2d::Touch* pTouch, cocos2d::Event* pEvent));
-	void changeVoid(void (PictureManager::*method)(cocos2d::Touch* pTouch, cocos2d::Event* pEvent), eTOUCH eTouch);
+	void changeBool(bool (PictureManager::*method)(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event));
+	void changeVoid(void (PictureManager::*method)(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event), eTOUCH eTouch);
 
 	struct PicSize
 	{

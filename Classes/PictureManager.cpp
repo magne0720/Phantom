@@ -32,15 +32,15 @@ bool PictureManager::init()
 	selectedInit();
 
 	// タッチされたことを取得するオブジェクト
-	listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchAllAtOnce::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
-	listener->setSwallowTouches(true);
+	//listener->setSwallowTouches(true);
 	// タッチされた瞬間に呼ばれるメソッドを登録
-	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
+	listener->onTouchesBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
 	// タッチされている間呼ばれるメソッドを登録
 	//listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
 	// タッチが離された瞬間に呼ばれるメソッドを登録
-	listener->onTouchEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
+	listener->onTouchesEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
 	// イベントの実行の優先順位をノードの重なり順に依存させる
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	
@@ -148,84 +148,88 @@ void PictureManager::update(float delta)
 	_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
 	_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
 	_pictures[_selectedStage]->setColor(Color3B::WHITE);
-	
-	/*if (_per == 1.0f)
-	{
-		_areResizing = false;
-		swapA2B();
-		if (_beforePic.z == 0)
-		{
-			selectedInit();
-		}
-	}*/
+
 }
 
-bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
+bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	if (_areResizing && _touchID >= 0 && _add < 0.0f) return false;
-	for (int i = 0; i < _stageNum; i++)
+	if (_areResizing && _touchID >= 0 && _selectedStage >= 0 && _add < 0.0f) return false;
+	for (auto pTouch : touches)
 	{
-		Rect rect = _pictures[i]->getBoundingBox();
-		if (rect.containsPoint(pTouch->getLocation()))
+		for (int i = 0; i < _stageNum; i++)
 		{
-			_touchID = pTouch->getID();
-			_selectedStage = i;
-			selectedSize();
-			return true;
+			Rect rect = _pictures[i]->getBoundingBox();
+			if (rect.containsPoint(pTouch->getLocation()))
+			{
+				_touchID = pTouch->getID();
+				_selectedStage = i;
+				selectedSize();
+				return true;
+			}
 		}
 	}
 	return false;
 }
 
-void PictureManager::onTouchCancelled(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchCancelled(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	touchIDInit();
 	defaultSize();
 	selectedInit();
 }
 
-void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
+	for (auto pTouch : touches)
 	{
-		_defaultPic.position = _pictures[_selectedStage]->getPos();
-		_areResizing = true;
-		_pictures[_selectedStage]->setZOrder(_popedUpPic.z);
-		log("ID = %d", _pictures[_selectedStage]->_stageID);
-		changeBool(&PictureManager::onTouchBeganP);
-		changeVoid(&PictureManager::onTouchEndedP, eTOUCH::ENDED);
-		changeVoid(&PictureManager::onTouchCancelledP, eTOUCH::CANCELLED);
+		if (_touchID == pTouch->getID())
+		{
+			Rect rect = _pictures[_selectedStage]->getBoundingBox();
+			if (rect.containsPoint(pTouch->getLocation()))
+			{
+				_defaultPic.position = _pictures[_selectedStage]->getPos();
+				_areResizing = true;
+				_pictures[_selectedStage]->setZOrder(_popedUpPic.z);
+				log("ID = %d", _pictures[_selectedStage]->_stageID);
+				changeBool(&PictureManager::onTouchBeganP);
+				changeVoid(&PictureManager::onTouchEndedP, eTOUCH::ENDED);
+				changeVoid(&PictureManager::onTouchCancelledP, eTOUCH::CANCELLED);
+			}
+			else
+			{
+				defaultSize();
+				selectedInit();
+			}
+			touchIDInit();
+		}
 	}
-	else
-	{
-		defaultSize();
-		selectedInit();
-	}
-	touchIDInit();
+	
 }
 
-bool PictureManager::onTouchBeganP(Touch* pTouch, Event* pEvent)
+bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	if (_areResizing && _touchID >= 0 && _add > 0.0f) return false;
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
+	for (auto pTouch : touches)
 	{
-		_touchID = pTouch->getID();
-		return true;
-	}
-	else
-	{
-		_areResizing = true;
-		_pictures[_selectedStage]->setZOrder(_defaultPic.z);
-		changeBool(&PictureManager::onTouchBegan);
-		changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
-		changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
-		return false;
-	}
+		Rect rect = _pictures[_selectedStage]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			_touchID = pTouch->getID();
+			return true;
+		}
+		else
+		{
+			_areResizing = true;
+			_pictures[_selectedStage]->setZOrder(_defaultPic.z);
+			changeBool(&PictureManager::onTouchBegan);
+			changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
+			changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
+			return false;
+		}
+	}	
 }
 
-void PictureManager::onTouchCancelledP(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchCancelledP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	defaultSize();
 	touchIDInit();
@@ -233,15 +237,18 @@ void PictureManager::onTouchCancelledP(Touch* pTouch, Event* pEvent)
 	selectedInit();
 }
 
-void PictureManager::onTouchEndedP(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
+	for (auto pTouch : touches)
 	{
-		_pictures[_selectedStage]->setColor(Color3B::WHITE);
-		log("YES!");
+		Rect rect = _pictures[_selectedStage]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			_pictures[_selectedStage]->setColor(Color3B::WHITE);
+			log("YES!");
+		}
+		touchIDInit();
 	}
-	touchIDInit();
 }
 
 void PictureManager::selectedInit()
@@ -299,22 +306,22 @@ void PictureManager::popedUpSize()
 }
 
 // タッチのフェーズ変更用関数
-void PictureManager::changeBool(bool (PictureManager::*method)(Touch* pTouch, Event* pEvent))
+void PictureManager::changeBool(bool (PictureManager::*method)(const std::vector<Touch *> &touches, Event *unused_event))
 {
-	listener->onTouchBegan = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+	listener->onTouchesBegan = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 }
-void PictureManager::changeVoid(void (PictureManager::*method)(Touch* pTouch, Event* pEvent), eTOUCH eTouch)
+void PictureManager::changeVoid(void (PictureManager::*method)(const std::vector<Touch *> &touches, Event *unused_event), eTOUCH eTouch)
 {
 	switch (eTouch)
 	{
 	case PictureManager::eTOUCH::MOVED:
-		listener->onTouchMoved = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesMoved = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	case PictureManager::eTOUCH::ENDED:
-		listener->onTouchEnded = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesEnded = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	case PictureManager::eTOUCH::CANCELLED:
-		listener->onTouchCancelled = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesCancelled = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	default:
 		break;

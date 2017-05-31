@@ -12,6 +12,8 @@ bool TitleCharacter::init()
 
 	_state = eSTATE::MOVE;
 
+	this->scheduleUpdate();
+
 	return true;
 }
 
@@ -40,8 +42,8 @@ void TitleCharacter::update(float delta)
 		{
 			_state = eSTATE::STAND;
 			_timer = 0.0f;
-			charAnim->changeAnimation(DIR::FRONT);
-			charAnim->stopAnimation();
+			charAnim->stopAnimation(DIR::FRONT);
+			changeState();
 		}
 		break;
 	case TitleCharacter::STAND:
@@ -49,7 +51,10 @@ void TitleCharacter::update(float delta)
 		{
 			_state = eSTATE::JUMP;
 			_timer = 0.0f;
-
+			auto jump = JumpBy::create(0.5f, Vec2(0, 0), 20.0f, 1);
+			auto spo = Spawn::create(jump);
+			auto seq = Sequence::create(jump);
+			charAnim->runAction(jump);
 		}
 		break;
 	case TitleCharacter::JUMP:
@@ -57,11 +62,18 @@ void TitleCharacter::update(float delta)
 		{
 			_state = eSTATE::MOVE;
 			_timer = 0.0f;
-
+			charAnim->startAnimation(DIR::RIGHT);
+			changeState();
 		}
 		break;
 	default:
 		break;
 	}
 	_timer += delta;
+}
+
+void TitleCharacter::changeState()
+{
+	auto jump = JumpBy::create(0.5f, Vec2(0, 0), 5.0f, 1);
+	charAnim->runAction(jump);
 }
