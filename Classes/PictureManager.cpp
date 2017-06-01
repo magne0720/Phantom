@@ -158,7 +158,7 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 	if (_touchTimer < _TOUCH_REACTION) return false;
 	_touchTimer = 0.0f;
 
-	if (_areResizing && _selectedStage >= 0 && _touchID >= 0) return false;
+	if (_areResizing || _selectedStage >= 0 || _touchID >= 0) return false;
 	for (auto pTouch : touches)
 	{
 		for (int i = 0; i < _stageNum; i++)
@@ -220,7 +220,7 @@ bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *u
 	if (_touchTimer < _TOUCH_REACTION) return false;
 	_touchTimer = 0.0f;
 
-	if (_areResizing && _touchID >= 0 && _add > 0.0f) return false;
+	if (_areResizing || _touchID >= 0) return false;
 	for (auto pTouch : touches)
 	{
 		Rect rect = _pictures[_selectedStage]->getBoundingBox();
