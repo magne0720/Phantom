@@ -35,7 +35,7 @@ public:
 static SEGMENT setSegment(Vec2 ms, Vec2 mv) 
 {
 	SEGMENT seg;
-	seg.s = ms; seg.v = mv-ms;
+	seg.s = ms; seg.v = mv;
 	return seg;
 }
 

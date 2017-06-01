@@ -20,6 +20,15 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 {
 	if (!Node::init())return false;
 
+
+	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
+	// 対象のイベントが実行された後、下位のイベントは発動されなくする
+	listener->onTouchBegan = CC_CALLBACK_2(PlayerCloser::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(PlayerCloser::onTouchMoved, this);
+	listener->onTouchEnded = CC_CALLBACK_2(PlayerCloser::onTouchEnded, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+
 	rightRobot = PlayerRobot::create(right);
 	addChild(rightRobot);
 	leftRobot = PlayerRobot::create(left);
@@ -121,5 +130,24 @@ void PlayerCloser::drawMoveLineLeft(Vec2 touch)
 	moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::GREEN);
 
 	leftRobot->isPut = false;
+};
+
+bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
+{
+	if (rightRobot->isStart&&leftRobot->isStart) 
+	{
+		isRobotMoving = true;
+	}
+	return true;
+};
+
+void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event) 
+{
+
+};
+
+void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
+{
+	isRobotMoving = false;
 };
 

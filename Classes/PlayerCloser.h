@@ -17,6 +17,8 @@ public:
 	PlayerRobot* leftRobot	;
 
 	int touchCount;
+	//ÉçÉ{ÉbÉgÇ™ìÆÇ¢ÇƒÇ¢ÇÈÇ©
+	bool isRobotMoving;
 
 	DrawNode* infraredLine;
 	DrawNode* moveLineRight;
@@ -26,6 +28,10 @@ public:
 	Vec2 endPosition;
 	void drawMoveLineRight(Vec2 touch);
 	void drawMoveLineLeft(Vec2 touch);
+
+	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
+	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
+	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
 
 };
 #endif // !__PLAYER_CLOSER_H__

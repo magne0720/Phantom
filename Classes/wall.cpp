@@ -26,14 +26,7 @@ bool Wall::init(Vec2 spawnPos)
 	myPosition = spawnPos;
 
 	mySprite = Sprite::create("Sphere.png");
-	addChild(mySprite);
-
-
-	//segments[0] = Vec2(mySprite->getBoundingBox().getMinX() + spawnPos.x, mySprite->getBoundingBox().getMinY() + spawnPos.y);//左下
-	//segments[1] = Vec2(mySprite->getBoundingBox().getMinX() + spawnPos.x, mySprite->getBoundingBox().getMaxY() + spawnPos.y);//左上
-	//segments[2] = Vec2(mySprite->getBoundingBox().getMaxX() + spawnPos.x, mySprite->getBoundingBox().getMaxY() + spawnPos.y);//右上
-	//segments[3] = Vec2(mySprite->getBoundingBox().getMaxX() + spawnPos.x, mySprite->getBoundingBox().getMinY() + spawnPos.y);//右下
-	//segments[4] = Vec2(mySprite->getBoundingBox().getMinX() + spawnPos.x, mySprite->getBoundingBox().getMinY() + spawnPos.y);//左下(for文でif処理をなくすため)
+	//addChild(mySprite);
 
 	Rect r = mySprite->getBoundingBox();
 
@@ -41,24 +34,49 @@ bool Wall::init(Vec2 spawnPos)
 	segments[1] = SEGMENT(Vec2(r.getMinX() + spawnPos.x, r.getMaxY() + spawnPos.y), Vec2(r.getMaxX()+spawnPos.x, r.getMaxY() + spawnPos.y));//上
 	segments[2] = SEGMENT(Vec2(r.getMaxX() + spawnPos.x, r.getMaxY() + spawnPos.y), Vec2(r.getMaxX()+spawnPos.x, r.getMinY() + spawnPos.y));//右
 	segments[3] = SEGMENT(Vec2(r.getMaxX() + spawnPos.x, r.getMinY() + spawnPos.y), Vec2(r.getMinX()+spawnPos.x, r.getMinY() + spawnPos.y));//下
-	segments[4] = SEGMENT(Vec2(0,0),Vec2(0,0));//5角形になった時用
+	segments[4] = SEGMENT(Vec2(0, 0), Vec2(0, 0));//5角形になった時用
+	segments[5] = SEGMENT(Vec2(0, 0), Vec2(0, 0));//分割時に必要になる
 
-	DrawNode* a = DrawNode::create();
-	//a->setPosition(a->getPosition() - spawnPos);
-	a->drawSegment(segments[0].s, segments[0].s + segments[0].v, 5, Color4F::GRAY);
-	a->drawSegment(segments[1].s, segments[1].s + segments[1].v, 5, Color4F::GRAY);
-	a->drawSegment(segments[2].s, segments[2].s + segments[2].v, 5, Color4F::GRAY);
-	a->drawSegment(segments[3].s, segments[3].s + segments[3].v, 5, Color4F::GRAY);
-	a->drawSegment(segments[4].s, segments[4].s + segments[4].v, 5, Color4F::GRAY);
-	addChild(a);
 
-	//log("myPosition\n[%f,%f]", getPosition().x, getPosition().y);
-	//for (int i = 0;i < 4; i++) {
-	//	log("%d[%f,%f]", i,segments[i].x+getPositionX(), segments[i].y+getPositionY());
-	//}
+	myWall = DrawNode::create();
+	myWall->setPosition(myWall->getPosition() - spawnPos);
 
+	//頂点座標設定
+	std::vector<Vec2>vecs;
+	vecs.push_back(segments[0].s);
+	vecs.push_back(segments[1].s);
+	vecs.push_back(segments[2].s);
+	vecs.push_back(segments[3].s);
+
+	myWall->drawPolygon(&vecs[0], 4, Color4F::WHITE, 1, Color4F::YELLOW);
+	myWall->setPosition(-spawnPos);
+	this->addChild(myWall);
+
+	clipp = ClippingNode::create();
+	clipp->setStencil(myWall);
+	clipp->addChild(mySprite);
+	addChild(clipp);
+
+	isCuted = false;
+
+	scheduleUpdate();
 
 	return true;
+};
+
+void Wall::update(float delta) 
+{
+	/*if (isCuted) 
+	{
+		cutTimer += delta;
+		if (cutTimer >= 5.0f) isCuted = false;
+	}*/
+}
+
+void Wall::setTargets(Vec2* from, Vec2* to) 
+{
+	fromPos = from;
+	toPos = to;
 };
 
 //新しくポイントを設定する
@@ -67,18 +85,41 @@ void Wall::setPoint(int number, Vec2 point)
 //	segments[number] = point;
 };
 
+//衝突判定命令
+void Wall::callCollision() 
+{
+	if (isCuted)return;
+	isCuted = true;
+	Vec2 pos;
+	int count = 4;
+	for (int i = 0; i < count; i++) {
+		if (checkPoint(&pos, SEGMENT(*fromPos, *toPos), segments[i]) == 1)
+		{
+			cutSegment(&pos, segments[i], segments[count]);
+			i++;
+			sortSegment(count, i, count - 4);
+			count++;
+		}
+	}
+		if (count == 6)
+		{
+			checkCutArea();
+		}
+};
+
 //from-to間の線とtargetの交点を調べる
-int Wall::checkPoint(Vec2* hitPos,SEGMENT s0,SEGMENT s1)
+int Wall::checkPoint(Vec2* hitPos, SEGMENT s0, SEGMENT s1)
 {
 	//X軸方向のベクトルが0かどうか
-	if (s0.v.x == 0.0f || s0.v.y == 0.0f) {
-		if (s0.v.x == 0.0f&&s0.v.y == 0.0f)
-			return 0;//平行
+	if (s0.v.x == 0.0f || s1.v.x == 0.0f) {
+		if (s0.v.x == 0.0f&&s1.v.x == 0.0f)
+			return 0;
+		//平行
 
 		Vec2 r;
 		float t0, t1;
 		if (s0.v.x == 0.0f) {
-			r.x = s0.s.x ;
+			r.x = s0.s.x;
 			r.y = (s1.v.y / s1.v.x)*(r.x - s1.s.x) + s1.s.y;
 
 			t0 = (r.y - s0.s.y) / s0.v.y;		//t=0~1の時は線分s0内
@@ -118,8 +159,136 @@ int Wall::checkPoint(Vec2* hitPos,SEGMENT s0,SEGMENT s1)
 		if (hitPos)*hitPos = r;
 		return 1;
 	}
-		//log("[%d]=%f,%f", num,px,py);
 };
+
+//検出した点が含まれている線を検出した点を境に分割する
+void Wall::cutSegment(Vec2* hitPos, SEGMENT& from, SEGMENT& out) 
+{
+	SEGMENT seg;
+
+	seg.v = from.v-*hitPos+from.s;
+	seg.s = *hitPos;
+
+	from.v = seg.s;
+	out = seg;
+};
+
+//配列の中を先頭から3つずつ取り出した点で面積の合計を返す
+float Wall::sumArea(int point[]) 
+{
+	float area = 0;
+	for (int i = 0; point[i+2] != -1; i++) 
+	{
+		area += (length(segments[point[i]].s - segments[point[i+1]].s)+ length(segments[point[i+1]].s - segments[point[i+2]].s)+ length(segments[point[i+2]].s - segments[point[i]].s))/2;
+	}
+	return area;
+};
+
+//角の頂点をなくして、その頂点をつないでいた線同士をつないだ5角形を作る
+void Wall::changePentagon(int pointNum) 
+{
+	SEGMENT s[6];
+	//頂点がなくなるので、その前の点とそのあとの点をつなぐ
+	segments[pointNum - 1].v = segments[pointNum + 1].s;
+	//いらない頂点を消す
+	for (int i = pointNum; i < 5; i++) 
+	{
+		segments[i] = segments[i + 1];
+	}
+	////6番目は使わないので初期化
+	//segments[5] = SEGMENT(Vec2(0, 0), Vec2(0, 0));
+};
+
+//切り取る場所検出
+void Wall::checkCutArea()
+{
+	SEGMENT sSeg[6];
+	int right[6], left[6];
+	int rightcount = 0, leftcount = 0;
+	for (int i = 0; i < 6; i++) {
+		if (i != addPointNum[0] && i != addPointNum[1])
+			//追加した二つの点でできた線の右側かどうか
+			if (cross(segments[addPointNum[0]].s - segments[addPointNum[1]].s, segments[addPointNum[0]].s - segments[i].s)>0)
+			{
+				right[rightcount] = i;
+				rightcount++;
+			}
+			else {
+				left[leftcount] = i;
+				leftcount++;
+			}
+	}
+		//結果が四角形になる場合
+		if (rightcount == 2 && leftcount == 2)
+		{
+			//分割線を追加
+			right[rightcount++] = addPointNum[0];
+			right[rightcount++] = addPointNum[1];
+			right[rightcount] = -1;//NULLコード
+
+			left[leftcount++] = addPointNum[0];
+			left[leftcount++] = addPointNum[1];
+			left[leftcount] = -1;//NULLコード
+
+
+			//面積比を見る
+			if (sumArea(right) > sumArea(left))
+			{
+				//左側が消える
+				for (int j = 0; right[j]!=-1; j++) 
+				{
+					sSeg[j] = segments[right[j]];
+				}
+			}
+			else 
+			{
+				//右側が消える
+				for (int j = 0; left[j] != -1; j++)
+				{
+					sSeg[j] = segments[left[j]];
+				}
+			}
+
+			//segments[4] = SEGMENT(Vec2(0, 0), Vec2(0, 0));//いらなくなった場所
+			//segments[5] = SEGMENT(Vec2(0, 0), Vec2(0, 0));//いらなくなった場所
+
+
+			for (int w = 0; w < 6; w++) 
+			{
+				segments[w] = sSeg[w];
+			//	log("[%d]=[%f,%f]", w, segments[w].s.x, segments[w].s.y);
+			}
+
+			if (addPointNum[0] ==1)//横
+			{
+				swapSegment(2, 3);
+			}
+
+			rebuildingArea(4);
+		}
+		else {
+			//五角形
+			changePentagon(addPointNum[1] - addPointNum[0]);
+			rebuildingArea(5);
+		}
+};
+
+//切り取った後に面積を再構築する
+void Wall::rebuildingArea(int corner) 
+{
+	//頂点座標設定
+	std::vector<Vec2>vecs;
+	for (int i = 0; i < corner;i++)
+	vecs.push_back(segments[i].s);
+
+	myWall->clear();
+	myWall->drawPolygon(&vecs[0], corner, Color4F::WHITE, 1, Color4F::YELLOW);
+
+	clipp->setStencil(myWall);
+
+};
+
+
 
 //切り取られる演出
 void Wall::cutEffect()
@@ -164,4 +333,31 @@ bool Wall::onCollision(Vec2 start, Vec2 end)
 		return false;
 	}
 	return false;
+};
+
+//間にある点をセグメントとして使う配列のソート(取り出す番地,ほしい配列番地)
+void Wall::sortSegment(int pic,int target,int addNum) 
+{
+	SEGMENT temp = segments[pic];//コピー
+	for (int i = pic; i > target; i--) 
+	{
+		segments[i] = segments[i - 1];//取り出す番地がほしい配列番地に行くまで代入
+	}
+	segments[target] = temp;//コピーしたやつをほしい配列番地に代入
+	
+	if(addNum!=-1)
+	addPointNum[addNum] = target;
+
+};
+
+//セグメント入れ替え
+void Wall::swapSegment(int one, int two) 
+{
+	SEGMENT s = segments[one];
+
+	segments[one] = segments[two];
+	segments[two] = s;
+
+	segments[one].v = segments[one + 1].s;
+	segments[two].v = segments[two + 1].s;
 };

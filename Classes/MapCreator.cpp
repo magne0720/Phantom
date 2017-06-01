@@ -35,16 +35,9 @@ bool MapCreator::init()
 
 void MapCreator::update(float delta)
 {
-	int a = 4;
-	d->clear();
-	//if (robot->rightRobot->isMoveWait)
-	for (int i = 0; i < 4; i++) {
-		if (walls.at(0)->checkPoint(&walls.at(0)->segments[a].s, walls.at(0)->segments[i], SEGMENT(robot->rightRobot->myPosition, robot->leftRobot->myPosition)) == 1)
-		{
-			d->drawDot(walls.at(0)->segments[a].s, 10, Color4F::RED);
-			//log("pos[%f,%f]", walls.at(0)->segments[4].s.x, walls.at(0)->segments[4].s.y);
-			a++;
-		}
+	if (robot->isRobotMoving) {
+		for (int i = 0; i < walls.size();i++)
+			walls.at(i)->callCollision();
 	}
 };
 
@@ -356,6 +349,7 @@ Layer* MapCreator::printMap()
 	log("size=%d", walls.size());
 	for (int i = 0; i < walls.size(); i++)
 	{
+		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
 		layer->addChild(walls.at(i),2);
 	}
 	log("floor\n--------------------------------------");
