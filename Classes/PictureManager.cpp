@@ -30,6 +30,7 @@ bool PictureManager::init()
 	_areResizing = false;
 	touchIDInit();
 	selectedInit();
+	_touchTimer = _TOUCH_REACTION;
 
 	// タッチされたことを取得するオブジェクト
 	listener = EventListenerTouchAllAtOnce::create();
@@ -126,6 +127,7 @@ bool PictureManager::init()
 
 void PictureManager::update(float delta)
 {
+	_touchTimer += delta;
 	if (!_areResizing) return;
 
 	_per += _add;
@@ -153,7 +155,10 @@ void PictureManager::update(float delta)
 
 bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	if (_areResizing && _touchID >= 0 && _selectedStage >= 0 && _add < 0.0f) return false;
+	if (_touchTimer < _TOUCH_REACTION) return false;
+	_touchTimer = 0.0f;
+
+	if (_areResizing && _selectedStage >= 0 && _touchID >= 0) return false;
 	for (auto pTouch : touches)
 	{
 		for (int i = 0; i < _stageNum; i++)
@@ -168,6 +173,7 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 			}
 		}
 	}
+	
 	return false;
 }
 
@@ -180,6 +186,8 @@ void PictureManager::onTouchCancelled(const std::vector<Touch *> &touches, Event
 
 void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *unused_event)
 {
+	if (_areResizing) return;
+
 	for (auto pTouch : touches)
 	{
 		if (_touchID == pTouch->getID())
@@ -201,6 +209,7 @@ void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *un
 				selectedInit();
 			}
 			touchIDInit();
+			return;
 		}
 	}
 	
@@ -208,6 +217,9 @@ void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *un
 
 bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *unused_event)
 {
+	if (_touchTimer < _TOUCH_REACTION) return false;
+	_touchTimer = 0.0f;
+
 	if (_areResizing && _touchID >= 0 && _add > 0.0f) return false;
 	for (auto pTouch : touches)
 	{

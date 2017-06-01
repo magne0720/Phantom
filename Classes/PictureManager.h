@@ -23,6 +23,8 @@ public:
 	
 private:
 	Picture* _pictures[10];
+	float _touchTimer;
+	const float _TOUCH_REACTION = 0.4f;
 	int _stageNum = 10;	// 現在のステージ数
 	int _LINE_MAX = 5;	//　1ラインに入る枚数
 	cocos2d::Vec2 _bezierPos[3];	// 基準点とベジェ曲線の為に必要な3点の差
