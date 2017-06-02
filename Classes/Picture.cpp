@@ -11,6 +11,7 @@ bool Picture::init(int id)
 	}
 
 	this->initWithFile("HelloWorld.png");
+	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
 	_clip = Sprite::create("CloseNormal.png");
 	_clip->setPosition(this->getContentSize().width*0.5f, this->getContentSize().height);

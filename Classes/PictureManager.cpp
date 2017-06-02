@@ -39,17 +39,18 @@ bool PictureManager::init()
 	// タッチされた瞬間に呼ばれるメソッドを登録
 	listener->onTouchesBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
 	// タッチされている間呼ばれるメソッドを登録
-	//listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
+	listener->onTouchesCancelled = CC_CALLBACK_2(PictureManager::onTouchCancelled, this);
 	// タッチが離された瞬間に呼ばれるメソッドを登録
 	listener->onTouchesEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
 	// イベントの実行の優先順位をノードの重なり順に依存させる
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	
+	// ベジェ曲線のために３点を設定
 	_bezierPos[0] = Vec2(0, -designResolutionSize.height*0.1f);
 	_bezierPos[1] = Vec2(designResolutionSize.width*0.5f, -designResolutionSize.height*0.2f);
 	_bezierPos[2] = Vec2(designResolutionSize.width, -designResolutionSize.height*0.1f);
 
-	// ベジェ曲線を引く
+	// ベジェ曲線を引く・Picture配置
 	float f = 0.0f;
 	Vec2 vec, vec1;
 	Vec2 basePos = Vec2(0,0);
@@ -58,27 +59,12 @@ bool PictureManager::init()
 	{
 		basePos.y = designResolutionSize.height*0.75f;
 		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-	}
-	else
-	{
-		basePos.y = designResolutionSize.height;
-		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		basePos.y = designResolutionSize.height*0.5f;
-		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-	}
-	this->addChild(node);
-
-
-	// ステージ画像表示
-	if (_stageNum <= _LINE_MAX)
-	{
-		basePos.y = designResolutionSize.height*0.75f;
 		for (int i = 0; i < _stageNum; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
@@ -87,34 +73,38 @@ bool PictureManager::init()
 	else
 	{
 		basePos.y = designResolutionSize.height;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = 0; i < _LINE_MAX; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_LINE_MAX + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
 		}
+
 		basePos.y = designResolutionSize.height*0.5f;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = _LINE_MAX; i < _stageNum; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
 		}
 	}
+	this->addChild(node);
 
 	// Pictureのサイズを保存
 	_defaultPic.scale = 1.0f;
 	_defaultPic.z = 0;
 	_popedUpPic.scale = 2.0f;
-	_popedUpPic.position = designResolutionSize*0.5f;
+	_popedUpPic.position = Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f + (_pictures[0]->getContentSize().height * _popedUpPic.scale) * 0.5f);
 	_popedUpPic.z = 1;
 
 	_per = 0.0f;
