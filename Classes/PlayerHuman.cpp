@@ -48,7 +48,6 @@ void PlayerHuman::plusAction()
 	moveRangeSp->clear();
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, myDirection, 360, false, Color4F::GREEN);
 
-	onWall(walls);
 };
 
 bool PlayerHuman::onTouchBegan(const Touch * touch, Event *unused_event)

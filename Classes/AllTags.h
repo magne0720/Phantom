@@ -19,23 +19,23 @@ static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
 static float gameSpeed = 1.0f;
 static float viewSize = 1.0f;
-
+//“ñ‚Â‚Ìâ‘ÎÀ•W
 struct SEGMENT
 {
 public:
-	Vec2 s, v;
+	Vec2 from, to;
 	SEGMENT() {};
-	SEGMENT(Vec2 point, Vec2 vector) 
+	SEGMENT(Vec2 vFrom, Vec2 vTo) 
 	{
-		s = point;
-		v = vector-point;
+		from = vFrom;
+		to = vTo-vFrom;
 	}
 };
 
 static SEGMENT setSegment(Vec2 ms, Vec2 mv) 
 {
 	SEGMENT seg;
-	seg.s = ms; seg.v = mv;
+	seg.from = ms; seg.to = mv;
 	return seg;
 }
 
@@ -84,17 +84,17 @@ static float ragToDeg(float rag)
 //“ñ‚Â‚Ìü•ª‚ªŒğ‚í‚Á‚Ä‚¢‚é‚©
 static bool onCollisionCross(SEGMENT fromSegment, SEGMENT toSegment, float* outT1, float* outT2, Vec2* outPos)
 {
-	Vec2 v = toSegment.s - fromSegment.s;
+	Vec2 to = toSegment.from - fromSegment.from;
 
 	//•½s‚©‚Ç‚¤‚©
-	float c = cross(fromSegment.v, toSegment.v);
+	float c = cross(fromSegment.to, toSegment.to);
 	if (c == 0.0f)
 	{
 		//•½tó‘Ô‚Å‚ ‚é
 		return false;
 	}
-	float cFrom = cross(v, fromSegment.v);
-	float cTo = cross(v, toSegment.v);
+	float cFrom = cross(to, fromSegment.to);
+	float cTo = cross(to, toSegment.to);
 
 	float tFrom = cFrom / c;
 	float tTo = cTo / c;
@@ -111,7 +111,7 @@ static bool onCollisionCross(SEGMENT fromSegment, SEGMENT toSegment, float* outT
 	}
 
 	if (outPos)
-		*outPos = fromSegment.s + fromSegment.v * tFrom;
+		*outPos = fromSegment.from + fromSegment.to * tFrom;
 
 	return true;
 };

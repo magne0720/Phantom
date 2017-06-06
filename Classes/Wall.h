@@ -5,6 +5,8 @@
 #include "AllTags.h"
 USING_NS_CC;
 
+#define POINT_SIZE 6
+
 //線に挟まれたときに面積の少ないほうが消滅する壁
 class Wall :public Node
 {
@@ -13,12 +15,14 @@ public:
 	bool init(Vec2 spawnPos);
 	void update(float delta);
 
+	int segmentCount;
+	int drawCount;
 	float cutTimer;
 	Sprite* mySprite;
 	Vec2 myPosition;
-	SEGMENT segments[6];
+	Vec2 points[POINT_SIZE];
 	bool isCuted;
-	DrawNode* myWall;
+	DrawNode* myWall,*debug;
 	ClippingNode* clipp;
 
 	//判定を取る線
@@ -37,25 +41,27 @@ public:
 	void callCollision();
 	//from-to間の線とtargetの交点を調べる
 	int checkPoint(Vec2* hitPos, SEGMENT s0, SEGMENT s1);
-	//検出した点がどの線に所属しているかを調べ、その線を境に分割する
-	void cutSegment(Vec2* hitPos, SEGMENT& from, SEGMENT& out);
+	//検出した点を追加して、配列の中に入れる
+	void addPoint(Vec2* hitPos,Vec2* points,int toNum);
+	//点の順番の入れ替え
+	void swapPoint(Vec2* points,int one,int wto);
 	//配列の中を先頭から3つずつ取り出した点で面積の合計を返す
-	float sumArea(int point[]);
+	float sumArea(Vec2 seg[], int point[]);
 	//角の頂点をなくして、その頂点をつないでいた線同士をつないだ5角形を作る
-	void changePentagon(int pointNum);
+	void changePentagon(Vec2 *vPoint, int onePoint,int twoPoint);
 	//切り取る場所検出
-	void checkCutArea();
+	void checkCutArea(Vec2* seg );
 	//切り取った後に面積を再構築する視覚効果
-	void rebuildingArea(int corner);
+	void rebuildingArea(Vec2 seg[], int corner);
 
 	//切り取られる演出
 	void cutEffect();
 	//当たり判定
 	bool onCollision(Vec2 start, Vec2 end);
-	//間にある点をセグメントとして使う配列のソート(取り出す番地,ほしい配列番地)
-	void sortSegment(int pic,int target,int addNum=-1);
-	//セグメント入れ替え
-	void swapSegment(int one, int two);
+	//順番を右回りに戻す
+	void sortPoints(Vec2* points, int*nums);
+	//壁の配列が規定より超えたときに超えた分だけ0から数える
+	Vec2 getOverPoint(Vec2 points[],int limit,int num);
 };
 
 #endif // !__WALL_H__

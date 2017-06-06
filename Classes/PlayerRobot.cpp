@@ -80,7 +80,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 	//cosθの値
 	float seta = acos(dot(from,to)/(length(from)*length(to)));
 	seta = ragToDeg(seta);
-	log("seta=%f", seta);
+	////log("seta=%f", seta);
 	//右か左か
 	if (cross(from, to) < 0) {
 	seta = -seta;
@@ -97,7 +97,7 @@ void PlayerRobot::nextPosition()
 
 void PlayerRobot::stopPosition()
 {
-	log("length=%f", length(targetPosition - myPosition));
+	//log("length=%f", length(targetPosition - myPosition));
 	moveRangeSp->clear();
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 	angles.clear();
@@ -163,7 +163,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			if (angles.size() < 10) {
 			if (length(endPosition - touchPosition) >= doubtDegree)
 				{
-					//log("[%f,%f]", startPosition.x, startPosition.y);
+					////log("[%f,%f]", startPosition.x, startPosition.y);
 					Vec2 a = Vec2(1,0);
 					//Vec2 b = normalize(touchPosition - endPosition)*doubtDegree;
 					Vec2 b=touchPosition-endPosition;
@@ -191,7 +191,7 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 		if (angles.size() != 10)
 			{
 			stopPosition();
-			log("lineError");
+			//log("lineError");
 		}
 		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {
@@ -286,7 +286,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 	//cosθの値
 	float seta = acos(dot(from, to) / (length(from)*length(to)));
 	seta = ragToDeg(seta);
-	log("seta=%f", seta);
+	//log("seta=%f", seta);
 	//右か左か
 	if (cross(from, to) < 0) {
 		seta = -seta;
@@ -303,7 +303,7 @@ void PlayerRobot::nextPosition()
 
 void PlayerRobot::stopPosition()
 {
-	log("length=%f", length(targetPosition - myPosition));
+	//log("length=%f", length(targetPosition - myPosition));
 	moveRangeSp->clear();
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 	angles.clear();
@@ -370,7 +370,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			if (anglesB.size()<10) {
 				if (length(endPosition - touchPosition) >= doubtDegree)
 				{
-					//log("[%f,%f]", startPosition.x, startPosition.y);
+					////log("[%f,%f]", startPosition.x, startPosition.y);
 					Vec2 a = Vec2(1, 0);
 					Vec2 b = normalize(touchPosition - endPosition)*doubtDegree;
 
@@ -400,7 +400,7 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 		if (anglesB.size() != 10)
 		{
 			stopPosition();
-			log("lineError");
+			//log("lineError");
 		}
 		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {

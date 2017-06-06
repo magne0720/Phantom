@@ -48,6 +48,6 @@ public:
 	int angleNum;
 	std::vector<float> angles;
 	std::vector<Vec2> anglesB;
-	
+
 };
 #endif // !__PLAYER_ROBOT_H__

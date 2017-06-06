@@ -349,6 +349,8 @@ Layer* MapCreator::printMap()
 	log("size=%d", walls.size());
 	for (int i = 0; i < walls.size(); i++)
 	{
+		robot->rightRobot->setTarget(walls.at(i));
+		robot->leftRobot->setTarget(walls.at(i));
 		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
 		layer->addChild(walls.at(i),2);
 	}

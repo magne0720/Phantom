@@ -40,11 +40,9 @@ void Enemy::plusAction()
 	{
 	case STAND:
 		moveThink(5.0f);
-		allCollision();
 		break;
 	case MOVE:
 		allCollision();
-		onWall(walls);
 		break;
 	case DOUBT:
 		allCollision();

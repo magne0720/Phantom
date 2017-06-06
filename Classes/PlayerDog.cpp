@@ -73,7 +73,6 @@ void PlayerDog::plusAction()
 	moveRangeSp->clear();
 	moveRangeSp->drawCircle(Vec2(0, 0), moveStartRange,myDirection, 360, false, Color4F::ORANGE);
 
-	onWall(walls);
 
 	if (isMoveWait)
 	{

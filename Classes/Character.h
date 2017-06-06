@@ -44,14 +44,14 @@ public:
 	virtual bool onCollision(Character* p);
 	//赤外線判定
 	virtual bool onCollision(Vec2 start, Vec2 end);
+	//目の前が壁かどうか
+	bool onWall(SEGMENT s0, SEGMENT s1);
 	//移動可能判定
 	bool onMoveRange(Point target);
 	//右側にあるか
 	bool onDirectionRight(const Vec2 target);
 	//左側にあるか
 	bool onDirectionLeft(const Vec2 target);
-	//進む方向が壁かどうか
-	bool onWall(Vector<Wall*> quad);
 	//衝突判定まとめ
 	virtual void allCollision();
 	//-----------------------------------------
@@ -108,8 +108,6 @@ public:
 	Vec2 myPosition;
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
-	//予定された最終場所。ここにつくまで移動する。
-	Vec2 lastTargetPosition;
 
 	//自身の向き
 	float myDirection;
@@ -125,7 +123,8 @@ public:
 	Vector<Wall*> walls;
 	//自身の状態
 	STATUS myState;
-
+	//衝突判定の処理間隔をあけるタイマー
+	float colTimer;
 
 
 

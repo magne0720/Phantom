@@ -57,7 +57,6 @@ void Character::initialize(Vec2 pos,DIR_DEGREE dir)
 	addChild(moveRangeSp,5);
 	myPosition = pos;
 	targetPosition = pos;
-	lastTargetPosition = pos;
 	setPosition(pos);
 	setState(STATUS::STAND);
 	setDirection(dir);
@@ -78,12 +77,12 @@ void Character::action()
 	{
 	case STAND:
 		if (length(targetPosition - myPosition) > moveSpeed) {
-			setState(STATUS::MOVE);		log("move");
+			setState(STATUS::MOVE);
 		}
 		break;
 	case MOVE:
 		if (length(targetPosition - myPosition) < moveSpeed) {
-			setState(STATUS::STAND); log("stand");
+			setState(STATUS::STAND); 
 		}
 		move();
 		break;
@@ -100,6 +99,9 @@ void Character::action()
 	default:
 		break;
 	}
+
+	allCollision();
+
 };
 
 //追加行動
@@ -192,6 +194,59 @@ bool Character::onCollision(Vec2 start, Vec2 end)
 	return false;
 };
 
+//進む方向が壁かどうか
+bool Character::onWall(SEGMENT s0, SEGMENT s1)
+{
+	//X軸方向のベクトルが0かどうか
+	if (s0.to.x == 0.0f || s1.to.x == 0.0f) {
+		if (s0.to.x == 0.0f&&s1.to.x == 0.0f)
+			return false;
+		//平行
+
+		Vec2 r;
+		float t0, t1;
+		if (s0.to.x == 0.0f) {
+			r.x = s0.from.x;
+			r.y = (s1.to.y / s1.to.x)*(r.x - s1.from.x) + s1.from.y;
+
+			t0 = (r.y - s0.from.y) / s0.to.y;		//t=0~1の時は線分s0内
+			t1 = (r.x - s1.from.x) / s1.to.x;		//t=0~1の時は線分s1内
+		}
+		else {
+			r.x = s1.from.x;
+			r.y = (s0.to.y / s0.to.x)*(r.x - s0.from.x) + s0.from.y;
+
+			t0 = (r.x - s0.from.x) / s0.to.x;		//t=0~1の時は線分s0内
+			t1 = (r.y - s1.from.y) / s1.to.y;		//t=0~1の時は線分s1内
+		}
+		if ((t0<0.0f) || (t0>1.0f) || (t1 < 0.0f) || (t1 > 1.0f))return false;
+		return true;
+	}
+	else {
+		//線分の傾きを求める
+		float a0 = s0.to.y / s0.to.x;
+		float a1 = s1.to.y / s1.to.x;
+
+		//傾きが同一の場合は平行なので衝突しない
+		if ((a0 == a1) || a0 == -a1)return false;
+
+		//交点のx,y座標を求める
+		Vec2 r;
+		r.x = (a0*s0.from.x - a1*s1.from.x + s1.from.y - s0.from.y) / (a0 - a1);
+		r.y = a0*(r.x - s0.from.x) + s0.from.y;
+
+		//交点が線分内にあるか調べる
+		float t0 = (r.x - s0.from.x) / s0.to.x;		//t=0~1の時は線分s0内
+		float t1 = (r.x - s1.from.x) / s1.to.x;		//t=0~1の時は線分s1内
+
+		if ((t0<0.0f) || (t0>1.0f) || (t1<0.0f) || (t1>1.0f))return false;
+
+		return true;
+	}
+
+	return false;
+};
+
 //タッチした位置が移動範囲かどうか
 bool Character::onMoveRange(Point target)
 {
@@ -207,11 +262,11 @@ bool Character::onMoveRange(Point target)
 bool Character::onDirectionRight(const Vec2 target)
 {
 	//自身の向いている方向から右に視認範囲分回転
-	Vec2 v = getDirectionDegree(getDirectionVector(), -doubtDegree,moveRange);
+	Vec2 to = getDirectionDegree(getDirectionVector(), -doubtDegree,moveRange);
 	//敵の位置
 	Vec2 t = target-myPosition;
 
-	if (v.x*t.y - t.x*v.y < 0)
+	if (to.x*t.y - t.x*to.y < 0)
 	{
 		//log("right");
 		return true;
@@ -223,11 +278,11 @@ bool Character::onDirectionRight(const Vec2 target)
 bool Character::onDirectionLeft(const Vec2 target)
 {
 	//自身の向いている方向から右に視認範囲分回転
-	Vec2 v = getDirectionDegree(getDirectionVector(), doubtDegree, moveRange);
+	Vec2 to = getDirectionDegree(getDirectionVector(), doubtDegree, moveRange);
 	//敵の位置
 	Vec2 t = target - myPosition;
 
-	if (v.x*t.y - t.x*v.y > 0)
+	if (to.x*t.y - t.x*to.y > 0)
 	{
 		//log("left");
 		return true;
@@ -235,40 +290,26 @@ bool Character::onDirectionLeft(const Vec2 target)
 	return false;
 };
 
-//進む方向が壁かどうか
-bool Character::onWall(Vector<Wall*> quad)
-{
-	Vec2 movement = targetPosition - myPosition;
-	Vec2 ans = movement;
-	movement.normalize();
-	Vec2 forward = movement*100.0f + myPosition;
 
-	//for (int i = 0; i < quad.size(); i++) {
-	//	//四角形の判定
-	//	if ((quad.at(i)->points[1].x - quad.at(i)->points[0].x)*(forward.y - quad.at(i)->points[0].y) - (forward.x - quad.at(i)->points[0].x)*(quad.at(i)->points[1].y - quad.at(i)->points[0].y)<0)
-	//		if ((quad.at(i)->points[2].x - quad.at(i)->points[1].x)*(forward.y - quad.at(i)->points[1].y) - (forward.x - quad.at(i)->points[1].x)*(quad.at(i)->points[2].y - quad.at(i)->points[1].y)<0)
-	//			if ((quad.at(i)->points[3].x - quad.at(i)->points[2].x)*(forward.y - quad.at(i)->points[2].y) - (forward.x - quad.at(i)->points[2].x)*(quad.at(i)->points[3].y - quad.at(i)->points[2].y)<0)
-	//				if ((quad.at(i)->points[4].x - quad.at(i)->points[3].x)*(forward.y - quad.at(i)->points[3].y) - (forward.x - quad.at(i)->points[3].x)*(quad.at(i)->points[4].y - quad.at(i)->points[3].y)<0)
-	//				{
-	//					for (int j = 0; j < 4; j++)
-	//					{
-	//						if (onCollision(quad.at(i)->points[j], quad.at(i)->points[j + 1])) {
-	//							ans = quad.at(i)->points[j] - quad.at(i)->points[j + 1] + quad.at(i)->getPosition();
-	//					setEvasionWall(ans,targetPosition - myPosition);
-	//						}
-	//					}
-	//						return true;
-	//					//setState(STATUS::STAND);
-	//				}
-	//}
-	return false;
-};
 
 
 //衝突判定まとめ
 void Character::allCollision() 
 {
+	colTimer++;
+	if (colTimer >= 60.0f) {
+		Vec2 movement = normalize(targetPosition - myPosition)*moveSpeed + myPosition;
 
+		for (int i = 0; i < walls.size(); i++)
+			for (int j = 0; j < walls.at(i)->segmentCount; j++)
+			{
+				if (onWall(SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1)), SEGMENT(myPosition, movement)))
+				{
+					setState(STATUS::STAND);
+				}
+			}
+		colTimer = 0;
+	}
 };
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -278,7 +319,6 @@ void Character::allCollision()
 void Character::setState(STATUS state)
 {
 	myState = state;
-	log("setstate");
 };
 
 //速度変更
@@ -302,10 +342,6 @@ void Character::setDoubtDgree(float range)
 //移動場所設定
 void Character::setTargetPosition(Vec2 pos) 
 {
-	if (onLastTargetPosition(lastTargetPosition)) 
-	{
-		lastTargetPosition = pos;
-	}
 	targetPosition = pos;
 }
 
@@ -322,19 +358,15 @@ void Character::setDirection(DIR_DEGREE degree)
 	{
 	case DIR_RIGHT:
 		targetPosition.x += 1.0f;
-		lastTargetPosition.x += 1.0f;
 		break;
 	case DIR_UP:
 		targetPosition.y += 1.0f;
-		lastTargetPosition.y += 1.0f;
 		break;
 	case DIR_LEFT:
 		targetPosition.x -= 1.0f;
-		lastTargetPosition.x -= 1.0f;
 		break;
 	case DIR_DOWN:
 		targetPosition.y -= 1.0f;
-		lastTargetPosition.y -= 1.0f;
 		break;
 	default:
 		break;
@@ -375,9 +407,9 @@ Vec2 Character::getDirectionDegree(Vec2 target, float deg, float range)
 void Character::setEvasionWall(Vec2 wall, Vec2 target)
 {
 	//壁の法線
-	Vec2 v = getDirectionDegree(wall, 90);
+	Vec2 to = getDirectionDegree(wall, 90);
 
-	targetPosition = normalize( target + dot(target, v)*v)*moveSpeed+myPosition;
+	targetPosition = normalize( target + dot(target, to)*to)*moveSpeed+myPosition;
 };
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
