@@ -7,12 +7,12 @@ bool TitleCharacter::init()
 {
 	if (!Sprite::init()) return false;
 
-	_charAnim = CharacterAnimation::createInMove("Character/TitleAnim.png", Size(250, 250), 0.3f);
+	_charAnim = CharacterAnimation::create("Character/TitleAnim.png", Size(250, 250), 0.3f);
 	this->addChild(_charAnim);
-	_charAnim->changeAnimation(DIR::RIGHT);
-	_state = eSTATE::MOVE;
+	//_charAnim->changeAnimation(DIR::RIGHT);
+	//_state = eSTATE::MOVE;
 
-	this->scheduleUpdate();
+	//this->scheduleUpdate();
 
 	return true;
 }

@@ -3,7 +3,7 @@
 using namespace cocos2d;
 using namespace std;
 
-bool CharacterAnimation::init(string fileName, Size chipSize, float delay)
+bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool move)
 {
 	if (!Node::init()) return false;
 
@@ -82,7 +82,9 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay)
 	_animationChache->addAnimation(_stopRight, "STOP_R");
 
 	_dir = eDIR::FRONT;
-	if (_movedAnim) startAnimation();
+	_movedAnim = move;
+	_movedAnim = !_movedAnim;
+	if (!_movedAnim) startAnimation();
 	else stopAnimation();
 
 	return true;
@@ -91,7 +93,7 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay)
 CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay))
+	if (pRet && pRet->init(fileName, chipSize, delay, true))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = true;
@@ -108,7 +110,7 @@ CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize, f
 CharacterAnimation* CharacterAnimation::createInStop(string fileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay))
+	if (pRet && pRet->init(fileName, chipSize, delay, false))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = false;
@@ -125,7 +127,7 @@ CharacterAnimation* CharacterAnimation::createInStop(string fileName, Size chipS
 CharacterAnimation* CharacterAnimation::createInMove(string fileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay))
+	if (pRet && pRet->init(fileName, chipSize, delay, true))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = true;
@@ -182,7 +184,6 @@ void CharacterAnimation::stopAnimation(eDIR dirName)
 void CharacterAnimation::stopAnimation()
 {
 	if (!_movedAnim) return;
-	_movedAnim = false;
 	stopAnimation(_dir);
 }
 
@@ -217,7 +218,6 @@ void CharacterAnimation::startAnimation(eDIR dirName)
 void CharacterAnimation::startAnimation()
 {
 	if (_movedAnim) return;
-	_movedAnim = true;
 	startAnimation(_dir);
 }
 
