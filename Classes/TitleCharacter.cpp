@@ -9,10 +9,10 @@ bool TitleCharacter::init()
 
 	_charAnim = CharacterAnimation::create("Character/TitleAnim.png", Size(250, 250), 0.3f);
 	this->addChild(_charAnim);
-	//_charAnim->changeAnimation(DIR::RIGHT);
-	//_state = eSTATE::MOVE;
+	_charAnim->changeAnimation(DIR::RIGHT);
+	_state = eSTATE::MOVE;
 
-	//this->scheduleUpdate();
+	this->scheduleUpdate();
 
 	return true;
 }

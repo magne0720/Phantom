@@ -14,6 +14,7 @@ public:
 	};
 
 	static ScrollSprite* create(std::string fileName, float scrollSpeed, eOrientation orientation = landscape);
+	
 	bool init(std::string fileName, float scrollSpeed, eOrientation orientation);
 	//void update(float delta);
 	void updateL(float delta);
