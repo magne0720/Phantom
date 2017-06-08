@@ -12,7 +12,7 @@
 //DATA_LENGTH_PLAYER‚Ì‚æ‚¤‚ÈŠ´‚¶
 #define D_L_PLAYER 16
 #define D_L_GOAL 8
-#define D_L_WALL 11
+#define D_L_WALL 16
 #define D_L_FLOOR 2048
 #define D_FLOOR_LINE 8
 

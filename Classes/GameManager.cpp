@@ -37,11 +37,13 @@ bool GameManager::init(int num)
 
 void GameManager::update(float delta) 
 {
-	if (*isGoal) 
+	if (*isGoal)
 	{
-		dispGoal();
+		if (timer == 0) {
+			dispGoal();
+			timer = 1;
+		}
 	}
-
 };
 
 void GameManager::dispGoal()
@@ -52,5 +54,7 @@ void GameManager::dispGoal()
 
 	RotateBy* rotate = RotateBy::create(2, 360);
 	sp->runAction(RepeatForever::create(rotate));
+
+	log("goal");
 
 };

@@ -56,10 +56,11 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 
 void PlayerCloser::update(float delta) 
 {
-#if MODE==0
 
-	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)isGoal = true;
-
+	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)
+	{
+		isGoal = true;
+	}
 	if (rightRobot->isStandby&&leftRobot->isStandby) 
 	{
 		rightRobot->moveTimer = 0;
@@ -82,30 +83,7 @@ void PlayerCloser::update(float delta)
 				{
 		moveLineLeft->clear();
 	}
-#else 
-	if (rightRobot->isStandby&&leftRobot->isStandby)
-	{
-		rightRobot->moveTimer = 0;
-		leftRobot->moveTimer = 0;
-		rightRobot->nextPositionB();
-		leftRobot->nextPositionB();
-		rightRobot->isStandby = false;
-		leftRobot->isStandby = false;
-		rightRobot->isStart = true;
-		leftRobot->isStart = true;
-}
 
-	if (rightRobot->anglesB.size() == 0)
-	{
-		moveLineRight->clear();
-	}
-	if (leftRobot->anglesB.size() == 0)
-	{
-		moveLineLeft->clear();
-	}
-
-
-#endif
 	infraredLine->clear();
 	infraredLine->drawSegment(rightRobot->myPosition, leftRobot->myPosition, 5, Color4F::RED);
 

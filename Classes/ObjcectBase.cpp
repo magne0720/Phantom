@@ -23,7 +23,7 @@ bool ObjectBase::onCollision(ObjectBase* p)
 //pos‚©‚ç”¼Œarange“à‚É‚¢‚é‚©
 bool ObjectBase::onCollision(Vec2 pos, float range)
 {
-	if (length(pos - myPosition)*length(pos - myPosition) <= range)
+	if (length(pos - myPosition) <= range)
 	{
 		////log("length=%f,range=%f",length(pos-myPosition),range);
 		return true;

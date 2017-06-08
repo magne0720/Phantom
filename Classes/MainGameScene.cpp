@@ -25,13 +25,11 @@ bool MainGameScene::init(int num)
 	}
 
 	gm = GameManager::create(num);
-	addChild(gm,0);
+	addChild(gm,5);
 
 	gameLayer = gm->map->printMap();
 	addChild(gameLayer,1);
 
-	CharacterAnimation* ap = CharacterAnimation::createInMove("goal.png", Size(100, 100));
-	addChild(ap);
 
 
 	return true;

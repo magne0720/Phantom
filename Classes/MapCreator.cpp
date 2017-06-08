@@ -23,8 +23,7 @@ bool MapCreator::init(int num)
 		return false;
 	}
 	
-	Wall* aroundWall = Wall::createWall(
-		designResolutionSize*0.5f,
+	Wall* aroundWall = Wall::create(
 		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
 			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f));
 
@@ -144,17 +143,10 @@ void MapCreator::analyzeGoal(char* data)
 };
 void MapCreator::analyzeWall(char* data)
 {
-	Vec2 pos;
-	//ï«ÇÃéÌóﬁ3byte
-	int num = getCharToInt(data,3);
-	//Å™Ç…ì¸ÇÍÇÈ
-	data += 3;
-	pos.x = getCharToFloat(data);
-	data += 4;
-	pos.y = getCharToFloat(data);
-	Wall* w = Wall::create(pos,num);
+	Rect rect;
+	rect.setRect(getCharToFloat(data), getCharToFloat(data + 4), getCharToFloat(data + 8), getCharToFloat(data + 12));
+	Wall* w = Wall::create(rect);
 	walls.pushBack(w);
-	log("wall[%f,%f]", pos.x, pos.y);
 	log("push-wall");
 };
 

@@ -2,10 +2,10 @@
 
 
 
-Wall* Wall::create(Vec2 pos,Rect rect)
+Wall* Wall::create(Rect rect)
 {
 	Wall *pRet = new Wall();
-	if (pRet && pRet->init(pos,rect))
+	if (pRet && pRet->init(rect))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -18,21 +18,19 @@ Wall* Wall::create(Vec2 pos,Rect rect)
 	};
 };
 
-bool Wall::init(Vec2 pos,Rect rect)
+bool Wall::init(Rect rect)
 {
 	if (!Node::init())return false;
 
-	setPosition(designResolutionSize*0.5f);
-	myPosition = designResolutionSize*0.5f;
 
 	Sprite* sp = Sprite::create();
 	sp->setTextureRect(rect);
 	sp->setColor(Color3B::BLACK);
 
-	points[0] = Vec2(rect.getMinX(),rect.getMinY());//左下
-	points[1] = Vec2(rect.getMinX(),rect.getMaxY());//左上
-	points[2] = Vec2(rect.getMaxX(),rect.getMaxY());//右上
-	points[3] = Vec2(rect.getMaxX(),rect.getMinY());//右下
+	points[0] = Vec2(rect.getMinX(), rect.getMinY());//左下
+	points[1] = Vec2(rect.getMinX(), rect.getMaxY());//左上
+	points[2] = Vec2(rect.getMaxX(), rect.getMaxY());//右上
+	points[3] = Vec2(rect.getMaxX(), rect.getMinY());//右下
 	points[4] = Vec2(0, 0);//5角形になった時用
 	points[5] = Vec2(0, 0);//分割時に必要になる
 
@@ -325,44 +323,6 @@ void Wall::cutEffect()
 
 };
 
-//start-end間に当たっているかどうか
-bool Wall::onCollision(Vec2 start, Vec2 end)
-{
-	Vec2 AB = end - start;
-	Vec2 AP = myPosition - start;
-	Vec2 BP = myPosition - end;
-
-	//外積
-	float APxAB = AB.x*AP.y - AP.x*AB.y;
-	if (APxAB < 0)APxAB = APxAB*(-1);
-
-	//内積
-	float DotAP = dot(AP, AB);
-	float DotBP = dot(BP, AB);
-
-	float ans = APxAB / sqrt(AB.x*AB.x + AB.y*AB.y);
-
-	if (ans <= 100.0f)
-	{
-		if (DotAP*DotBP <= 0)
-		{
-			return true;
-		}
-		else
-		{
-			if (ans > sqrt(AP.x*AP.x + AP.y*AP.y) || ans>sqrt(BP.x*BP.x + BP.y*BP.y))
-			{
-				return true;
-			}
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
-	return false;
-};
 
 //順番を右回りに戻す
 void Wall::sortPoints(Vec2* points, int*nums) 

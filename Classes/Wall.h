@@ -11,14 +11,13 @@ USING_NS_CC;
 class Wall :public Node
 {
 public:
-	static Wall* create(Vec2 pos,Rect rect);
-	bool init(Vec2 pos,Rect rect);
+	static Wall* create(Rect rect);
+	bool init(Rect rect);
 	void update(float delta);
 
 	int segmentCount;
 	int drawCount;
 	float cutTimer;
-	Vec2 myPosition;
 	Vec2 points[POINT_SIZE];
 	bool* playerCut;
 	bool isCuted;
@@ -56,8 +55,6 @@ public:
 
 	//Ø‚èæ‚ç‚ê‚é‰‰o
 	void cutEffect();
-	//“–‚½‚è”»’è
-	bool onCollision(Vec2 start, Vec2 end);
 	//‡”Ô‚ğ‰E‰ñ‚è‚É–ß‚·
 	void sortPoints(Vec2* points, int*nums);
 	//•Ç‚Ì”z—ñ‚ª‹K’è‚æ‚è’´‚¦‚½‚Æ‚«‚É’´‚¦‚½•ª‚¾‚¯0‚©‚ç”‚¦‚é
