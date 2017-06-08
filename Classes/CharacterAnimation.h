@@ -28,7 +28,7 @@ public:
 		LEFT,
 		RIGHT
 	};
-	bool init(std::string fileName, cocos2d::Size chipSize, float delay);
+	bool init(std::string fileName, cocos2d::Size chipSize, float delay, bool move);
 	static CharacterAnimation* create(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
 	static CharacterAnimation* createInStop(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
 	static CharacterAnimation* createInMove(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
