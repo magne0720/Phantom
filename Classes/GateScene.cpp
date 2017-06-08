@@ -48,7 +48,7 @@ bool GateScene::onTouchBegan(const Touch * touch, Event *unused_event)
 	}
 	else
 	{
-		Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene());
+		Director::getInstance()->replaceScene(TitleSelectScene::createTitleScene());
 	};
 
 

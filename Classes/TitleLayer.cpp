@@ -19,7 +19,7 @@ bool TitleLayer::init()
 	this->addChild(tbg);
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
-	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.3f);
+	titleCharacter->setPosition(designResolutionSize.width*0.5f, 203.0f);
 	this->addChild(titleCharacter);
 
 	TitleLogo* titleLogo = TitleLogo::create();

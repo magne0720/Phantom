@@ -1,5 +1,6 @@
 #include "PictureManager.h"
 #include "AllTags.h"
+#include "MainGameScene.h"
 
 using namespace cocos2d;
 
@@ -28,26 +29,29 @@ bool PictureManager::init()
 
 	_LINE_MAX = _stageNum * 0.5f;
 	_areResizing = false;
+	touchIDInit();
 	selectedInit();
+	_touchTimer = _TOUCH_REACTION;
 
 	// タッチされたことを取得するオブジェクト
-	listener = EventListenerTouchOneByOne::create();
+	listener = EventListenerTouchAllAtOnce::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
-	listener->setSwallowTouches(true);
+	//listener->setSwallowTouches(true);
 	// タッチされた瞬間に呼ばれるメソッドを登録
-	listener->onTouchBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
+	listener->onTouchesBegan = CC_CALLBACK_2(PictureManager::onTouchBegan, this);
 	// タッチされている間呼ばれるメソッドを登録
-	//listener->onTouchMoved = CC_CALLBACK_2(PictureManager::onTouchMoved, this);
+	listener->onTouchesCancelled = CC_CALLBACK_2(PictureManager::onTouchCancelled, this);
 	// タッチが離された瞬間に呼ばれるメソッドを登録
-	listener->onTouchEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
+	listener->onTouchesEnded = CC_CALLBACK_2(PictureManager::onTouchEnded, this);
 	// イベントの実行の優先順位をノードの重なり順に依存させる
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 	
+	// ベジェ曲線のために３点を設定
 	_bezierPos[0] = Vec2(0, -designResolutionSize.height*0.1f);
 	_bezierPos[1] = Vec2(designResolutionSize.width*0.5f, -designResolutionSize.height*0.2f);
 	_bezierPos[2] = Vec2(designResolutionSize.width, -designResolutionSize.height*0.1f);
 
-	// ベジェ曲線を引く
+	// ベジェ曲線を引く・Picture配置
 	float f = 0.0f;
 	Vec2 vec, vec1;
 	Vec2 basePos = Vec2(0,0);
@@ -56,27 +60,12 @@ bool PictureManager::init()
 	{
 		basePos.y = designResolutionSize.height*0.75f;
 		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-	}
-	else
-	{
-		basePos.y = designResolutionSize.height;
-		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		basePos.y = designResolutionSize.height*0.5f;
-		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-	}
-	this->addChild(node);
-
-
-	// ステージ画像表示
-	if (_stageNum <= _LINE_MAX)
-	{
-		basePos.y = designResolutionSize.height*0.75f;
 		for (int i = 0; i < _stageNum; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
@@ -85,35 +74,39 @@ bool PictureManager::init()
 	else
 	{
 		basePos.y = designResolutionSize.height;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = 0; i < _LINE_MAX; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_LINE_MAX + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
 		}
+
 		basePos.y = designResolutionSize.height*0.5f;
+		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = _LINE_MAX; i < _stageNum; i++)
 		{
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_stageNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			b.y -= _pictures[i]->getContentSize().width / 2;
+			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
 			this->addChild(_pictures[i]);
 		}
 	}
+	this->addChild(node);
 
 	// Pictureのサイズを保存
-	_beforePic.scale = 1.0f;
-	_beforePic.z = 0;
-	_afterPic.scale = 2.0f;
-	_afterPic.position = designResolutionSize*0.5f;
-	_afterPic.z = 1;
+	_defaultPic.scale = 1.0f;
+	_defaultPic.z = 0;
+	_popedUpPic.scale = 2.0f;
+	_popedUpPic.position = Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f + (_pictures[0]->getContentSize().height * _popedUpPic.scale) * 0.5f);
+	_popedUpPic.z = 1;
 
 	_per = 0.0f;
 	_add = 0.25f;
@@ -125,110 +118,147 @@ bool PictureManager::init()
 
 void PictureManager::update(float delta)
 {
+	_touchTimer += delta;
 	if (!_areResizing) return;
 
-	if (_per < 1.0f)
-	{
-		_per += _add;
-	}
-	else
-	{
-		_per = 1.0f;
-	}
-	_pictures[_selectedStage]->setScale((1 - _per) * _beforePic.scale + _per * _afterPic.scale);
-	_pictures[_selectedStage]->setPosition((1 - _per) * _beforePic.position + _per * _afterPic.position);
-	_pictures[_selectedStage]->setZOrder(_afterPic.z);
-	_pictures[_selectedStage]->setColor(Color3B::WHITE);
-	if (_per == 1.0f)
-	{
-		_areResizing = false;
-		swapA2B();
-		if (_beforePic.z == 0)
-		{
-			selectedInit();
-		}
-	}
-}
+	_per += _add;
 
-bool PictureManager::onTouchBegan(Touch* pTouch, Event* pEvent)
-{
-	if (_areResizing) return false;
-	for (int i = 0; i < _stageNum; i++)
+	if ((_add > 0 && _per >= 1.0f) || (_add < 0 && _per <= 0.0f))
 	{
-		Rect rect = _pictures[i]->getBoundingBox();
-		if (rect.containsPoint(pTouch->getLocation()))
+		if (_per < 0.0f)
+			_per = 0.0f;
+		else if (_per > 1.0f)
+			_per = 1.0f;
+		_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
+		_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
+		_pictures[_selectedStage]->setColor(Color3B::WHITE);
+		_areResizing = false;
+		if (_add < 0.0f) selectedInit();
+		_add *= -1;
+		return;
+	}
+	
+	_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
+	_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
+	_pictures[_selectedStage]->setColor(Color3B::WHITE);
+
+}
+// タッチ処理用関数
+bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *unused_event)
+{
+	if (_touchTimer < _TOUCH_REACTION) return false;
+	_touchTimer = 0.0f;
+
+	if (_areResizing || _selectedStage >= 0 || _touchID >= 0) return false;
+	for (auto pTouch : touches)
+	{
+		for (int i = 0; i < _stageNum; i++)
 		{
-			_selectedStage = i;
-			selectedSize();
-			return true;
+			Rect rect = _pictures[i]->getBoundingBox();
+			if (rect.containsPoint(pTouch->getLocation()))
+			{
+				_touchID = pTouch->getID();
+				_selectedStage = i;
+				selectedSize();
+				return true;
+			}
 		}
 	}
+	
 	return false;
 }
-
-void PictureManager::onTouchCancelled(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchCancelled(const std::vector<Touch *> &touches, Event *unused_event)
 {
+	touchIDInit();
 	defaultSize();
 	selectedInit();
 }
-
-void PictureManager::onTouchEnded(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
-	{
-		_beforePic.position = _pictures[_selectedStage]->getPos();
-		_areResizing = true;
-		log("ID = %d", _pictures[_selectedStage]->_stageID);
-		changeBool(&PictureManager::onTouchBeganP);
-		changeVoid(&PictureManager::onTouchEndedP, eTOUCH::ENDED);
-		changeVoid(&PictureManager::onTouchCancelledP, eTOUCH::CANCELLED);
-	}
-	else
-	{
-		defaultSize();
-		selectedInit();
-	}
-}
+	if (_areResizing) return;
 
-bool PictureManager::onTouchBeganP(Touch* pTouch, Event* pEvent)
+	for (auto pTouch : touches)
+	{
+		if (_touchID == pTouch->getID())
+		{
+			Rect rect = _pictures[_selectedStage]->getBoundingBox();
+			if (rect.containsPoint(pTouch->getLocation()))
+			{
+				_defaultPic.position = _pictures[_selectedStage]->getPos();
+				_areResizing = true;
+				_pictures[_selectedStage]->setZOrder(_popedUpPic.z);
+				log("ID = %d", _pictures[_selectedStage]->_stageID);
+				changeBool(&PictureManager::onTouchBeganP);
+				changeVoid(&PictureManager::onTouchEndedP, eTOUCH::ENDED);
+				changeVoid(&PictureManager::onTouchCancelledP, eTOUCH::CANCELLED);
+			}
+			else
+			{
+				defaultSize();
+				selectedInit();
+			}
+			touchIDInit();
+			return;
+		}
+	}
+	
+}
+// タッチ処理用関数（ポップアップ後）
+bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	if (_areResizing) return false;
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
-	{
-		return true;
-	}
-	else
-	{
-		_areResizing = true;
-		changeBool(&PictureManager::onTouchBegan);
-		changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
-		changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
-	}
-	return false;
-}
+	if (_touchTimer < _TOUCH_REACTION) return false;
+	_touchTimer = 0.0f;
 
-void PictureManager::onTouchCancelledP(Touch* pTouch, Event* pEvent)
+	if (_areResizing || _touchID >= 0) return false;
+	for (auto pTouch : touches)
+	{
+		Rect rect = _pictures[_selectedStage]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			_touchID = pTouch->getID();
+			return true;
+		}
+		else
+		{
+			_areResizing = true;
+			_pictures[_selectedStage]->setZOrder(_defaultPic.z);
+			changeBool(&PictureManager::onTouchBegan);
+			changeVoid(&PictureManager::onTouchEnded, eTOUCH::ENDED);
+			changeVoid(&PictureManager::onTouchCancelled, eTOUCH::CANCELLED);
+			return false;
+		}
+	}	
+}
+void PictureManager::onTouchCancelledP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	defaultSize();
+	touchIDInit();
 	_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
 	selectedInit();
 }
-
-void PictureManager::onTouchEndedP(Touch* pTouch, Event* pEvent)
+void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *unused_event)
 {
-	Rect rect = _pictures[_selectedStage]->getBoundingBox();
-	if (rect.containsPoint(pTouch->getLocation()))
+	for (auto pTouch : touches)
 	{
-		_pictures[_selectedStage]->setColor(Color3B::WHITE);
-		log("YES!");
+		Rect rect = _pictures[_selectedStage]->getBoundingBox();
+		if (rect.containsPoint(pTouch->getLocation()))
+		{
+			_pictures[_selectedStage]->setColor(Color3B::WHITE);
+			auto scene = MainGameScene::createScene(_selectedStage);
+			Director::getInstance()->replaceScene(scene);
+		}
+		touchIDInit();
 	}
 }
 
+// 初期化用関数
 void PictureManager::selectedInit()
 {
 	_selectedStage = -1;
+}
+void PictureManager::touchIDInit()
+{
+	_touchID = -1;
 }
 
 // ベジェ曲線描画用関数
@@ -276,22 +306,22 @@ void PictureManager::popedUpSize()
 }
 
 // タッチのフェーズ変更用関数
-void PictureManager::changeBool(bool (PictureManager::*method)(Touch* pTouch, Event* pEvent))
+void PictureManager::changeBool(bool (PictureManager::*method)(const std::vector<Touch *> &touches, Event *unused_event))
 {
-	listener->onTouchBegan = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+	listener->onTouchesBegan = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 }
-void PictureManager::changeVoid(void (PictureManager::*method)(Touch* pTouch, Event* pEvent), eTOUCH eTouch)
+void PictureManager::changeVoid(void (PictureManager::*method)(const std::vector<Touch *> &touches, Event *unused_event), eTOUCH eTouch)
 {
 	switch (eTouch)
 	{
 	case PictureManager::eTOUCH::MOVED:
-		listener->onTouchMoved = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesMoved = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	case PictureManager::eTOUCH::ENDED:
-		listener->onTouchEnded = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesEnded = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	case PictureManager::eTOUCH::CANCELLED:
-		listener->onTouchCancelled = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
+		listener->onTouchesCancelled = std::bind(method, this, std::placeholders::_1, std::placeholders::_2);
 		break;
 	default:
 		break;
@@ -316,12 +346,4 @@ void PictureManager::swap(Vec2 &a, Vec2 &b)
 	Vec2 v = a;
 	a = b;
 	b = v;
-}
-
-void PictureManager::swapA2B()
-{
-	swap(_beforePic.scale, _afterPic.scale);
-	swap(_beforePic.position, _afterPic.position);
-	swap(_beforePic.z, _afterPic.z);
-	_per = 0.0f;
 }

@@ -32,23 +32,13 @@ void TitleSelectScene::replaceTitle()
 {
 	for (auto c : getChildren())
 	{
-		if (typeid(c) == typeid(SelectLayer))
+		if (typeid(*c) == typeid(SelectLayer))
 		{
-			auto fadeIn = FadeIn::create(0.5f);
-			auto callFunc = CallFunc::create([&]() {
-				this->removeChild(c, true);
-				auto scene = TitleLayer::create();
-				this->addChild(scene);
-			});
-			auto fadeOut = FadeOut::create(0.5f);
-			auto seq = Sequence::create(fadeIn, callFunc, fadeOut, NULL);
-			createFadeRect()->runAction(seq);
+			_layer = c;
+			replace();
 			break;
 		}
 	}
-
-	auto scene = TitleLayer::create();
-	this->addChild(scene);
 }
 
 void TitleSelectScene::replaceSelect()
@@ -57,30 +47,55 @@ void TitleSelectScene::replaceSelect()
 	{
 		if (typeid(*c) == typeid(TitleLayer) && !_replacedLayer)
 		{
-			auto flg0 = CallFunc::create([&]() {
-				_replacedLayer = true;
-			});
-			auto fadeIn = FadeIn::create(0.5f);
-			auto callFunc = CallFunc::create([&]() {
-				this->removeChild(c, true);
-				auto scene = SelectLayer::create();
-				this->addChild(scene);
-			});
-			auto fadeOut = FadeOut::create(0.5f);
-			auto flg1 = CallFunc::create([&]() {
-				_replacedLayer = false;
-			});
-			auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
-			createFadeRect()->runAction(seq);
+			_layer = c;
+			replace();
+			//auto flg0 = CallFunc::create([&]() {
+			//	_replacedLayer = true;
+			//});
+			//auto fadeIn = FadeIn::create(0.5f);
+			//auto callFunc = CallFunc::create([&]() {
+			//	this->removeChild(_layer, true);
+			//	//c->removeFromParent();
+			//	auto scene = SelectLayer::create();
+			//	this->addChild(scene);
+			//});
+			//auto fadeOut = FadeOut::create(0.5f);
+			//auto flg1 = CallFunc::create([&]() {
+			//	_replacedLayer = false;
+			//});
+			//auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
+			//Sprite* sp = Sprite::create();
+			//sp = createFadeRect(sp);
+			//sp->runAction(seq);
 			break;
 		}
 	}	
 }
 
-Sprite* TitleSelectScene::createFadeRect()
+void TitleSelectScene::replace()
+{
+	auto flg0 = CallFunc::create([&]() {
+		_replacedLayer = true;
+	});
+	auto fadeIn = FadeIn::create(0.5f);
+	auto callFunc = CallFunc::create([&]() {
+		this->removeChild(_layer, true);
+		auto scene = SelectLayer::create();
+		this->addChild(scene);
+	});
+	auto fadeOut = FadeOut::create(0.5f);
+	auto flg1 = CallFunc::create([&]() {
+		_replacedLayer = false;
+	});
+	auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
+	Sprite* sp = Sprite::create();
+	sp = createFadeRect(sp);
+	sp->runAction(seq);
+}
+
+Sprite* TitleSelectScene::createFadeRect(Sprite* square)
 {
 	Rect rect = Rect(0, 0, designResolutionSize.width, designResolutionSize.height);
-	Sprite* square = Sprite::create();
 	square->setTextureRect(rect);
 	square->setOpacity(0);
 	square->setPosition(designResolutionSize*0.5f);

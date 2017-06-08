@@ -13,7 +13,7 @@ public:
 	void update(float delta);
 private:
 	float _timer = 0.0f;
-	CharacterAnimation* charAnim;
+	CharacterAnimation* _charAnim;
 	enum eSTATE
 	{
 		MOVE,
@@ -21,6 +21,7 @@ private:
 		JUMP
 	};
 	eSTATE _state;
+	void changeState();
 };
 
 #endif // !_TitleCharacter_h_
