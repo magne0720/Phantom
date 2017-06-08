@@ -1,22 +1,8 @@
 #include "Wall.h"
 
-Wall* Wall::create(Vec2 spawnPos, int num)
-{
-	Wall *pRet = new Wall();
-	if (pRet && pRet->init(spawnPos, num))
-	{
-		pRet->autorelease();
-		return pRet;
-	}
-	else
-	{
-		delete pRet;
-		pRet = nullptr;
-		return nullptr;
-	};
-};
 
-Wall* Wall::createWall(Vec2 pos,Rect rect)
+
+Wall* Wall::create(Vec2 pos,Rect rect)
 {
 	Wall *pRet = new Wall();
 	if (pRet && pRet->init(pos,rect))
@@ -39,9 +25,9 @@ bool Wall::init(Vec2 pos,Rect rect)
 	setPosition(designResolutionSize*0.5f);
 	myPosition = designResolutionSize*0.5f;
 
-	mySprite = Sprite::create();
-	mySprite->setTextureRect(rect);
-	mySprite->setColor(Color3B::BLACK);
+	Sprite* sp = Sprite::create();
+	sp->setTextureRect(rect);
+	sp->setColor(Color3B::BLACK);
 
 	points[0] = Vec2(rect.getMinX(),rect.getMinY());//左下
 	points[1] = Vec2(rect.getMinX(),rect.getMaxY());//左上
@@ -70,7 +56,7 @@ bool Wall::init(Vec2 pos,Rect rect)
 
 	clipp = ClippingNode::create();
 	clipp->setStencil(myWall);
-	clipp->addChild(mySprite);
+	clipp->addChild(sp);
 	addChild(clipp);
 
 
@@ -80,64 +66,6 @@ bool Wall::init(Vec2 pos,Rect rect)
 
 	return true;
 }
-
-bool Wall::init(Vec2 spawnPos,int num) 
-{
-	if (!Node::init()) 
-	{
-		return false;
-	}
-	setPosition(spawnPos);
-	myPosition = spawnPos;
-
-	String* name = String::createWithFormat("wall%03d.png", num);
-
-	mySprite = Sprite::create(name->getCString());
-	//addChild(mySprite);
-
-	Rect r = mySprite->getBoundingBox();
-
-	points[0] = Vec2(r.getMinX() + spawnPos.x, r.getMinY() + spawnPos.y);//左
-	points[1] = Vec2(r.getMinX() + spawnPos.x, r.getMaxY() + spawnPos.y);//上
-	points[2] = Vec2(r.getMaxX() + spawnPos.x, r.getMaxY() + spawnPos.y);//右
-	points[3] = Vec2(r.getMaxX() + spawnPos.x, r.getMinY() + spawnPos.y);//下
-	points[4] = Vec2(0, 0);//5角形になった時用
-	points[5] = Vec2(0, 0);//分割時に必要になる
-
-	myWall = DrawNode::create();
-	myWall->setPosition(myWall->getPosition() - spawnPos);
-
-	debug = DrawNode::create();
-	debug->setPosition(- spawnPos);
-	addChild(debug,51);
-
-	//頂点座標設定
-	std::vector<Vec2>vecs;
-	vecs.push_back(points[0]);
-	vecs.push_back(points[1]);
-	vecs.push_back(points[2]);
-	vecs.push_back(points[3]);
-
-	myWall->drawPolygon(&vecs[0], 4, Color4F::BLACK, 1, Color4F::YELLOW);
-	myWall->setPosition(-spawnPos);
-	addChild(myWall);
-
-	clipp = ClippingNode::create();
-	clipp->setStencil(myWall);
-	clipp->addChild(mySprite);
-	addChild(clipp);
-
-	myWall->drawSegment(points[0], points[1], 5, Color4F::RED);
-	myWall->drawSegment(points[1], points[2], 5, Color4F::RED);
-	myWall->drawSegment(points[2], points[3], 5, Color4F::RED);
-	myWall->drawSegment(points[3], points[0], 5, Color4F::RED);
-
-	isCuted = false;
-	segmentCount = 4;
-	scheduleUpdate();
-
-	return true;
-};
 
 void Wall::update(float delta)
 {

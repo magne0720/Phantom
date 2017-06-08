@@ -43,12 +43,6 @@ void Character::update(float delta)
 	plusAction();
 };
 
-//‰æ‘œ‚ğ’†‰›‚É‚µ‚Ä©g‚Ì‰æ‘œ‚ğ’u‚­
-void Character::initWithFileCenter(std::string name,Size chipSize) 
-{
-	mySprite = CharacterAnimation::create(name, chipSize);
-	addChild(mySprite,5);
-};
 
 //‰Šúİ’èˆÊ’u
 void Character::initialize(Vec2 pos,DIR_DEGREE dir) 

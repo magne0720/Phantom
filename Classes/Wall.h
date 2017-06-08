@@ -11,16 +11,13 @@ USING_NS_CC;
 class Wall :public Node
 {
 public:
-	static Wall* create(Vec2 spawnPos, int num = 0);
-	static Wall* createWall(Vec2 pos,Rect rect);
-	bool init(Vec2 spawnPos,int num=0);
+	static Wall* create(Vec2 pos,Rect rect);
 	bool init(Vec2 pos,Rect rect);
 	void update(float delta);
 
 	int segmentCount;
 	int drawCount;
 	float cutTimer;
-	Sprite* mySprite;
 	Vec2 myPosition;
 	Vec2 points[POINT_SIZE];
 	bool* playerCut;

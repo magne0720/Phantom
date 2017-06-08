@@ -22,9 +22,11 @@ bool Goal::init(Vec2 spawnPos)
 
 	initialize(spawnPos);
 
-	mySprite = CharacterAnimation::create("goal.png",Size(100,100));
+	mySprite = CharacterAnimation::createInMove("goal.png",Size(100,100));
 	addChild(mySprite);
 
+	Sprite* sp = Sprite::create("goal.png");
+	addChild(sp);
 
 	//scheduleUpdate();
 

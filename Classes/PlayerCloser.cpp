@@ -57,6 +57,9 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 void PlayerCloser::update(float delta) 
 {
 #if MODE==0
+
+	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)isGoal = true;
+
 	if (rightRobot->isStandby&&leftRobot->isStandby) 
 	{
 		rightRobot->moveTimer = 0;

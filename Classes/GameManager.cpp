@@ -24,6 +24,8 @@ bool GameManager::init(int num)
 	map = MapCreator::create(num);
 	addChild(map);
 
+	isGoal = &map->robot->isGoal;
+
 	timer = 0;
 
 
@@ -35,8 +37,20 @@ bool GameManager::init(int num)
 
 void GameManager::update(float delta) 
 {
-	timer += 0.005f;
+	if (*isGoal) 
+	{
+		dispGoal();
+	}
 
+};
 
-}
+void GameManager::dispGoal()
+{
+	Sprite* sp = Sprite::create("sphere.png");
+	sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
+	addChild(sp);
 
+	RotateBy* rotate = RotateBy::create(2, 360);
+	sp->runAction(RepeatForever::create(rotate));
+
+};

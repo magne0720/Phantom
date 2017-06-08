@@ -14,8 +14,10 @@ public:
 	bool init(int num);
 	void update(float delta);
 
+	void dispGoal();
 
 	MapCreator* map;
+	bool* isGoal;
 
 	float timer;
 

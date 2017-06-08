@@ -7,6 +7,13 @@ void ObjectBase::initialize(Vec2 pos)
 	myPosition = pos;
 };
 
+//画像を中央にして自身の画像を置く
+void ObjectBase::initWithFileCenter(std::string name, Size chipSize)
+{
+	mySprite = CharacterAnimation::createInMove(name, chipSize, 0.5f);
+	addChild(mySprite, 5);
+};
+
 //キャラクターpとの範囲円が重なっているか
 bool ObjectBase::onCollision(ObjectBase* p)
 {
@@ -74,3 +81,4 @@ void ObjectBase::setTarget(ObjectBase* p)
 {
 	targets.pushBack(p);
 };
+

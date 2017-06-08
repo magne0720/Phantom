@@ -36,8 +36,7 @@ bool PlayerRobot::init(Vec2 pos)
 	checkTime = 60.0f;
 
 	initWithFileCenter("robot.png", Size(100,100));
-	mySprite->stopAnimation();
-
+	
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
 	initialize(pos,DIR_DEGREE::DIR_RIGHT);

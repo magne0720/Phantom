@@ -36,7 +36,6 @@ private:
 	//void createPlayer(float x, float y);
 
 public:
-	DrawNode* d;
 
 	static MapCreator* create(int num);
 	bool init(int num);

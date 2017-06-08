@@ -32,9 +32,6 @@ bool MapCreator::init(int num)
 
 	openMapFile("test",num);
 
-	d = DrawNode::create();
-	addChild(d, 500);
-
 	return true;
 };
 
@@ -136,7 +133,6 @@ void MapCreator::analyzePlayer(char* data)
 void MapCreator::analyzeGoal(char* data)
 {
 	Vec2 pos;
-	DIR_DEGREE d=getCharToDirction(data);
 	data += 1;
 	pos.x = getCharToFloat(data);
 	data += 4;

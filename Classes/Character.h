@@ -14,8 +14,6 @@ class Character:public ObjectBase
 {
 public:
 	static Character* create(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
-	//初期画像を中心に配置
-	void initWithFileCenter(std::string name,Size chipSize=Size(100,100));
 	//初期設定
 	virtual bool init(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
 	//更新
