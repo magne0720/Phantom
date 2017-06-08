@@ -12,9 +12,9 @@ class Wall :public Node
 {
 public:
 	static Wall* create(Vec2 spawnPos, int num = 0);
-	static Wall* createWall();
+	static Wall* createWall(Vec2 pos,Rect rect);
 	bool init(Vec2 spawnPos,int num=0);
-	bool init();
+	bool init(Vec2 pos,Rect rect);
 	void update(float delta);
 
 	int segmentCount;

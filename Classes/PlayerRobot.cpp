@@ -165,7 +165,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 		if (touch->getLocation().y < 0)
 			touchPosition.y = 0;
 
-		if (isMoveWait&&myState==STATUS::STAND) {
+		if (isMoveWait) {
 			if (angles.size() < 10) {
 			if (length(endPosition - touchPosition) >= doubtDegree)
 				{
@@ -195,9 +195,8 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 	if (!isStart) {
 		if (angles.size() != 10)
-			{
+		{
 			stopPosition();
-			//log("lineError");
 		}
 		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {

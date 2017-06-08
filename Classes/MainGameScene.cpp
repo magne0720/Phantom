@@ -24,18 +24,11 @@ bool MainGameScene::init(int num)
 		return false;
 	}
 
-	gm = GameManager::create();
+	gm = GameManager::create(num);
 	addChild(gm,5);
 
 	gameLayer = gm->map->printMap();
 	addChild(gameLayer,1);
 
-	//scheduleUpdate();
-
 	return true;
-};
-
-void MainGameScene::update(float delta)
-{
-
 };

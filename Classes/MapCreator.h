@@ -38,9 +38,8 @@ private:
 public:
 	DrawNode* d;
 
-	static MapCreator* create();
-	bool init();
-	void update(float delta);
+	static MapCreator* create(int num);
+	bool init(int num);
 
 	//解析データ置き場
 	char analyzeData[2048];
@@ -54,7 +53,7 @@ public:
 
 	//マップ作成処理---------------------------------------------------------------------------
 	//マップファイル読み込み
-	void openMapFile(char* name);
+	void openMapFile(char* name,int num=0);
 	//マップ情報管理関数
 	void loadMap(string mapText);
 	//マップ情報の追加

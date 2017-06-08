@@ -16,10 +16,10 @@ Wall* Wall::create(Vec2 spawnPos, int num)
 	};
 };
 
-Wall* Wall::createWall()
+Wall* Wall::createWall(Vec2 pos,Rect rect)
 {
 	Wall *pRet = new Wall();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(pos,rect))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -32,7 +32,7 @@ Wall* Wall::createWall()
 	};
 };
 
-bool Wall::init()
+bool Wall::init(Vec2 pos,Rect rect)
 {
 	if (!Node::init())return false;
 
@@ -40,12 +40,13 @@ bool Wall::init()
 	myPosition = designResolutionSize*0.5f;
 
 	mySprite = Sprite::create();
-	mySprite->setTextureRect(Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+	mySprite->setTextureRect(rect);
+	mySprite->setColor(Color3B::BLACK);
 
-	points[0] = Vec2(designResolutionSize.width*0.0f,designResolutionSize.height*0.0f);//左下
-	points[1] = Vec2(designResolutionSize.width, designResolutionSize.height*0.0f);//右下
-	points[2] = Vec2(designResolutionSize.width, designResolutionSize.height);//右上
-	points[3] = Vec2(designResolutionSize.width*0.0f, designResolutionSize.height);//左上
+	points[0] = Vec2(rect.getMinX(),rect.getMinY());//左下
+	points[1] = Vec2(rect.getMinX(),rect.getMaxY());//左上
+	points[2] = Vec2(rect.getMaxX(),rect.getMaxY());//右上
+	points[3] = Vec2(rect.getMaxX(),rect.getMinY());//右下
 	points[4] = Vec2(0, 0);//5角形になった時用
 	points[5] = Vec2(0, 0);//分割時に必要になる
 
@@ -68,12 +69,13 @@ bool Wall::init()
 	addChild(myWall);
 
 	clipp = ClippingNode::create();
+	clipp->setStencil(myWall);
+	clipp->addChild(mySprite);
 	addChild(clipp);
 
 
 	isCuted = false;
 	segmentCount = 4;
-	drawCount = 0;
 	scheduleUpdate();
 
 	return true;
@@ -132,33 +134,29 @@ bool Wall::init(Vec2 spawnPos,int num)
 
 	isCuted = false;
 	segmentCount = 4;
-	drawCount = 0;
-
 	scheduleUpdate();
 
 	return true;
 };
 
-void Wall::update(float delta) 
+void Wall::update(float delta)
 {
-	if (*playerCut) 
+	if (*playerCut)
 	{
 		callCollision();
 	}
-
-	cutTimer += 0.04f;
-	if (cutTimer >= 1.0f) 
+	if (cutTimer < 0)cutTimer += 0.02f;//速度変化
+	else	cutTimer += 0.01f;
+	
+	if (cutTimer >= 1.0f)//ループさせる
 	{
-		debug->clear();
-		if (drawCount == 0) 
-			debug->drawSegment(points[drawCount], getOverPoint(points, segmentCount, drawCount + 1), 5, Color4F::ORANGE);
-		else
-			debug->drawSegment(points[drawCount], getOverPoint(points, segmentCount, drawCount + 1), 5, Color4F::GREEN);
-		drawCount++;
-		cutTimer = 0;
-		if (drawCount >= segmentCount)drawCount = 0;
+		cutTimer = -1.0f;
 	}
-}
+	debug->clear();
+	for (int i = 0; i < segmentCount; i++)
+		debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
+
+};
 
 void Wall::setTargets(Vec2* from, Vec2* to) 
 {
@@ -193,7 +191,7 @@ void Wall::callCollision()
 			addPointNum[count - 4] = i;
 			addPoint(&pos, temp, i);
 			count++;
-			if (count ==6)break;
+		//	if (count ==6)break;
 		}
 	}
 	if (count == POINT_SIZE)
@@ -201,7 +199,6 @@ void Wall::callCollision()
 		for (int i = 0; i < POINT_SIZE; i++){
 			points[i] = temp[i];
 		}
-
 		isCuted = true;
 		checkCutArea(points);
 	}
@@ -444,9 +441,6 @@ void Wall::sortPoints(Vec2* points, int*nums)
 {
 	int temp;
 	Vec2 pos;
-
-	for (int i = 0; nums[i] != -1; i++)
-		//log("points[%d][%f,%f]", nums[i], points[nums[i]].x, points[nums[i]].y);
 
 	for (int i = 0; nums[i] != -1; i++) 
 		for (int j = i; nums[j] != -1; j++)

@@ -11,7 +11,6 @@ class MainGameScene :public Scene
 public:
 	static MainGameScene* createScene(int num);
 	bool init(int num);
-	void update(float delta);
 
 	GameManager* gm;
 	Layer* gameLayer;

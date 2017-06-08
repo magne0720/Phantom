@@ -1,9 +1,9 @@
 #include "MapCreator.h"
 
-MapCreator* MapCreator::create() 
+MapCreator* MapCreator::create(int num) 
 {
 	MapCreator *pRet = new MapCreator();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(num))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,35 +16,32 @@ MapCreator* MapCreator::create()
 	};
 };
 
-bool MapCreator::init() 
+bool MapCreator::init(int num) 
 {
 	if (!Node::init()) 
 	{
 		return false;
 	}
 	
-	Wall* aroundWall = Wall::createWall();
+	Wall* aroundWall = Wall::createWall(
+		designResolutionSize*0.5f,
+		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
+			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f));
+
 	walls.pushBack(aroundWall);
 
-	openMapFile("test");
+	openMapFile("test",num);
 
 	d = DrawNode::create();
 	addChild(d, 500);
 
-	scheduleUpdate();
-
 	return true;
 };
 
-void MapCreator::update(float delta)
-{
-
-};
-
 //マップファイル読み込み
-void MapCreator::openMapFile(char* name)
+void MapCreator::openMapFile(char* name,int num)
 {
-	String* filename = String::createWithFormat("Stages/%s.bin", name);
+	String* filename = String::createWithFormat("Stages/%s_%0d.bin", name,num);
 	string fileText = FileUtils::getInstance()->getStringFromFile(filename->getCString());
 
 	loadMap(fileText);

@@ -1,10 +1,27 @@
 #include "GameManager.h"
 
-bool GameManager::init() 
+GameManager* GameManager::create(int num)
+{
+	GameManager *pRet = new GameManager();
+	if (pRet && pRet->init(num))
+	{
+		pRet->autorelease();
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+		return nullptr;
+	};
+};
+
+
+bool GameManager::init(int num) 
 {
 	if (!Node::init())return false;
 
-	map = MapCreator::create();
+	map = MapCreator::create(num);
 	addChild(map);
 
 	timer = 0;

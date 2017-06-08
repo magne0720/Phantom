@@ -10,8 +10,8 @@ class GameManager :public Node
 {
 public:
 
-	CREATE_FUNC(GameManager);
-	bool init();
+	static GameManager* create(int num);
+	bool init(int num);
 	void update(float delta);
 
 
