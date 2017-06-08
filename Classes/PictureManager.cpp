@@ -1,5 +1,6 @@
 #include "PictureManager.h"
 #include "AllTags.h"
+#include "MainGameScene.h"
 
 using namespace cocos2d;
 
@@ -136,13 +137,13 @@ void PictureManager::update(float delta)
 		_add *= -1;
 		return;
 	}
-
+	
 	_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
 	_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
 	_pictures[_selectedStage]->setColor(Color3B::WHITE);
 
 }
-
+// タッチ処理用関数
 bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	if (_touchTimer < _TOUCH_REACTION) return false;
@@ -166,14 +167,12 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 	
 	return false;
 }
-
 void PictureManager::onTouchCancelled(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	touchIDInit();
 	defaultSize();
 	selectedInit();
 }
-
 void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	if (_areResizing) return;
@@ -204,7 +203,7 @@ void PictureManager::onTouchEnded(const std::vector<Touch *> &touches, Event *un
 	}
 	
 }
-
+// タッチ処理用関数（ポップアップ後）
 bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	if (_touchTimer < _TOUCH_REACTION) return false;
@@ -230,7 +229,6 @@ bool PictureManager::onTouchBeganP(const std::vector<Touch *> &touches, Event *u
 		}
 	}	
 }
-
 void PictureManager::onTouchCancelledP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	defaultSize();
@@ -238,7 +236,6 @@ void PictureManager::onTouchCancelledP(const std::vector<Touch *> &touches, Even
 	_pictures[_selectedStage]->setPosition(_pictures[_selectedStage]->getPos());
 	selectedInit();
 }
-
 void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *unused_event)
 {
 	for (auto pTouch : touches)
@@ -247,17 +244,18 @@ void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *u
 		if (rect.containsPoint(pTouch->getLocation()))
 		{
 			_pictures[_selectedStage]->setColor(Color3B::WHITE);
-			log("YES!");
+			auto scene = MainGameScene::createScene(_selectedStage);
+			Director::getInstance()->replaceScene(scene);
 		}
 		touchIDInit();
 	}
 }
 
+// 初期化用関数
 void PictureManager::selectedInit()
 {
 	_selectedStage = -1;
 }
-
 void PictureManager::touchIDInit()
 {
 	_touchID = -1;
@@ -348,12 +346,4 @@ void PictureManager::swap(Vec2 &a, Vec2 &b)
 	Vec2 v = a;
 	a = b;
 	b = v;
-}
-
-void PictureManager::swapA2B()
-{
-	//swap(_beforePic.scale, _afterPic.scale);
-	//swap(_beforePic.position, _afterPic.position);
-	//swap(_beforePic.z, _afterPic.z);
-	//_per = 0.0f;
 }

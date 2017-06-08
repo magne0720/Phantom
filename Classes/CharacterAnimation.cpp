@@ -3,7 +3,7 @@
 using namespace cocos2d;
 using namespace std;
 
-bool CharacterAnimation::init(string fileName, Size chipSize)
+bool CharacterAnimation::init(string fileName, Size chipSize, float delay)
 {
 	if (!Node::init()) return false;
 
@@ -43,10 +43,10 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 	}
 
 	// ディレイ設定
-	_animFront->setDelayPerUnit(0.5f);
-	_animBack->setDelayPerUnit(0.5f);
-	_animLeft->setDelayPerUnit(0.5f);
-	_animRight->setDelayPerUnit(0.5f);
+	_animFront->setDelayPerUnit(delay);
+	_animBack->setDelayPerUnit(delay);
+	_animLeft->setDelayPerUnit(delay);
+	_animRight->setDelayPerUnit(delay);
 
 	// キャッシュに溜める
 	_animationChache->addAnimation(_animFront, "FRONT");
@@ -70,10 +70,10 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 	_stopRight->addSpriteFrame(charSp[width*3]);
 
 	// ディレイ設定
-	_stopFront->setDelayPerUnit(0.5f);
-	_stopBack->setDelayPerUnit(0.5f);
-	_stopLeft->setDelayPerUnit(0.5f);
-	_stopRight->setDelayPerUnit(0.5f);
+	_stopFront->setDelayPerUnit(delay);
+	_stopBack->setDelayPerUnit(delay);
+	_stopLeft->setDelayPerUnit(delay);
+	_stopRight->setDelayPerUnit(delay);
 
 	// キャッシュに溜める
 	_animationChache->addAnimation(_stopFront, "STOP_F");
@@ -81,18 +81,20 @@ bool CharacterAnimation::init(string fileName, Size chipSize)
 	_animationChache->addAnimation(_stopLeft, "STOP_L");
 	_animationChache->addAnimation(_stopRight, "STOP_R");
 
-	_dir = eDIR::BACK;
-	stopAnimation(eDIR::FRONT);
+	_dir = eDIR::FRONT;
+	if (_movedAnim) startAnimation();
+	else stopAnimation();
 
 	return true;
 }
 
-CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize)
+CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize))
+	if (pRet && pRet->init(fileName, chipSize, delay))
 	{
 		pRet->autorelease();
+		pRet->_movedAnim = true;
 		return pRet;
 	}
 	else
@@ -103,46 +105,58 @@ CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize)
 	}
 }
 
-// 一応残してあるけど、eDIRを推奨します
-void CharacterAnimation::changeAnimation(string dirName)
+CharacterAnimation* CharacterAnimation::createInStop(string fileName, Size chipSize, float delay)
 {
-	_mySprite->stopAllActions();
-	Animation* anim = _animationChache->animationByName(dirName);
-	auto action = RepeatForever::create(Animate::create(anim));
-	_mySprite->runAction(action);
+	CharacterAnimation* pRet = new CharacterAnimation();
+	if (pRet && pRet->init(fileName, chipSize, delay))
+	{
+		pRet->autorelease();
+		pRet->_movedAnim = false;
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
+}
+
+CharacterAnimation* CharacterAnimation::createInMove(string fileName, Size chipSize, float delay)
+{
+	CharacterAnimation* pRet = new CharacterAnimation();
+	if (pRet && pRet->init(fileName, chipSize, delay))
+	{
+		pRet->autorelease();
+		pRet->_movedAnim = true;
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
 }
 
 void CharacterAnimation::changeAnimation(eDIR dirName)
 {
-	if (_dir == dirName) return;
-	_mySprite->stopAllActions();
-	_dir = dirName;
-	Animation* anim;
-	switch (dirName)
+	if (_movedAnim)
 	{
-	case eDIR::FRONT:
-		anim = _animationChache->animationByName("FRONT");
-		break;
-	case eDIR::BACK:
-		anim = _animationChache->animationByName("BACK");
-		break;
-	case eDIR::LEFT:
-		anim = _animationChache->animationByName("LEFT");
-		break;
-	case eDIR::RIGHT:
-		anim = _animationChache->animationByName("RIGHT");
-		break;
-	default:
-		break;
+		startAnimation(dirName);
 	}
-	auto action = RepeatForever::create(Animate::create(anim));
-	_mySprite->runAction(action);
+	else
+	{
+		stopAnimation(dirName);
+	}
 }
 
 void CharacterAnimation::stopAnimation(eDIR dirName)
 {
+	if (_movedAnim == false && _dir == dirName) return;
 	_mySprite->stopAllActions();
 	_dir = dirName;
+	_movedAnim = false;
 	Animation* anim;
 	switch (dirName)
 	{
@@ -167,21 +181,31 @@ void CharacterAnimation::stopAnimation(eDIR dirName)
 
 void CharacterAnimation::stopAnimation()
 {
+	if (!_movedAnim) return;
+	_movedAnim = false;
+	stopAnimation(_dir);
+}
+
+void CharacterAnimation::startAnimation(eDIR dirName)
+{
+	if (_movedAnim && _dir == dirName) return;
 	_mySprite->stopAllActions();
+	_dir = dirName;
+	_movedAnim = true;
 	Animation* anim;
-	switch (_dir)
+	switch (dirName)
 	{
 	case eDIR::FRONT:
-		anim = _animationChache->animationByName("STOP_F");
+		anim = _animationChache->animationByName("FRONT");
 		break;
 	case eDIR::BACK:
-		anim = _animationChache->animationByName("STOP_B");
+		anim = _animationChache->animationByName("BACK");
 		break;
 	case eDIR::LEFT:
-		anim = _animationChache->animationByName("STOP_L");
+		anim = _animationChache->animationByName("LEFT");
 		break;
 	case eDIR::RIGHT:
-		anim = _animationChache->animationByName("STOP_R");
+		anim = _animationChache->animationByName("RIGHT");
 		break;
 	default:
 		break;
@@ -190,14 +214,11 @@ void CharacterAnimation::stopAnimation()
 	_mySprite->runAction(action);
 }
 
-void CharacterAnimation::startAnimation(eDIR dirName)
-{
-	changeAnimation(dirName);
-}
-
 void CharacterAnimation::startAnimation()
 {
-	changeAnimation(_dir);
+	if (_movedAnim) return;
+	_movedAnim = true;
+	startAnimation(_dir);
 }
 
 void CharacterAnimation::stopAction()
@@ -209,3 +230,30 @@ Sprite* CharacterAnimation::getSp()
 {
 	return _mySprite;
 }
+
+void CharacterAnimation::setDelay(float delayTime)
+{
+	_animationChache->animationByName("FRONT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("BACK")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("RIGHT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("LEFT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("STOP_F")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("STOP_B")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("STOP_R")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("STOP_L")->setDelayPerUnit(delayTime);
+}
+
+//void CharacterAnimation::setDelay(float delayTime, eDIR dirName)
+//{
+//	// 未実装
+//}
+
+float CharacterAnimation::getDelay()
+{
+	return _animationChache->animationByName("FRONT")->getDelayPerUnit();
+}
+
+//float CharacterAnimation::getDelay(eDIR dirName)
+//{
+//	// 未実装
+//}

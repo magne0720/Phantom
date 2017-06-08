@@ -10,7 +10,10 @@ bool Picture::init(int id)
 		return false;
 	}
 
-	this->initWithFile("HelloWorld.png");
+	String* str = String::createWithFormat("HelloWorld.png");
+	//String* str = String::createWithFormat("Stage%f.png", id);
+	
+	this->initWithFile(str->getCString());
 	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
 	_clip = Sprite::create("CloseNormal.png");
@@ -23,6 +26,8 @@ bool Picture::init(int id)
 	_shadow->setOpacity(133);
 	_shadow->setZOrder(-1);
 	this->addChild(_shadow);
+
+	auto skew = SkewTo::create(3, 3, 0);
 
 	return true;
 }

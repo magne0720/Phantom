@@ -69,7 +69,6 @@ private:
 	void swap(float &a, float &b);
 	void swap(int &a, int &b);
 	void swap(cocos2d::Vec2 &a, cocos2d::Vec2 &b);
-	void swapA2B();
 
 	cocos2d::Label* label;
 };

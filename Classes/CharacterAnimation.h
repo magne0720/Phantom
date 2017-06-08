@@ -28,24 +28,32 @@ public:
 		LEFT,
 		RIGHT
 	};
-	bool init(std::string fileName, cocos2d::Size chipSize);
-	static CharacterAnimation* create(std::string fileName, cocos2d::Size chipSize);
+	bool init(std::string fileName, cocos2d::Size chipSize, float delay);
+	static CharacterAnimation* create(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
+	static CharacterAnimation* createInStop(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
+	static CharacterAnimation* createInMove(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
 	
-	void changeAnimation(std::string dirName);
-	void changeAnimation(eDIR dirName);
+	void changeAnimation(eDIR dirName);	// アニメーション切り替え
 
-	void stopAnimation(eDIR dirName);
-	void stopAnimation();
+	void stopAnimation(eDIR dirName);	// 停止アニメーションに切り替え(向き指定)
+	void stopAnimation();				// 停止アニメーションに切り替え
 
-	void startAnimation(eDIR dirName);
-	void startAnimation();
+	void startAnimation(eDIR dirName);	// 移動アニメーションに切り替え(向き指定)
+	void startAnimation();				// 移動アニメーションに切り替え
 
-	void stopAction();
-	cocos2d::Sprite* getSp();
+	void stopAction();					// アニメーション自体を停止
+	cocos2d::Sprite* getSp();			// クラス内のスプライトを取得(オススメしない)
+
+	void setDelay(float delayTime);		// スプライトの切り替わる早さを指定
+	//void setDelay(float delayTime, eDIR dirName);	// スプライトの切り替わる早さを指定(向き指定)
+
+	float getDelay();					// スプライトの切り替わる早さを取得
+	//float getDelay(eDIR dirName);		// スプライトの切り替わる早さを取得(向き指定)
 
 private:
 	cocos2d::Sprite* _mySprite;
 	eDIR _dir;
+	bool _movedAnim;
 
 	cocos2d::AnimationCache* _animationChache;
 };
