@@ -68,6 +68,7 @@ void Character::initialize(Vec2 pos,DIR_DEGREE dir)
 //マイフレーム起こす移動以外の行動
 void Character::action() 
 {
+	allCollision();
 
 	//	^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	// <次ここ！！基本ステート完成させる！！>
@@ -83,12 +84,14 @@ void Character::action()
 	case MOVE:
 		if (length(targetPosition - myPosition) < moveSpeed) {
 			setState(STATUS::STAND); 
+			break;
 		}
 		move();
 		break;
 	case DOUBT:
 		break;
 	case FIND:
+		isMoveWait = true;
 		break;
 	case CHASE:
 		move(2.0f);
@@ -100,8 +103,8 @@ void Character::action()
 		break;
 	}
 
-	allCollision();
-
+//	log("myPosition=[%f,%f]", myPosition.x, myPosition.y);
+	//log("targetPosition=[%f,%f]", targetPosition.x, targetPosition.y);
 };
 
 //追加行動
@@ -116,9 +119,12 @@ void Character::move(float plusSpeed)
 {
 	//移動に必要
 	Vec2 aPos = normalize(targetPosition - myPosition);
+	if (getTag() == 0) {
+		//log("aPos[%f,%f]", aPos.x, aPos.y);
+	}
 
 	moveRangeSp->clear();
-	moveRangeSp->drawSegment(Vec2(0,0),normalize(targetPosition-myPosition)*doubtDegree,5,Color4F::GREEN);
+	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
 
 	myPosition += aPos*moveSpeed;
 
@@ -138,61 +144,6 @@ bool Character::onLastTargetPosition(Vec2 pos)
 	return false;
 };
 
-//キャラクターpとの範囲円が重なっているか
-bool Character::onCollision(Character* p)
-{
-	return false;
-};
-
-//posから半径range内にいるか
-bool Character::onCollision(Vec2 pos,float range)
-{
-	if (length(pos - myPosition)*length(pos-myPosition)<= range*moveRange)
-	{
-		////log("length=%f,range=%f",length(pos-myPosition),range);
-		return true;
-	}
-	return false;
-};
-
-//start-end間に当たっているかどうか
-bool Character::onCollision(Vec2 start, Vec2 end)
-{
-	Vec2 AB = end - start;
-	Vec2 AP = myPosition - start;
-	Vec2 BP = myPosition - end;
-
-	//外積
-	float APxAB = AB.x*AP.y - AP.x*AB.y;
-	if (APxAB < 0)APxAB = APxAB*(-1);
-
-	//内積
-	float DotAP = dot(AP, AB);
-	float DotBP = dot(BP, AB);
-
-	float ans = APxAB / sqrt(AB.x*AB.x + AB.y*AB.y);
-	
-	if (ans <= 100.0f)
-	{
-		if (DotAP*DotBP <= 0)
-		{
-			return true;
-		}
-		else
-		{
-			if (ans > sqrt(AP.x*AP.x + AP.y*AP.y)||ans>sqrt(BP.x*BP.x+BP.y*BP.y)) 
-			{
-				return true;
-			}
-			return false;
-		}
-	}
-	else 
-	{
-		return false;
-	}
-	return false;
-};
 
 //進む方向が壁かどうか
 bool Character::onWall(SEGMENT s0, SEGMENT s1)
@@ -268,7 +219,6 @@ bool Character::onDirectionRight(const Vec2 target)
 
 	if (to.x*t.y - t.x*to.y < 0)
 	{
-		//log("right");
 		return true;
 	}
 	return false;
@@ -284,32 +234,25 @@ bool Character::onDirectionLeft(const Vec2 target)
 
 	if (to.x*t.y - t.x*to.y > 0)
 	{
-		//log("left");
 		return true;
 	}
 	return false;
 };
 
-
-
-
 //衝突判定まとめ
-void Character::allCollision() 
+void Character::allCollision()
 {
-	colTimer++;
-	if (colTimer >= 60.0f) {
-		Vec2 movement = normalize(targetPosition - myPosition)*moveSpeed + myPosition;
+	SEGMENT mySeg = SEGMENT(myPosition, targetPosition);
+	Vec2 movement = targetPosition - myPosition;
 
-		for (int i = 0; i < walls.size(); i++)
-			for (int j = 0; j < walls.at(i)->segmentCount; j++)
+	for (int i = 0; i < walls.size(); i++)
+		for (int j = 0; j < walls.at(i)->segmentCount; j++)
+		{
+			if (onWall(mySeg,SEGMENT(walls.at(i)->points[j],walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1))))
 			{
-				if (onWall(SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1)), SEGMENT(myPosition, movement)))
-				{
-					setState(STATUS::STAND);
-				}
+				setEvasionWall(walls.at(i)->getSegment(j), movement);
 			}
-		colTimer = 0;
-	}
+		}
 };
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -326,6 +269,12 @@ void Character::setSpeed(float speed)
 {
 	moveSpeed = speed;
 };
+
+void Character::setTargetWall(Wall* p)
+{
+	walls.pushBack(p);
+};
+
 
 //歩ける範囲変更
 void Character::setMoveRange(float range)
@@ -374,18 +323,6 @@ void Character::setDirection(DIR_DEGREE degree)
 	myDirection = (float)degree;
 };
 
-//当たり判定のあるものを設定
-void Character::setTarget(Character* p)
-{
-	targets.pushBack(p);
-};
-
-//当たり判定のあるものを設定
-//すでにあるなら追加しない
-void Character::setTarget(Wall* p)
-{
-	walls.pushBack(p);
-};
 
 //方向ベクトルから右方向に固有角度で自身の視認範囲のベクトルを取得する
 Vec2 Character::getDirectionDegree(Vec2 target, float deg, float range)
@@ -406,10 +343,25 @@ Vec2 Character::getDirectionDegree(Vec2 target, float deg, float range)
 //向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める(壁ずり)
 void Character::setEvasionWall(Vec2 wall, Vec2 target)
 {
-	//壁の法線
-	Vec2 to = getDirectionDegree(wall, 90);
+	// out : 正規化壁ずりベクトル（戻り値）
+	// front : 進行ベクトル
+	// normal: 衝突点での法線ベクトル
+	//(front - Dot(&front, &normal_n) * normal_n)
 
-	targetPosition = normalize( target + dot(target, to)*to)*moveSpeed+myPosition;
+
+	Vec2 t ;
+	//壁の法線
+	Vec2 wall_n = getDirectionDegree(wall, 90);
+
+	log("%d,wall_n=[%0.2f,%0.2f]",getTag(), wall_n.x, wall_n.y);
+
+	targetPosition = target - dot(target, wall_n)*wall_n+myPosition;
+
+	//if (length(t-myPosition) > moveSpeed) 
+	//{
+	//	log("top");
+	//	targetPosition = t;
+	//}
 };
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -423,7 +375,6 @@ Vec2 Character::getDirectionVector()
 	{
 
 	}
-
 	return normalize(myPosition-targetPosition);
 };
 

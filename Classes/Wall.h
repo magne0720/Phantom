@@ -11,8 +11,10 @@ USING_NS_CC;
 class Wall :public Node
 {
 public:
-	static Wall* create(Vec2 spawnPos);
-	bool init(Vec2 spawnPos);
+	static Wall* create(Vec2 spawnPos, int num = 0);
+	static Wall* createWall();
+	bool init(Vec2 spawnPos,int num=0);
+	bool init();
 	void update(float delta);
 
 	int segmentCount;
@@ -21,6 +23,7 @@ public:
 	Sprite* mySprite;
 	Vec2 myPosition;
 	Vec2 points[POINT_SIZE];
+	bool* playerCut;
 	bool isCuted;
 	DrawNode* myWall,*debug;
 	ClippingNode* clipp;
@@ -62,6 +65,8 @@ public:
 	void sortPoints(Vec2* points, int*nums);
 	//壁の配列が規定より超えたときに超えた分だけ0から数える
 	Vec2 getOverPoint(Vec2 points[],int limit,int num);
+	//選択点と次の点との方向ベクトルを返す
+	Vec2 getSegment(int startpoint);
 };
 
 #endif // !__WALL_H__

@@ -1,9 +1,9 @@
 #include "Wall.h"
 
-Wall* Wall::create(Vec2 spawnPos) 
+Wall* Wall::create(Vec2 spawnPos, int num)
 {
 	Wall *pRet = new Wall();
-	if (pRet && pRet->init(spawnPos))
+	if (pRet && pRet->init(spawnPos, num))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,70 @@ Wall* Wall::create(Vec2 spawnPos)
 	};
 };
 
-bool Wall::init(Vec2 spawnPos) 
+Wall* Wall::createWall()
+{
+	Wall *pRet = new Wall();
+	if (pRet && pRet->init())
+	{
+		pRet->autorelease();
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+		return nullptr;
+	};
+};
+
+bool Wall::init()
+{
+	if (!Node::init())return false;
+
+	setPosition(designResolutionSize*0.5f);
+	myPosition = designResolutionSize*0.5f;
+
+	mySprite = Sprite::create();
+	mySprite->setTextureRect(Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+
+	points[0] = Vec2(designResolutionSize.width*0.0f,designResolutionSize.height*0.0f);//左下
+	points[1] = Vec2(designResolutionSize.width, designResolutionSize.height*0.0f);//右下
+	points[2] = Vec2(designResolutionSize.width, designResolutionSize.height);//右上
+	points[3] = Vec2(designResolutionSize.width*0.0f, designResolutionSize.height);//左上
+	points[4] = Vec2(0, 0);//5角形になった時用
+	points[5] = Vec2(0, 0);//分割時に必要になる
+
+	myWall = DrawNode::create();
+	myWall->setPosition(myWall->getPosition() - getPosition());
+
+	debug = DrawNode::create();
+	debug->setPosition(-getPosition());
+	addChild(debug, 51);
+
+	//頂点座標設定
+	std::vector<Vec2>vecs;
+	vecs.push_back(points[0]);
+	vecs.push_back(points[1]);
+	vecs.push_back(points[2]);
+	vecs.push_back(points[3]);
+
+	myWall->drawPolygon(&vecs[0], 4, Color4F::BLACK, 1, Color4F::YELLOW);
+	myWall->setPosition(-getPosition());
+	addChild(myWall);
+
+	clipp = ClippingNode::create();
+	addChild(clipp);
+
+
+	isCuted = false;
+	segmentCount = 4;
+	drawCount = 0;
+	scheduleUpdate();
+
+	return true;
+}
+
+bool Wall::init(Vec2 spawnPos,int num) 
 {
 	if (!Node::init()) 
 	{
@@ -25,7 +88,9 @@ bool Wall::init(Vec2 spawnPos)
 	setPosition(spawnPos);
 	myPosition = spawnPos;
 
-	mySprite = Sprite::create("sphere.png");
+	String* name = String::createWithFormat("wall%03d.png", num);
+
+	mySprite = Sprite::create(name->getCString());
 	//addChild(mySprite);
 
 	Rect r = mySprite->getBoundingBox();
@@ -51,9 +116,9 @@ bool Wall::init(Vec2 spawnPos)
 	vecs.push_back(points[2]);
 	vecs.push_back(points[3]);
 
-	myWall->drawPolygon(&vecs[0], 4, Color4F::WHITE, 1, Color4F::YELLOW);
+	myWall->drawPolygon(&vecs[0], 4, Color4F::BLACK, 1, Color4F::YELLOW);
 	myWall->setPosition(-spawnPos);
-	addChild(myWall,50);
+	addChild(myWall);
 
 	clipp = ClippingNode::create();
 	clipp->setStencil(myWall);
@@ -69,11 +134,6 @@ bool Wall::init(Vec2 spawnPos)
 	segmentCount = 4;
 	drawCount = 0;
 
-	for (int i = 0; i < 6;i++)
-	{
-		log("initPos[%d],[%f,%f]", i, points[i].x, points[i].y);
-	}
-
 	scheduleUpdate();
 
 	return true;
@@ -81,6 +141,11 @@ bool Wall::init(Vec2 spawnPos)
 
 void Wall::update(float delta) 
 {
+	if (*playerCut) 
+	{
+		callCollision();
+	}
+
 	cutTimer += 0.04f;
 	if (cutTimer >= 1.0f) 
 	{
@@ -116,7 +181,6 @@ void Wall::callCollision()
 	int count = segmentCount;
 	for (int i = 0; i < POINT_SIZE; i++) {
 		temp[i] = points[i];
-		log("temp[%d]=[%f,%f]",i,temp[i].x,temp[i].y);
 	}
 
 	for (int i = 0; i < count; i++)
@@ -125,7 +189,6 @@ void Wall::callCollision()
 		if (checkPoint(&pos, SEGMENT(*fromPos, *toPos), SEGMENT(temp[i], getOverPoint(temp, count, i + 1))) == 1)
 		{
 			//点を追加
-			log("num=[%d],hit[%f,%f]", i,pos.x,pos.y);
 			i++;
 			addPointNum[count - 4] = i;
 			addPoint(&pos, temp, i);
@@ -133,13 +196,10 @@ void Wall::callCollision()
 			if (count ==6)break;
 		}
 	}
-	log("count=[%d]", count);
-
 	if (count == POINT_SIZE)
 	{
 		for (int i = 0; i < POINT_SIZE; i++){
 			points[i] = temp[i];
-			log("after-temp[%d]=[%f,%f]", i, temp[i].x,temp[i].y);
 		}
 
 		isCuted = true;
@@ -155,8 +215,6 @@ int Wall::checkPoint(Vec2* hitPos, SEGMENT s0, SEGMENT s1)
 		if (s0.to.x == 0.0f&&s1.to.x == 0.0f)
 			return 0;
 		//平行
-
-		myWall->drawSegment(s0.from, s1.from, 4, Color4F::ORANGE);
 
 		Vec2 r;
 		float t0, t1;
@@ -246,7 +304,6 @@ void Wall::changePentagon(Vec2 *vPoint, int onePoint, int twoPoint)
 	if ((onePoint + 1 )% 5 == (twoPoint - 1) % 5) 
 	{
 		pointNum = (onePoint + 1) % 5;
-		log("ans[%d]",pointNum);
 	}
 	//いらない頂点を消す
 	for (int i = pointNum; i < 5; i++) 
@@ -258,10 +315,8 @@ void Wall::changePentagon(Vec2 *vPoint, int onePoint, int twoPoint)
 //切り取る場所検出
 void Wall::checkCutArea(Vec2* points)
 {
-	//Vec2 sPoint[POINT_SIZE];
 	int right[POINT_SIZE], left[POINT_SIZE];
 	int rightcount = 0, leftcount = 0;
-	log("addPointNum=[%d]and[%d]", addPointNum[0], addPointNum[1]);
 	for (int i = 0; i < POINT_SIZE; i++) {
 		if (i != addPointNum[0] && i != addPointNum[1])
 			//追加した二つの点でできた線の右側かどうか
@@ -287,76 +342,43 @@ void Wall::checkCutArea(Vec2* points)
 		//結果が四角形になる場合
 	if (rightcount == 4 && leftcount == 4)
 	{		
-		log("box");
+		//log("box");
 		//面積比を見る
 		if (sumArea(points, right) > sumArea(points, left))
 		{
-			log("left");
-			//左側が消える
-			//for (int j = 0; right[j] != -1; j++)
-			//{
-			//	sPoint[j] = points[right[j]];
-			//}
-			sortPoints(points, left);
-			//swapPoint(sPoint, 2, 3);
+			sortPoints(points, right);
 		}
 		else
 		{
-			log("right");
-			//右側が消える
-			//for (int j = 0; left[j] != -1; j++)
-			//{
-			//	sPoint[j] = points[left[j]];
-			//}
-			//if (addPointNum[0] == 0)//横
-			//	swapPoint(sPoint, 2, 3);
-			sortPoints(points, right);
+			sortPoints(points, left);
 		}
-		//for (int w = 0; w < POINT_SIZE; w++)
-		//{
-		//	points[w] = sPoint[w];
-		//}
+		//構築
 		rebuildingArea(points, 4);
 	}
 	else {
-		log("pentagon");
+		//五角形
 		if (rightcount > leftcount)
 		{
-			log("right");
-			////右側で描画
+			//右側で描画
 			sortPoints(points, right);
-			for (int j = 0; right[j] != -1; j++)
-			{
-				//sPoint[j] = points[right[j]];
-			}
 		}
 		else {
-			log("left");
 			//左側で描画
 			sortPoints(points,left);
-			for (int j = 0; left[j] != -1; j++)
-			{
-				//sPoint[j] = points[left[j]];
-			}
 		}
-		//for (int w = 0; w < POINT_SIZE; w++)
-		//{
-		//	points[w] = sPoint[w];
-		//}
-		
-		//五角形
+		//構築
 		rebuildingArea(points, 5);
 	}
 	for (int i = 0; i < segmentCount; i++)
 	{
-		log("[%d][%f,%f]", i, points[i].x, points[i].y);
+		//log("[%d][%f,%f]", i, points[i].x, points[i].y);
 	}
 };
 
 //切り取った後に面積を再構築する
 void Wall::rebuildingArea(Vec2 points[], int corner)
 {
-	log("rebuild-%d", corner);
+	//log("rebuild-%d", corner);
 	//頂点座標設定
 	std::vector<Vec2>vecs;
 	for (int i = 0; i < corner; i++) {
@@ -424,7 +446,7 @@ void Wall::sortPoints(Vec2* points, int*nums)
 	Vec2 pos;
 
 	for (int i = 0; nums[i] != -1; i++)
-		log("points[%d][%f,%f]", nums[i], points[nums[i]].x, points[nums[i]].y);
+		//log("points[%d][%f,%f]", nums[i], points[nums[i]].x, points[nums[i]].y);
 
 	for (int i = 0; nums[i] != -1; i++) 
 		for (int j = i; nums[j] != -1; j++)
@@ -432,7 +454,7 @@ void Wall::sortPoints(Vec2* points, int*nums)
 			if (nums[i] > nums[j]) 
 			{
 				//入れ替え
-				log("change");
+				//log("change");
 				temp = nums[i];
 				nums[i] = nums[j];
 				nums[j] = temp;
@@ -440,7 +462,7 @@ void Wall::sortPoints(Vec2* points, int*nums)
 		}
 	for (int i = 0; nums[i] != -1; i++)
 	{
-		log("i=%d!=%d", i, nums[i]);
+		//log("i=%d!=%d", i, nums[i]);
 		pos = points[i];
 		points[i] = points[nums[i]];
 		points[nums[i]] = pos;
@@ -457,7 +479,16 @@ Vec2 Wall::getOverPoint(Vec2 points[],int limit,int num)
 	if (num >= limit)
 	{
 		c = num%limit;
-	//	log("%d/%d=%d...%d", num, limit,num/limit, num%limit);
+	//	//log("%d/%d=%d...%d", num, limit,num/limit, num%limit);
 	}
 	return points[c];
 };
+
+//選択点と次の点との方向ベクトルを返す
+Vec2 Wall::getSegment(int startpoint) 
+{
+	Vec2 pos;
+	pos = getOverPoint(points, segmentCount, startpoint+1)-points[startpoint];
+	return pos;
+};
+

@@ -70,7 +70,12 @@ void PlayerRobot::plusAction()
 			else
 				stopPosition();
 		}
-	mySprite->setScale((moveTimer/checkTime*2)+ 1);
+	mySprite->setScale((moveTimer/checkTime)+0.5f);
+
+	if (onCollision(targets.at(0)->myPosition, moveRange)) 
+	{
+		setState(STATUS::FIND);
+	}
 
 };
 
@@ -103,6 +108,7 @@ void PlayerRobot::stopPosition()
 	angles.clear();
 	isStandby = false;
 	isStart = false;
+	targetPosition = myPosition;
 }
 
 //â‘ÎˆÚ“®
@@ -159,7 +165,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 		if (touch->getLocation().y < 0)
 			touchPosition.y = 0;
 
-		if (isMoveWait) {
+		if (isMoveWait&&myState==STATUS::STAND) {
 			if (angles.size() < 10) {
 			if (length(endPosition - touchPosition) >= doubtDegree)
 				{

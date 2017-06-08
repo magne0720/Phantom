@@ -31,8 +31,10 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 
 	rightRobot = PlayerRobot::create(right);
 	addChild(rightRobot);
+	rightRobot->setTag(0);
 	leftRobot = PlayerRobot::create(left);
 	addChild(leftRobot);
+	leftRobot->setTag(1);
 
 	infraredLine = DrawNode::create();
 	addChild(infraredLine);
@@ -44,6 +46,8 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	addChild(moveLineRight);
 	moveLineLeft = DrawNode::create();
 	addChild(moveLineLeft);
+
+	isRobotMoving = false;
 
 	scheduleUpdate();
 
@@ -108,7 +112,7 @@ void PlayerCloser::update(float delta)
 };
 
 void PlayerCloser::drawMoveLineRight(Vec2 touch)
-{;
+{
 	//
 	moveLineRight->drawDot(touch, 10, Color4F::GREEN);
 	//タッチした位置から前回の位置

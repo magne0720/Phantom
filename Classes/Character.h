@@ -2,16 +2,15 @@
 #define __CHARACTER_H__
 
 #include "cocos2d.h"
-#include "AllTags.h"
 #include "Wall.h"
-#include "CharacterAnimation.h"
+#include "ObjectBase.h"
 
 USING_NS_CC;
 
 
 //キャラクターの基底クラス。
 //移動、衝突判定、移動速度などの基本情報
-class Character:public Node
+class Character:public ObjectBase
 {
 public:
 	static Character* create(Vec2 spawnPos, DIR_DEGREE dir = DIR_DEGREE::DIR_DOWN);
@@ -38,12 +37,7 @@ public:
 	//-----------------------------------------
 	//今lastTargetPositionにいるか
 	bool onLastTargetPosition(Vec2 pos);
-	//ターゲット範囲に入っているか
-	virtual bool onCollision(Vec2 pos,float range);
-	//自身と引数(相手)の円判定
-	virtual bool onCollision(Character* p);
-	//赤外線判定
-	virtual bool onCollision(Vec2 start, Vec2 end);
+
 	//目の前が壁かどうか
 	bool onWall(SEGMENT s0, SEGMENT s1);
 	//移動可能判定
@@ -72,9 +66,8 @@ public:
 	//状態変化
 	void setState(STATUS state);
 	//当たり判定のあるものを設定
-	void setTarget(Character* p);
-	//当たり判定のあるものを設定
-	void setTarget(Wall* p);
+	//すでにあるなら追加しない
+	void setTargetWall(Wall* p);
 	//速度の変更
 	void setSpeed(float speed);
 	//移動可能範囲変更
@@ -100,12 +93,7 @@ public:
 
 	//移動待機状態かどうか
 	bool isMoveWait;
-	//移動可能範囲を示す円環
-	DrawNode* moveRangeSp;
-	//自身の画像
-	CharacterAnimation* mySprite;
-	//自身の場所
-	Vec2 myPosition;
+	
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
 
@@ -117,8 +105,7 @@ public:
 	float moveRange;
 	//視認範囲
 	float doubtDegree;
-	//自身と当たり判定のある物
-	Vector<Character*> targets;
+
 	//壁
 	Vector<Wall*> walls;
 	//自身の状態

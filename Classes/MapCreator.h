@@ -3,7 +3,7 @@
 
 #include "cocos2d.h"
 #include "PlayerCloser.h"
-#include "Enemy.h"
+#include "Goal.h"
 #include "Wall.h"
 
 #include <iostream>
@@ -11,7 +11,7 @@
 //読み込みの長さ指定
 //DATA_LENGTH_PLAYERのような感じ
 #define D_L_PLAYER 16
-#define D_L_ENEMY 12
+#define D_L_GOAL 8
 #define D_L_WALL 11
 #define D_L_FLOOR 2048
 #define D_FLOOR_LINE 8
@@ -19,7 +19,7 @@
 #define TILE_SIZE 64
 
 #define D_N_PLAYER 'P'
-#define D_N_ENEMY 'N'
+#define D_N_GOAL 'G'
 #define D_N_WALL 'W'
 #define D_N_FLOOR 'F'
 #define D_N_NAME 'N'
@@ -48,7 +48,7 @@ public:
 	//マップ情報
 	PlayerCloser* robot;
 	Vector<String*> names;
-	Vector<Enemy*> enemys;
+	Vector<Goal*> goals;
 	Vector<Wall*> walls;
 	Vector<Node*> floors;
 
@@ -58,7 +58,7 @@ public:
 	//マップ情報管理関数
 	void loadMap(string mapText);
 	//マップ情報の追加
-	void pushObject(Enemy*& obj,String*& id);
+	void pushObject(Goal*& obj,String*& id);
 	//マップ情報の追加
 	void pushObject(Wall*& obj, String*& id);
 	//マップ情報の追加
@@ -67,7 +67,7 @@ public:
 	void putObject(Character* &obj, Vec2 pos);
 	//配置キャラの解析
 	void analyzePlayer(char* data);
-	void analyzeEnemy(char* data);
+	void analyzeGoal(char* data);
 	void analyzeWall(char* data);
 	void analyzeObject(char* data);
 	void analyzeFloor(char* data);

@@ -22,7 +22,10 @@ bool MapCreator::init()
 	{
 		return false;
 	}
-//	log("openMapCreator");
+	
+	Wall* aroundWall = Wall::createWall();
+	walls.pushBack(aroundWall);
+
 	openMapFile("test");
 
 	d = DrawNode::create();
@@ -35,10 +38,7 @@ bool MapCreator::init()
 
 void MapCreator::update(float delta)
 {
-	if (robot->isRobotMoving) {
-		for (int i = 0; i < walls.size();i++)
-			walls.at(i)->callCollision();
-	}
+
 };
 
 //マップファイル読み込み
@@ -63,10 +63,10 @@ void MapCreator::loadMap(string mapText)
 			log("characterEnd\n--------------------------------------");
 			i += D_L_PLAYER;
 			break;
-		case 'E'://ENEMY
+		case 'G'://ENEMY
 			log("enemyStart");
-			analyzeEnemy(getAnalyzeData(mapText.substr(i + 1, i + D_L_ENEMY), D_L_ENEMY));
-			i += D_L_ENEMY;
+			analyzeGoal(getAnalyzeData(mapText.substr(i + 1, i + D_L_GOAL), D_L_GOAL));
+			i += D_L_GOAL;
 			log("enemyEnd\n--------------------------------------");
 			break;
 		case 'W'://Wall
@@ -89,10 +89,10 @@ void MapCreator::loadMap(string mapText)
 };
 
 
-void MapCreator::pushObject(Enemy*& obj, String* &id)
+void MapCreator::pushObject(Goal*& obj, String* &id)
 {
 	names.pushBack(id);
-	enemys.pushBack(obj);
+	goals.pushBack(obj);
 };
 
 void MapCreator::pushObject(Wall*& obj, String* &id)
@@ -136,32 +136,30 @@ void MapCreator::analyzePlayer(char* data)
 	log("push-player");
 
 };
-void MapCreator::analyzeEnemy(char* data)
+void MapCreator::analyzeGoal(char* data)
 {
 	Vec2 pos;
-	getCharToInt(data, 3);
-	data += 3;
 	DIR_DEGREE d=getCharToDirction(data);
 	data += 1;
 	pos.x = getCharToFloat(data);
 	data += 4;
 	pos.y = getCharToFloat(data);
-	Enemy* e = Enemy::create(pos,d);
-	enemys.pushBack(e);
-	log("enemy[%f,%f]", pos.x, pos.y);
+	Goal* e = Goal::create(pos);
+	goals.pushBack(e);
+	log("goal[%f,%f]", pos.x, pos.y);
 	log("push-enemy");
 };
 void MapCreator::analyzeWall(char* data)
 {
 	Vec2 pos;
 	//壁の種類3byte
-
+	int num = getCharToInt(data,3);
 	//↑に入れる
 	data += 3;
 	pos.x = getCharToFloat(data);
 	data += 4;
 	pos.y = getCharToFloat(data);
-	Wall* w = Wall::create(pos);
+	Wall* w = Wall::create(pos,num);
 	walls.pushBack(w);
 	log("wall[%f,%f]", pos.x, pos.y);
 	log("push-wall");
@@ -322,7 +320,7 @@ void MapCreator::checkWall(Character* obj, Vector<Wall*>wall, float range)
 
 		if (length(obj->myPosition-wall.at(i)->getPosition()) < range)
 		{
-			obj->setTarget(wall.at(i));
+			obj->setTargetWall(wall.at(i));
 			log("check");
 		}
 	}
@@ -336,26 +334,27 @@ Layer* MapCreator::printMap()
 	Layer* layer = Layer::create();
 	log("Character\n--------------------------------------");
 	layer->addChild(robot,4);
-	log("Enemy\n--------------------------------------");
-	log("size=%d", enemys.size());
-	for (int i = 0; i < enemys.size(); i++)
+	log("Goal");
+	log("size=%d\n--------------------------------------", goals.size());
+	for (int i = 0; i < goals.size(); i++)
 	{
-		Enemy* p = enemys.at(i);
-		p->setTarget(robot->rightRobot);
-		p->setTarget(robot->leftRobot);
+		Goal* p = goals.at(i);
+		robot->rightRobot->setTarget(p);
+		robot->leftRobot->setTarget(p);
 		layer->addChild(p,3);
 	}
-	log("wall\n--------------------------------------");
-	log("size=%d", walls.size());
+	log("wall");
+	log("size=%d\n--------------------------------------", walls.size());
 	for (int i = 0; i < walls.size(); i++)
 	{
-		robot->rightRobot->setTarget(walls.at(i));
-		robot->leftRobot->setTarget(walls.at(i));
+		robot->rightRobot->setTargetWall(walls.at(i));
+		robot->leftRobot->setTargetWall(walls.at(i));
+		walls.at(i)->playerCut = &robot->isRobotMoving;
 		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
 		layer->addChild(walls.at(i),2);
 	}
-	log("floor\n--------------------------------------");
-	log("size=%d", floors.size());
+	log("floor");
+	log("size=%d\n--------------------------------------", floors.size());
 	for (int i = 0; i < floors.size(); i++)
 	{
 		layer->addChild(floors.at(i),0);
