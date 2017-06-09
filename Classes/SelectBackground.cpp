@@ -3,10 +3,10 @@
 
 using namespace cocos2d;
 
-SelectBackground* SelectBackground::create()
+SelectBackground* SelectBackground::create(Color4F color)
 {
 	SelectBackground* pRet = new SelectBackground();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(color))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -19,7 +19,7 @@ SelectBackground* SelectBackground::create()
 	}
 }
 
-bool SelectBackground::init()
+bool SelectBackground::init(Color4F color)
 {
 	if (!Node::init()) return false;
 
@@ -28,6 +28,7 @@ bool SelectBackground::init()
 	ParticleSystemQuad* p = ParticleSystemQuad::create("Select/SelectBack.plist");
 	p->setPosition(designResolutionSize*0.5f);
 	p->setPosVar(designResolutionSize*0.5f);
+	p->setStartColor(color);
 	p->setEmissionRate(0.00010417 * (designResolutionSize.width*designResolutionSize.height));
 	this->addChild(p);
 

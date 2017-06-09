@@ -9,7 +9,6 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
 	Sprite* sp = Sprite::create(fileName);	// 画像読み込み
-	this->addChild(sp);
 	_mySprite = Sprite::create();			// キャラクタースプライト作成
 	this->addChild(_mySprite);
 	_animationChache = AnimationCache::sharedAnimationCache();		// アニメーションキャッシュに溜めることで読み込み減らす

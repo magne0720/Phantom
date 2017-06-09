@@ -1,6 +1,7 @@
 #include "PictureManager.h"
 #include "AllTags.h"
 #include "MainGameScene.h"
+#include "TitleSelectScene.h"
 
 using namespace cocos2d;
 
@@ -244,8 +245,8 @@ void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *u
 		if (rect.containsPoint(pTouch->getLocation()))
 		{
 			_pictures[_selectedStage]->setColor(Color3B::WHITE);
-			auto scene = MainGameScene::createScene(_selectedStage);
-			Director::getInstance()->replaceScene(scene);
+			// ƒV[ƒ“Ø‚è‘Ö‚¦
+			replaceScene();
 		}
 		touchIDInit();
 	}
@@ -346,4 +347,10 @@ void PictureManager::swap(Vec2 &a, Vec2 &b)
 	Vec2 v = a;
 	a = b;
 	b = v;
+}
+
+void PictureManager::replaceScene()
+{
+	auto scene = MainGameScene::createScene(_selectedStage);
+	Director::getInstance()->replaceScene(scene);
 }
