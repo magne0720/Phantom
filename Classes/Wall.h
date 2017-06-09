@@ -11,8 +11,8 @@ USING_NS_CC;
 class Wall :public Node
 {
 public:
-	static Wall* create(Rect rect);
-	bool init(Rect rect);
+	static Wall* create(Rect rect, Color4F fillColor = Color4F(0, 0, 0, 1.0f), Color4F segmentColor = Color4F(255, 255, 255, 1.0f));
+	bool init(Rect rect, Color4F fillColor, Color4F segmentColor);
 	void update(float delta);
 
 	int segmentCount;

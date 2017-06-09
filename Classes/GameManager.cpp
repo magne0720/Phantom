@@ -25,12 +25,11 @@ bool GameManager::init(int num)
 	addChild(map);
 
 	isGoal = &map->robot->isGoal;
+	stageColor = map->goals.at(0)->getStageColor();
 
 	timer = 0;
 
-
 	scheduleUpdate();
-
 
 	return true;
 };
@@ -48,13 +47,18 @@ void GameManager::update(float delta)
 
 void GameManager::dispGoal()
 {
-	Sprite* sp = Sprite::create("sphere.png");
-	sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
-	addChild(sp);
-
+	map->goals.at(0)->stopAnimation();
+	CallFunc* goSelect = CallFunc::create([&]()
+	{
+		Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene());
+	});
+	MoveTo* move=MoveTo::create(2, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
+	ScaleTo*scale = ScaleTo::create(5,50);
+	map->goals.at(0)->runAction(Sequence::create(move,scale,goSelect,nullptr));
+/*
 	RotateBy* rotate = RotateBy::create(2, 360);
-	sp->runAction(RepeatForever::create(rotate));
-
+	clipp->runAction(RepeatForever::create(rotate));
+*/
 	log("goal");
 
 };

@@ -10,7 +10,7 @@ void ObjectBase::initialize(Vec2 pos)
 //‰æ‘œ‚ğ’†‰›‚É‚µ‚Ä©g‚Ì‰æ‘œ‚ğ’u‚­
 void ObjectBase::initWithFileCenter(std::string name, Size chipSize)
 {
-	mySprite = CharacterAnimation::createInMove(name, chipSize, 0.5f);
+	mySprite = CharacterAnimation::create(name, chipSize, 0.5f);
 	addChild(mySprite, 5);
 };
 

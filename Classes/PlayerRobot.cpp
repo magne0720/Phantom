@@ -1,7 +1,5 @@
 #include "PlayerRobot.h"
 
-#if MODE==0
-
 PlayerRobot* PlayerRobot::create(Vec2 pos)
 {
 	PlayerRobot *pRet = new PlayerRobot();
@@ -35,8 +33,8 @@ bool PlayerRobot::init(Vec2 pos)
 	setDoubtDgree(200.0f);
 	checkTime = 60.0f;
 
-	initWithFileCenter("robot.png", Size(100,100));
-	
+	initWithFileCenter("Character/TitleAnim.png", Size(250,250));
+
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
 	initialize(pos,DIR_DEGREE::DIR_RIGHT);
@@ -44,7 +42,8 @@ bool PlayerRobot::init(Vec2 pos)
 	angleNum = 0;
 	isStandby = false;
 	setState(STATUS::STAND);
-/*
+
+	/*
 	for (int i = 0; i < 64; i++) {
 		float d = i * 15;
 		angles.push_back(d);
@@ -69,7 +68,7 @@ void PlayerRobot::plusAction()
 			else
 				stopPosition();
 		}
-	mySprite->setScale((moveTimer/checkTime)+0.5f);
+	//mySprite->setScale((moveTimer/checkTime)+0.5f);
 
 	if (onCollision(targets.at(0)->myPosition, moveRange)) 
 	{
@@ -103,11 +102,12 @@ void PlayerRobot::stopPosition()
 {
 	//log("length=%f", length(targetPosition - myPosition));
 	moveRangeSp->clear();
-	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 	angles.clear();
 	isStandby = false;
 	isStart = false;
 	targetPosition = myPosition;
+	if(myState!=STATUS::FIND)
+	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 }
 
 //絶対移動
@@ -129,30 +129,32 @@ void PlayerRobot::stopPositionB()
 
 
 //プレイヤーの操作が異なるので仮想化
-bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event) 
+bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	if (!isStart) {
 		mySprite->setColor(Color3B::RED);
 
-		if (onMoveRange(touch->getLocation()))
-		{
-			isMoveWait = true;
-			if (!isStandby)
+		if (myState != STATUS::FIND)
+			if (onMoveRange(touch->getLocation()))
 			{
-				startPosition = myPosition;
-				endPosition = startPosition + Vec2(1, 0);
+				isMoveWait = true;
+				if (!isStandby)
+				{
+					startPosition = myPosition;
+					endPosition = startPosition + Vec2(1, 0);
+				}
 			}
-		}
-		else
-		{
-			isMoveWait = false;
-		}
+			else
+			{
+				isMoveWait = false;
+			}
 	}
 	return true;
 };
 
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
+	if (myState != STATUS::FIND)
 	if (!isStart) {
 		touchPosition = touch->getLocation();
 		if (touch->getLocation().x > designResolutionSize.width)
@@ -205,6 +207,11 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 				isStandby = true;
 			}
 		}
+	}
+	if (myState == STATUS::FIND) 
+	{
+		setAngle(myPosition, targetPosition);
+		isStandby = true;
 	}
 };
 

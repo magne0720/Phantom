@@ -25,7 +25,7 @@ bool MapCreator::init(int num)
 	
 	Wall* aroundWall = Wall::create(
 		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
-			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f));
+			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f),Color4F::WHITE);
 
 	walls.pushBack(aroundWall);
 
@@ -57,10 +57,10 @@ void MapCreator::loadMap(string mapText)
 			i += D_L_PLAYER;
 			break;
 		case 'G'://ENEMY
-			log("enemyStart");
+			log("goalStart");
 			analyzeGoal(getAnalyzeData(mapText.substr(i + 1, i + D_L_GOAL), D_L_GOAL));
 			i += D_L_GOAL;
-			log("enemyEnd\n--------------------------------------");
+			log("goalEnd\n--------------------------------------");
 			break;
 		case 'W'://Wall
 			log("wallStart");
@@ -132,11 +132,17 @@ void MapCreator::analyzePlayer(char* data)
 void MapCreator::analyzeGoal(char* data)
 {
 	Vec2 pos;
-	data += 1;
+	int r,g,b;
+	r = (getHexToInt(data)*16)+(getHexToInt(data+1));//Ô‚Ì—v‘f
+	data += 2;
+	g = (getHexToInt(data)*16)+(getHexToInt(data + 1));//Â‚Ì—v‘f
+	data += 2;
+	b = (getHexToInt(data)*16)+(getHexToInt(data + 1));//—Î‚Ì—v‘f
+	data += 2;
 	pos.x = getCharToFloat(data);
 	data += 4;
 	pos.y = getCharToFloat(data);
-	Goal* e = Goal::create(pos);
+	Goal* e = Goal::create(pos, Color4F((float)r/255.0f, (float)g/255.0f, (float)b/255.0f,1.0f));
 	goals.pushBack(e);
 	log("goal[%f,%f]", pos.x, pos.y);
 	log("push-enemy");
@@ -318,7 +324,7 @@ Layer* MapCreator::printMap()
 	log("printStart\n--------------------------------------");
 	Layer* layer = Layer::create();
 	log("Character\n--------------------------------------");
-	layer->addChild(robot,4);
+	layer->addChild(robot,3);
 	log("Goal");
 	log("size=%d\n--------------------------------------", goals.size());
 	for (int i = 0; i < goals.size(); i++)
@@ -326,7 +332,7 @@ Layer* MapCreator::printMap()
 		Goal* p = goals.at(i);
 		robot->rightRobot->setTarget(p);
 		robot->leftRobot->setTarget(p);
-		layer->addChild(p,3);
+		layer->addChild(p,4);
 	}
 	log("wall");
 	log("size=%d\n--------------------------------------", walls.size());

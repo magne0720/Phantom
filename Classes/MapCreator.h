@@ -11,7 +11,7 @@
 //ì«Ç›çûÇ›ÇÃí∑Ç≥éwíË
 //DATA_LENGTH_PLAYERÇÃÇÊÇ§Ç»ä¥Ç∂
 #define D_L_PLAYER 16
-#define D_L_GOAL 8
+#define D_L_GOAL 14
 #define D_L_WALL 16
 #define D_L_FLOOR 2048
 #define D_FLOOR_LINE 8

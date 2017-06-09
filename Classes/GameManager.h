@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "MapCreator.h"
+#include "TitleSelectScene.h"
 
 USING_NS_CC;
 
@@ -18,6 +19,7 @@ public:
 
 	MapCreator* map;
 	bool* isGoal;
+	Color4F stageColor;
 
 	float timer;
 

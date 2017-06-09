@@ -11,14 +11,17 @@ class Goal :public ObjectBase
 {
 private:
 	float animationTimer;
-
+	DrawNode* draw;
+	Color4F myColor;
 
 public:
-	static Goal* create(Vec2 spawnPos);
-	virtual bool init(Vec2 spawnPos);
+	static Goal* create(Vec2 spawnPos,Color4F color);
+	virtual bool init(Vec2 spawnPos,Color4F color);
 	void update(float delta);
 
-	
+	Color4F getStageColor();
+	float getAnimationScale();
+	void stopAnimation();
 
 };
 

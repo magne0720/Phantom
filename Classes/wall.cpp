@@ -2,10 +2,10 @@
 
 
 
-Wall* Wall::create(Rect rect)
+Wall* Wall::create(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	Wall *pRet = new Wall();
-	if (pRet && pRet->init(rect))
+	if (pRet && pRet->init(rect,fillColor,segmentColor))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -18,14 +18,12 @@ Wall* Wall::create(Rect rect)
 	};
 };
 
-bool Wall::init(Rect rect)
+bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	if (!Node::init())return false;
 
 
 	Sprite* sp = Sprite::create();
-	sp->setTextureRect(rect);
-	sp->setColor(Color3B::BLACK);
 
 	points[0] = Vec2(rect.getMinX(), rect.getMinY());//¶‰º
 	points[1] = Vec2(rect.getMinX(), rect.getMaxY());//¶ã
@@ -48,7 +46,7 @@ bool Wall::init(Rect rect)
 	vecs.push_back(points[2]);
 	vecs.push_back(points[3]);
 
-	myWall->drawPolygon(&vecs[0], 4, Color4F::BLACK, 1, Color4F::YELLOW);
+	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
 	myWall->setPosition(-getPosition());
 	addChild(myWall);
 
@@ -63,7 +61,8 @@ bool Wall::init(Rect rect)
 	scheduleUpdate();
 
 	return true;
-}
+};
+
 
 void Wall::update(float delta)
 {
@@ -80,8 +79,9 @@ void Wall::update(float delta)
 	}
 	debug->clear();
 	for (int i = 0; i < segmentCount; i++)
-		debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
-
+	{
+		debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1),7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
+	}
 };
 
 void Wall::setTargets(Vec2* from, Vec2* to) 
