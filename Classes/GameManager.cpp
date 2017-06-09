@@ -50,7 +50,7 @@ void GameManager::dispGoal()
 	map->goals.at(0)->stopAnimation();
 	CallFunc* goSelect = CallFunc::create([&]()
 	{
-		Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene());
+		Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goals.at(0)->getStageColor()));
 	});
 	MoveTo* move=MoveTo::create(2, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
 	ScaleTo*scale = ScaleTo::create(5,50);
