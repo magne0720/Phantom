@@ -27,7 +27,7 @@ bool TitleTulip::init()
 		}
 	}
 
-	_tulip[0]->setPosition(designResolutionSize.width*0.009, designResolutionSize.height*0.833);
+	/*_tulip[0]->setPosition(designResolutionSize.width*0.009, designResolutionSize.height*0.833);
 	_tulip[1]->setPosition(designResolutionSize.width*0.260, designResolutionSize.height*0.833);
 	_tulip[2]->setPosition(designResolutionSize.width*0.505, designResolutionSize.height*0.833);
 	_tulip[3]->setPosition(designResolutionSize.width*0.677, designResolutionSize.height*0.833);
@@ -36,7 +36,7 @@ bool TitleTulip::init()
 	_tulip[6]->setPosition(designResolutionSize.width*0.255, designResolutionSize.height*0.833);
 	_tulip[7]->setPosition(designResolutionSize.width*0.510, designResolutionSize.height*0.833);
 	_tulip[8]->setPosition(designResolutionSize.width*0.718, designResolutionSize.height*0.833);
-	_tulip[9]->setPosition(designResolutionSize.width*0.916, designResolutionSize.height*0.833);
+	_tulip[9]->setPosition(designResolutionSize.width*0.916, designResolutionSize.height*0.833);*/
 
 	return true;
 }
@@ -55,4 +55,9 @@ TitleTulip* TitleTulip::create()
 		pRet = NULL;
 		return NULL;
 	}
+}
+
+void TitleTulip::update(float delta)
+{
+
 }

@@ -11,6 +11,7 @@ public:
 
 	const int TULIP_NUM = 10;
 	cocos2d::Sprite* _tulip[10];
+	void update(float delta);
 };
 
 #endif // !_TitleTulip_h_

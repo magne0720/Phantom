@@ -1,54 +1,54 @@
-#include "ScrollSprite.h"
+#include "ScrollNode.h"
 #include "AllTags.h"
 
 using namespace cocos2d;
 using namespace std;
 
-bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orientation)
+bool ScrollNode::init(float scrollSpeed, eOrientation orientation)
 {
 	if (!Node::init()) return false;
 
-	float spriteWidthAll = 0.0f;
+	float NodeWidthAll = 0.0f;
 	int cnt = 0;
 
 	switch (orientation)
 	{
-	case ScrollSprite::landscape:
+	case ScrollNode::landscape:
 		while (1)
 		{
-			Sprite* sp = Sprite::create(fileName);
+			Node* sp = Node::create();
 			sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			this->addChild(sp);
 
 			Size size = sp->getBoundingBox().size;
 			sp->setPosition(size.width * (cnt - 1), 0.0f);
-			_bgSprites.push_back(sp);
-			spriteWidthAll += size.width;
+			_bgNodes.push_back(sp);
+			NodeWidthAll += size.width;
 
-			if (spriteWidthAll > designResolutionSize.width + size.width * 2 && cnt > 1) break;
+			if (NodeWidthAll > designResolutionSize.width + size.width * 2 && cnt > 1) break;
 
 			cnt++;
-			log("%d", _bgSprites.size());
+			log("%d", _bgNodes.size());
 		}
-		this->schedule(schedule_selector(ScrollSprite::updateL));
+		this->schedule(schedule_selector(ScrollNode::updateL));
 		break;
-	case ScrollSprite::portrait:
+	case ScrollNode::portrait:
 		while (1)
 		{
-			Sprite* sp = Sprite::create(fileName);
+			Node* sp = Node::create();
 			sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			this->addChild(sp);
 
 			Size size = sp->getBoundingBox().size;
 			sp->setPosition(0.0f, size.height * (cnt - 1));
-			_bgSprites.push_back(sp);
-			spriteWidthAll += size.height;
+			_bgNodes.push_back(sp);
+			NodeWidthAll += size.height;
 
-			if (spriteWidthAll > designResolutionSize.height + size.height * 2 && cnt > 1) break;
+			if (NodeWidthAll > designResolutionSize.height + size.height * 2 && cnt > 1) break;
 
 			cnt++;
 		}
-		this->schedule(schedule_selector(ScrollSprite::updateP));
+		this->schedule(schedule_selector(ScrollNode::updateP));
 		break;
 	default:
 		break;
@@ -60,10 +60,10 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 	return true;
 }
 
-ScrollSprite* ScrollSprite::create(string fileName, float scrollSpeed, eOrientation orientation)
+ScrollNode* ScrollNode::create(float scrollSpeed, eOrientation orientation)
 {
-	ScrollSprite* pRet = new ScrollSprite();
-	if (pRet && pRet->init(fileName, scrollSpeed, orientation))
+	ScrollNode* pRet = new ScrollNode();
+	if (pRet && pRet->init(scrollSpeed, orientation))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -76,21 +76,21 @@ ScrollSprite* ScrollSprite::create(string fileName, float scrollSpeed, eOrientat
 	}
 }
 
-void ScrollSprite::updateL(float delta)
+void ScrollNode::updateL(float delta)
 {
 	if (_scrollSpeed == 0) return;	// スクロールしないなら出る
 
 									// 向き取得
 	float scrollDir = _scrollSpeed / abs(_scrollSpeed);
 
-	for (auto sp : _bgSprites)
+	for (auto sp : _bgNodes)
 	{
 		Size size = sp->getBoundingBox().size;
 
 		float checkPosX[2] =
 		{
 			-size.width,
-			size.width * (_bgSprites.size() - 1)
+			size.width * (_bgNodes.size() - 1)
 		};
 
 		sp->setPositionX(sp->getPositionX() - _scrollSpeed);
@@ -98,26 +98,26 @@ void ScrollSprite::updateL(float delta)
 		if ((sp->getPositionX() < checkPosX[0] && scrollDir >= 0) ||
 			(sp->getPositionX() > checkPosX[1] && scrollDir < 0))
 		{
-			sp->setPositionX(sp->getPositionX() + size.width * _bgSprites.size() * scrollDir);
+			sp->setPositionX(sp->getPositionX() + size.width * _bgNodes.size() * scrollDir);
 		}
 	}
 }
 
-void ScrollSprite::updateP(float delta)
+void ScrollNode::updateP(float delta)
 {
 	if (_scrollSpeed == 0) return;	// スクロールしないなら出る
 
 									// 向き取得
 	float scrollDir = _scrollSpeed / abs(_scrollSpeed);
 
-	for (auto sp : _bgSprites)
+	for (auto sp : _bgNodes)
 	{
 		Size size = sp->getBoundingBox().size;
 
 		float checkPosY[2] =
 		{
 			-size.height,
-			size.height * (_bgSprites.size() - 1)
+			size.height * (_bgNodes.size() - 1)
 		};
 
 		sp->setPositionY(sp->getPositionY() - _scrollSpeed);
@@ -125,12 +125,12 @@ void ScrollSprite::updateP(float delta)
 		if ((sp->getPositionY() < checkPosY[0] && scrollDir >= 0) ||
 			(sp->getPositionY() > checkPosY[1] && scrollDir < 0))
 		{
-			sp->setPositionY(sp->getPositionY() + size.height * _bgSprites.size() * scrollDir);
+			sp->setPositionY(sp->getPositionY() + size.height * _bgNodes.size() * scrollDir);
 		}
 	}
 }
 
-void ScrollSprite::setScrollSpriteSpeed(float speed)
+void ScrollNode::setScrollNodeSpeed(float speed)
 {
 	_scrollSpeed = speed;
 }
