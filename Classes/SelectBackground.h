@@ -6,8 +6,8 @@
 class SelectBackground : public cocos2d::Node
 {
 public:
-	static SelectBackground* create();
-	bool init();
+	static SelectBackground* create(cocos2d::Color4F color = cocos2d::Color4F::WHITE);
+	bool init(cocos2d::Color4F color);
 };
 
 #endif

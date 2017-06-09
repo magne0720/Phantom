@@ -28,6 +28,14 @@ TitleSelectScene* TitleSelectScene::createSelectScene()
 	return scene;
 }
 
+TitleSelectScene* TitleSelectScene::createSelectScene(Color4F color)
+{
+	TitleSelectScene* scene = TitleSelectScene::create();
+	auto layer = SelectLayer::create(color);
+	scene->addChild(layer);
+	return scene;
+}
+
 void TitleSelectScene::replaceTitle()
 {
 	for (auto c : getChildren())
@@ -49,24 +57,6 @@ void TitleSelectScene::replaceSelect()
 		{
 			_layer = c;
 			replace();
-			//auto flg0 = CallFunc::create([&]() {
-			//	_replacedLayer = true;
-			//});
-			//auto fadeIn = FadeIn::create(0.5f);
-			//auto callFunc = CallFunc::create([&]() {
-			//	this->removeChild(_layer, true);
-			//	//c->removeFromParent();
-			//	auto scene = SelectLayer::create();
-			//	this->addChild(scene);
-			//});
-			//auto fadeOut = FadeOut::create(0.5f);
-			//auto flg1 = CallFunc::create([&]() {
-			//	_replacedLayer = false;
-			//});
-			//auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
-			//Sprite* sp = Sprite::create();
-			//sp = createFadeRect(sp);
-			//sp->runAction(seq);
 			break;
 		}
 	}	

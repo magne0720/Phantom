@@ -8,6 +8,7 @@ class TitleObjects : public cocos2d::Node
 public:
 	bool init();
 	static TitleObjects* create();
+	
 };
 
 #endif // !_TitleObjects_h_

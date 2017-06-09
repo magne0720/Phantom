@@ -3,6 +3,7 @@
 #include "AllTags.h"
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
+#include "TitleObjects.h"
 
 using namespace cocos2d;
 
@@ -24,6 +25,10 @@ bool TitleLayer::init()
 
 	TitleLogo* titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
+
+	TitleObjects* titleObjects = TitleObjects::create();
+	this->addChild(titleObjects);
+	titleObjects->setPosition(designResolutionSize*0.5f);
 
 	return true;
 }

@@ -42,6 +42,7 @@ private:
 	void popedUpSize();
 	void selectedInit();
 	void touchIDInit();
+	void replaceScene();
 
 	enum class eTOUCH
 	{

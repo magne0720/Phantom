@@ -1,5 +1,6 @@
 #include "TitleBackground.h"
 #include "AllTags.h"
+#include "TitleTulip.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -11,6 +12,15 @@ bool TitleBackground::init()
 	_scrollSpeed = 5.0f;
 	_scSp = ScrollSprite::create("Images/Back.png", _scrollSpeed, ScrollSprite::landscape);
 	this->addChild(_scSp);
+
+
+	auto tulip = TitleTulip::create();
+	this->addChild(tulip);
+	/*for (int i = 0; i < _scSp->_bgSprites.size(); i++)
+	{
+		auto tulip = TitleTulip::create();
+		_scSp->_bgSprites[i]->addChild(tulip);
+	}*/
 
 	return true;
 }

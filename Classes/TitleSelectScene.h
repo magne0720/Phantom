@@ -9,6 +9,7 @@ class TitleSelectScene : public cocos2d::Scene
 {
 public:
 	static TitleSelectScene* createSelectScene();
+	static TitleSelectScene* createSelectScene(cocos2d::Color4F color);
 	static TitleSelectScene* createTitleScene();
 	bool init();
 	CREATE_FUNC(TitleSelectScene);
