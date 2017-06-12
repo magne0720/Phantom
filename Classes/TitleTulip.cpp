@@ -20,23 +20,23 @@ bool TitleTulip::init()
 		for (int x = 0; x < width; x++)
 		{
 			Rect rect(x*chipSize.width, y*chipSize.height, chipSize.width, chipSize.height);
-			_tulip[i] = Sprite::createWithSpriteFrame(SpriteFrame::createWithTexture(sp->getTexture(), rect));			// キャラクタースプライト作成
+			_tulip[i] = (Tulip*)Sprite::createWithSpriteFrame(SpriteFrame::createWithTexture(sp->getTexture(), rect));			// キャラクタースプライト作成
 			_tulip[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 			this->addChild(_tulip[i]);
 			i++;
 		}
 	}
 
-	/*_tulip[0]->setPosition(designResolutionSize.width*0.009, designResolutionSize.height*0.833);
-	_tulip[1]->setPosition(designResolutionSize.width*0.260, designResolutionSize.height*0.833);
-	_tulip[2]->setPosition(designResolutionSize.width*0.505, designResolutionSize.height*0.833);
-	_tulip[3]->setPosition(designResolutionSize.width*0.677, designResolutionSize.height*0.833);
-	_tulip[4]->setPosition(designResolutionSize.width*0.911, designResolutionSize.height*0.833);
-	_tulip[5]->setPosition(designResolutionSize.width*0.083, designResolutionSize.height*0.833);
-	_tulip[6]->setPosition(designResolutionSize.width*0.255, designResolutionSize.height*0.833);
-	_tulip[7]->setPosition(designResolutionSize.width*0.510, designResolutionSize.height*0.833);
-	_tulip[8]->setPosition(designResolutionSize.width*0.718, designResolutionSize.height*0.833);
-	_tulip[9]->setPosition(designResolutionSize.width*0.916, designResolutionSize.height*0.833);*/
+	_tulip[0]->setPosition(designResolutionSize.width*0.009, designResolutionSize.height*0.067);
+	_tulip[1]->setPosition(designResolutionSize.width*0.260, designResolutionSize.height*0.067);
+	_tulip[2]->setPosition(designResolutionSize.width*0.505, designResolutionSize.height*0.067);
+	_tulip[3]->setPosition(designResolutionSize.width*0.677, designResolutionSize.height*0.067);
+	_tulip[4]->setPosition(designResolutionSize.width*0.911, designResolutionSize.height*0.067);
+	_tulip[5]->setPosition(designResolutionSize.width*1.083, designResolutionSize.height*0.067);
+	_tulip[6]->setPosition(designResolutionSize.width*1.255, designResolutionSize.height*0.067);
+	_tulip[7]->setPosition(designResolutionSize.width*1.510, designResolutionSize.height*0.067);
+	_tulip[8]->setPosition(designResolutionSize.width*1.718, designResolutionSize.height*0.067);
+	_tulip[9]->setPosition(designResolutionSize.width*1.916, designResolutionSize.height*0.067);
 
 	return true;
 }
