@@ -30,10 +30,10 @@ bool PlayerRobot::init(Vec2 pos)
 
 	setSpeed(12.0f);
 	setMoveRange(100.0f);
-	setDoubtDgree(200.0f);
+	setDoubtDgree(150.0f);
 	checkTime = 60.0f;
 
-	initWithFileCenter("Character/TitleAnim.png", Size(250,250));
+	initWithFileCenter("Character/GameAnim.png", Size(200,200));
 
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);

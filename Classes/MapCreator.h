@@ -12,7 +12,7 @@
 //DATA_LENGTH_PLAYERのような感じ
 #define D_L_PLAYER 16
 #define D_L_GOAL 14
-#define D_L_WALL 16
+#define D_L_WALL 33
 #define D_L_FLOOR 2048
 #define D_FLOOR_LINE 8
 
@@ -81,13 +81,16 @@ public:
 	int getFindCharNumber(char* data,char find);
 	//解析した文字に応じて方位を返す
 	DIR_DEGREE getCharToDirction(char* dir);
+
 	//--------------------------------------------------------------------------------------------------
 
 	//マップ内の衝突関係処理
 	void checkWall(Character* obj,Vector<Wall*>wall,float range);
 
-
-
+	//レベルのセット
+	void setLevel(int level);
+	int getLevel();
+	int mapLevel;
 
 
 	//完成したマップを一つのレイヤーに統合して戻り値として返す

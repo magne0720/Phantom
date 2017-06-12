@@ -5,14 +5,17 @@
 #include "AllTags.h"
 USING_NS_CC;
 
+#define SQUARE_SIZE 4
 #define POINT_SIZE 6
 
 //ê¸Ç…ã≤Ç‹ÇÍÇΩÇ∆Ç´Ç…ñ êœÇÃè≠Ç»Ç¢ÇŸÇ§Ç™è¡ñ≈Ç∑ÇÈï«
 class Wall :public Node
 {
 public:
-	static Wall* create(Rect rect, Color4F fillColor = Color4F(0, 0, 0, 1.0f), Color4F segmentColor = Color4F(255, 255, 255, 1.0f));
+	static Wall* create(Rect rect, Color4F fillColor, Color4F segmentColor);
 	bool init(Rect rect, Color4F fillColor, Color4F segmentColor);
+	static Wall* create(Vec2* vecs,int count ,Color4F fillColor, Color4F segmentColor);
+	bool init(Vec2* vecs,int count, Color4F fillColor, Color4F segmentColor);
 	void update(float delta);
 
 	int segmentCount;

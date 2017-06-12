@@ -25,7 +25,7 @@ bool MapCreator::init(int num)
 	
 	Wall* aroundWall = Wall::create(
 		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
-			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f),Color4F::WHITE);
+			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f),Color4F::WHITE,Color4F::BLACK);
 
 	walls.pushBack(aroundWall);
 
@@ -39,6 +39,7 @@ void MapCreator::openMapFile(char* name,int num)
 {
 	String* filename = String::createWithFormat("Stages/%s_%0d.bin", name,num);
 	string fileText = FileUtils::getInstance()->getStringFromFile(filename->getCString());
+	mapLevel = num;
 
 	loadMap(fileText);
 };
@@ -56,7 +57,7 @@ void MapCreator::loadMap(string mapText)
 			log("characterEnd\n--------------------------------------");
 			i += D_L_PLAYER;
 			break;
-		case 'G'://ENEMY
+		case '#'://Goal
 			log("goalStart");
 			analyzeGoal(getAnalyzeData(mapText.substr(i + 1, i + D_L_GOAL), D_L_GOAL));
 			i += D_L_GOAL;
@@ -150,9 +151,25 @@ void MapCreator::analyzeGoal(char* data)
 void MapCreator::analyzeWall(char* data)
 {
 	Rect rect;
-	rect.setRect(getCharToFloat(data), getCharToFloat(data + 4), getCharToFloat(data + 8), getCharToFloat(data + 12));
-	Wall* w = Wall::create(rect);
-	walls.pushBack(w);
+	Vec2 vecs[SQUARE_SIZE];
+	if (data[0] == 'V')
+	{
+		data ++;
+		for (int i = 0; i < SQUARE_SIZE; i++)
+		{
+			vecs[i] = Vec2(getCharToFloat(data), getCharToFloat(data + 4));
+			data += 8;
+		}
+		Wall* w = Wall::create(vecs,SQUARE_SIZE, Color4F::BLACK, Color4F::WHITE);
+		walls.pushBack(w);
+	}
+	else//正方形
+	{
+		data++;
+		rect.setRect(getCharToFloat(data), getCharToFloat(data + 4), getCharToFloat(data + 8), getCharToFloat(data + 12));
+		Wall* w = Wall::create(rect, Color4F::BLACK, Color4F::WHITE);
+		walls.pushBack(w);
+	}
 	log("push-wall");
 };
 
@@ -352,7 +369,22 @@ Layer* MapCreator::printMap()
 	}
 	log("createEnd\n--------------------------------------");
 
+	Sprite*sp = Sprite::create();
+	sp->setTextureRect(Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+	sp->setPosition(designResolutionSize*0.5f);
+	sp->setColor(Color3B::WHITE);
+	layer->addChild(sp);
+
 	return layer;
 };
 
+//レベルのセット
+void MapCreator::setLevel(int level) 
+{
+	mapLevel = level;
+};
 
+int MapCreator::getLevel() 
+{
+	return mapLevel;
+};

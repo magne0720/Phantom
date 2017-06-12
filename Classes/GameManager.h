@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "MapCreator.h"
 #include "TitleSelectScene.h"
+#include "SaveData.h"
 
 USING_NS_CC;
 
@@ -17,6 +18,7 @@ public:
 
 	void dispGoal();
 
+	SaveData* user;
 	MapCreator* map;
 	bool* isGoal;
 	Color4F stageColor;

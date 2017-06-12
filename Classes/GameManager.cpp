@@ -27,6 +27,10 @@ bool GameManager::init(int num)
 	isGoal = &map->robot->isGoal;
 	stageColor = map->goals.at(0)->getStageColor();
 
+	user = SaveData::create();
+	addChild(user);
+	log("%d", user->loadClear());
+
 	timer = 0;
 
 	scheduleUpdate();
@@ -47,13 +51,14 @@ void GameManager::update(float delta)
 
 void GameManager::dispGoal()
 {
+	user->saveClear(map->getLevel());
 	map->goals.at(0)->stopAnimation();
 	CallFunc* goSelect = CallFunc::create([&]()
 	{
 		Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goals.at(0)->getStageColor()));
 	});
 	MoveTo* move=MoveTo::create(2, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
-	ScaleTo*scale = ScaleTo::create(5,50);
+	ScaleTo*scale = ScaleTo::create(2,50);
 	map->goals.at(0)->runAction(Sequence::create(move,scale,goSelect,nullptr));
 /*
 	RotateBy* rotate = RotateBy::create(2, 360);

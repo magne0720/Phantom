@@ -18,6 +18,22 @@ Wall* Wall::create(Rect rect, Color4F fillColor, Color4F segmentColor)
 	};
 };
 
+Wall* Wall::create(Vec2* vecs,int count, Color4F fillColor = Color4F(0, 0, 0, 1.0f), Color4F segmentColor = Color4F(255, 255, 255, 1.0f)) 
+{
+	Wall *pRet = new Wall();
+	if (pRet && pRet->init(vecs,count, fillColor, segmentColor))
+	{
+		pRet->autorelease();
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = nullptr;
+		return nullptr;
+	};
+};
+
 bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	if (!Node::init())return false;
@@ -45,6 +61,42 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 	vecs.push_back(points[1]);
 	vecs.push_back(points[2]);
 	vecs.push_back(points[3]);
+
+	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
+	myWall->setPosition(-getPosition());
+	addChild(myWall);
+
+	clipp = ClippingNode::create();
+	clipp->setStencil(myWall);
+	clipp->addChild(sp);
+	addChild(clipp);
+
+
+	isCuted = false;
+	segmentCount = 4;
+	scheduleUpdate();
+
+	return true;
+};
+
+bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor) 
+{
+	if (!Node::init())return false;
+
+
+	Sprite* sp = Sprite::create();
+
+	for (int i = 0; i < count; i++) 
+	{
+		points[i] = vecs[i];
+	}
+
+	myWall = DrawNode::create();
+	myWall->setPosition(myWall->getPosition() - getPosition());
+
+	debug = DrawNode::create();
+	debug->setPosition(-getPosition());
+	addChild(debug, 51);
 
 	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
 	myWall->setPosition(-getPosition());
