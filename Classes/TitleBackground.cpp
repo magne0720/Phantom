@@ -1,6 +1,7 @@
 #include "TitleBackground.h"
 #include "AllTags.h"
 #include "TitleTulip.h"
+#include "Batterfly.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -10,7 +11,7 @@ bool TitleBackground::init()
 	if (!Node::init()) return false;
 
 	_scrollSpeed = 5.0f;
-	_scSp = ScrollSprite::create("Images/Back.png", _scrollSpeed, ScrollSprite::landscape);
+	_scSp = ScrollSprite::create("Title/Back.png", _scrollSpeed, ScrollSprite::landscape);
 	this->addChild(_scSp);
 
 
@@ -21,6 +22,10 @@ bool TitleBackground::init()
 		auto tulip = TitleTulip::create();
 		_scSp->_bgSprites[i]->addChild(tulip);
 	}*/
+
+	auto fly = Batterfly::create();
+	fly->setPosition(designResolutionSize*0.5f);
+	this->addChild(fly);
 
 	return true;
 }
