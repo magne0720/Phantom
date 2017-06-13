@@ -19,6 +19,7 @@ public:
 	int touchCount;
 	//ƒƒ{ƒbƒg‚ª“®‚¢‚Ä‚¢‚é‚©
 	bool isRobotMoving;
+	bool isStart;
 	bool isGoal;
 
 	DrawNode* infraredLine;

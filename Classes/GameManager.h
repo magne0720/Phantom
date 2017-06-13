@@ -16,12 +16,22 @@ public:
 	bool init(int num);
 	void update(float delta);
 
+	bool standbyAnimation();
+	void StayShowMessage();
+	void StayCloseMessage();
+
 	void dispGoal();
 
 	SaveData* user;
 	MapCreator* map;
 	bool* isGoal;
+	bool isGoalAnimation; 
+	bool isTouched;
 	Color4F stageColor;
+	GAMESTATE gameState;
+	Label* messageLabel;
+	Sprite* messageSp;
+
 
 	float timer;
 

@@ -116,7 +116,10 @@ static bool onCollisionCross(SEGMENT fromSegment, SEGMENT toSegment, float* outT
 	return true;
 };
 
-
+enum GAMESTATE 
+{
+	SANDBY = 0,PLAY,MOVING,CLEAR,MISS
+};
 
 //キャラクターの動き
 enum STATUS

@@ -25,7 +25,7 @@ bool MapCreator::init(int num)
 	
 	Wall* aroundWall = Wall::create(
 		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
-			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f),Color4F::WHITE,Color4F::BLACK);
+			designResolutionSize.width*0.9f,designResolutionSize.height*0.9f),Color4F(0,0,0,0),Color4F::BLACK);
 
 	walls.pushBack(aroundWall);
 
@@ -82,13 +82,6 @@ void MapCreator::loadMap(string mapText)
 	}
 };
 
-
-void MapCreator::pushObject(Goal*& obj, String* &id)
-{
-	names.pushBack(id);
-	goals.pushBack(obj);
-};
-
 void MapCreator::pushObject(Wall*& obj, String* &id)
 {
 	names.pushBack(id);
@@ -143,8 +136,7 @@ void MapCreator::analyzeGoal(char* data)
 	pos.x = getCharToFloat(data);
 	data += 4;
 	pos.y = getCharToFloat(data);
-	Goal* e = Goal::create(pos, Color4F((float)r/255.0f, (float)g/255.0f, (float)b/255.0f,1.0f));
-	goals.pushBack(e);
+	goal = Goal::create(pos, Color4F((float)r/255.0f, (float)g/255.0f, (float)b/255.0f,1.0f));
 	log("goal[%f,%f]", pos.x, pos.y);
 	log("push-enemy");
 };
@@ -336,21 +328,17 @@ void MapCreator::checkWall(Character* obj, Vector<Wall*>wall, float range)
 
 
 
-Layer* MapCreator::printMap() 
+Layer* MapCreator::printMap()
 {
 	log("printStart\n--------------------------------------");
 	Layer* layer = Layer::create();
 	log("Character\n--------------------------------------");
-	layer->addChild(robot,3);
+	layer->addChild(robot, 3);
 	log("Goal");
-	log("size=%d\n--------------------------------------", goals.size());
-	for (int i = 0; i < goals.size(); i++)
-	{
-		Goal* p = goals.at(i);
-		robot->rightRobot->setTarget(p);
-		robot->leftRobot->setTarget(p);
-		layer->addChild(p,4);
-	}
+	robot->rightRobot->setTarget(goal);
+	robot->leftRobot->setTarget(goal);
+	layer->addChild(goal, 4);
+	goal->setisGoalAddress(&robot->isGoal);
 	log("wall");
 	log("size=%d\n--------------------------------------", walls.size());
 	for (int i = 0; i < walls.size(); i++)
@@ -359,13 +347,13 @@ Layer* MapCreator::printMap()
 		robot->leftRobot->setTargetWall(walls.at(i));
 		walls.at(i)->playerCut = &robot->isRobotMoving;
 		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
-		layer->addChild(walls.at(i),2);
+		layer->addChild(walls.at(i), 2);
 	}
 	log("floor");
 	log("size=%d\n--------------------------------------", floors.size());
 	for (int i = 0; i < floors.size(); i++)
 	{
-		layer->addChild(floors.at(i),0);
+		layer->addChild(floors.at(i), 0);
 	}
 	log("createEnd\n--------------------------------------");
 

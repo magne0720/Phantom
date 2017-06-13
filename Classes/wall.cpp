@@ -360,7 +360,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 		vecs.push_back(points[i]);
 	}
 	myWall->clear();
-	myWall->drawPolygon(&vecs[0], corner, Color4F::BLUE, 4, Color4F::GRAY);
+	myWall->drawPolygon(&vecs[0], corner, Color4F::GRAY, 4, Color4F::WHITE);
 
 	clipp->setStencil(myWall);
 

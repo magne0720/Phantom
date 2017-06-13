@@ -48,8 +48,10 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	addChild(moveLineLeft);
 
 	isRobotMoving = false;
+	isGoal = false;
+	isStart = false;
 
-	scheduleUpdate();
+	//scheduleUpdate();
 
 	return true;
 };

@@ -10,10 +10,10 @@ USING_NS_CC;
 class Goal :public ObjectBase 
 {
 private:
-	float animationTimer;
+	float animationTimer, goalTimer;
 	DrawNode* draw;
 	Color4F myColor;
-
+	bool* isGoal;
 public:
 	static Goal* create(Vec2 spawnPos,Color4F color);
 	virtual bool init(Vec2 spawnPos,Color4F color);
@@ -22,7 +22,8 @@ public:
 	Color4F getStageColor();
 	float getAnimationScale();
 	void stopAnimation();
-
+	bool drawGoalAction();
+	void setisGoalAddress(bool* is);
 };
 
 #endif // !__GOAL_H__

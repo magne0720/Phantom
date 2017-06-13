@@ -32,7 +32,7 @@ bool Character::init(Vec2 spawnPos, DIR_DEGREE dir)
 	listener->onTouchEnded = CC_CALLBACK_2(Character::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	scheduleUpdate();
+	//scheduleUpdate();
 
 	return true;
 };

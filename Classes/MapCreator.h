@@ -45,8 +45,8 @@ public:
 
 	//ƒ}ƒbƒvî•ñ
 	PlayerCloser* robot;
+	Goal* goal;
 	Vector<String*> names;
-	Vector<Goal*> goals;
 	Vector<Wall*> walls;
 	Vector<Node*> floors;
 
