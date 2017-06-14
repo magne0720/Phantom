@@ -20,8 +20,7 @@ bool TitleTulip::init()
 		for (int x = 0; x < width; x++)
 		{
 			Rect rect(x*chipSize.width, y*chipSize.height, chipSize.width, chipSize.height);
-			_tulip[i] = (Tulip*)Sprite::createWithSpriteFrame(SpriteFrame::createWithTexture(sp->getTexture(), rect));			// キャラクタースプライト作成
-			_tulip[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+			_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(sp->getTexture(), rect));		// キャラクタースプライト作成
 			this->addChild(_tulip[i]);
 			i++;
 		}
