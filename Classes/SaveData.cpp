@@ -28,12 +28,14 @@ bool SaveData::init()
 
 void SaveData::saveClear(int clearNum) 
 {
+	if(loadClear()>clearNum)
 	user->setIntegerForKey(CLEARKEY, clearNum);
 };
 
 void SaveData::saveGrade(int gradeNum) 
 {
-	user->setIntegerForKey(GRADEKEY, gradeNum);
+	if (loadGrade()>gradeNum)
+		user->setIntegerForKey(GRADEKEY, gradeNum);
 };
 
 int SaveData::loadClear() 

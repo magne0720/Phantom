@@ -36,14 +36,9 @@ bool GameManager::init(int num)
 	gameState = GAMESTATE::SANDBY;
 
 	messageSp = Sprite::create("MessageBox.png");
-	messageSp->setPosition(Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*-0.1f));
-	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
+	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	addChild(messageSp);
-
-	messageLabel = Label::create("","fonts/arial.ttf",120);
-	messageLabel->setPosition(Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*-0.1f));
-	messageLabel->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	addChild(messageLabel);
 
 	scheduleUpdate();
 
@@ -61,9 +56,16 @@ void GameManager::update(float delta)
 	case PLAY:
 		timer += 1.0f / 60.0f;
 		{
-			if (timer > 10.0f)
+			if (timer > 6.0f)
 			{
-				StayShowMessage();
+				if (map->robot->rightRobot->myState == STATUS::FIND | map->robot->leftRobot->myState == STATUS::FIND) 
+				{
+					StayShowMessage(2);
+				}
+				else 
+				{
+					StayShowMessage(1);
+				}
 				timer = 0;
 			}
 			else
@@ -108,21 +110,9 @@ void GameManager::dispGoal()
 		{
 			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
 		});
-		//CallFunc* ClearLabel = CallFunc::create([&]() {
-		//	for (int i = 0; i < 30; i++) {
-		//		CharacterAnimation* CA = CharacterAnimation::create("Character/TitleAnim.png", Size(250, 250));
-		//		CA->setPosition(designResolutionSize*0.5f);
-		//		addChild(CA);
-		//		//MoveBy* move = MoveBy::create(2, Vec2(random(-1000, 1000), random(-1000, 1000)));
-		//		MoveBy* move = MoveBy::create(1, Vec2(0, 200));
-		//		FadeOut* out = FadeOut::create(1);
-		//		Spawn* fech2 = Spawn::createWithTwoActions(move, out);
-		//		CA->getSp()->runAction(fech2);
-		//	}
-		//});
 		DelayTime* delay = DelayTime::create(1.0f);
 		MoveTo* move = MoveTo::create(1, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
-		ScaleTo*scale = ScaleTo::create(1, 50);
+		ScaleTo*scale = ScaleTo::create(2, 70);
 		DelayTime* labelDelay = DelayTime::create(1.0f);
 
 		map->goal->runAction(Sequence::create(delay, move, scale,labelDelay, goSelect, nullptr));
@@ -144,7 +134,7 @@ bool GameManager::standbyAnimation()
 		ScaleTo* sZoomIn = ScaleTo::create(0.5, 2);
 		ScaleTo* sZoomOut = ScaleTo::create(0.5, 2);
 		FadeOut* out = FadeOut::create(0.5f);
-		sp->runAction(Sequence::create(rTo, sZoomIn, sZoomOut, out, nullptr));
+		sp->runAction(Sequence::create(sZoomIn,rTo ,sZoomOut, out, nullptr));
 	}
 	timer += 1.0 / 60.0f;
 	if (timer > 2.5f) {
@@ -159,23 +149,19 @@ bool GameManager::standbyAnimation()
 	return false;
 };
 
-void GameManager::StayShowMessage() 
+void GameManager::StayShowMessage(int num) 
 {
-	messageLabel->stopAllActions();
+	String* name = String::createWithFormat("MessageBox_%d.png", num);
+
+	messageSp->setTexture(name->getCString());
 	messageSp->stopAllActions();
-	MoveTo* moveUpL = MoveTo::create(1, Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*0.1f));
-	messageLabel->runAction(moveUpL);
-	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*0.1f));
+	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*0.1f));
 	messageSp->runAction(moveUpS);
 };
 
 void GameManager::StayCloseMessage() 
 {
-	messageLabel->stopAllActions();
 	messageSp->stopAllActions();
-	MoveTo* moveUpL = MoveTo::create(1, Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*-0.1f));
-	messageLabel->runAction(moveUpL);
-	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.75f, designResolutionSize.height*-0.1f));
+	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->runAction(moveUpS);
 };
-

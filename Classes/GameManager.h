@@ -17,7 +17,7 @@ public:
 	void update(float delta);
 
 	bool standbyAnimation();
-	void StayShowMessage();
+	void StayShowMessage(int num);
 	void StayCloseMessage();
 
 	void dispGoal();
@@ -29,7 +29,6 @@ public:
 	bool isTouched;
 	Color4F stageColor;
 	GAMESTATE gameState;
-	Label* messageLabel;
 	Sprite* messageSp;
 
 
