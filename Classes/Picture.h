@@ -9,6 +9,7 @@ public:
 	cocos2d::Sprite* _shadow;
 	cocos2d::Sprite* _clip;
 	int _stageID;
+	cocos2d::Color3B _defaultColor;
 
 	bool init(int id);
 	static Picture* create(int id);

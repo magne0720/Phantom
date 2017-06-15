@@ -132,7 +132,7 @@ void PictureManager::update(float delta)
 			_per = 1.0f;
 		_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
 		_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
-		_pictures[_selectedStage]->setColor(Color3B::WHITE);
+		_pictures[_selectedStage]->setColor(_pictures[_selectedStage]->_defaultColor);
 		_areResizing = false;
 		if (_add < 0.0f) selectedInit();
 		_add *= -1;
@@ -141,7 +141,7 @@ void PictureManager::update(float delta)
 	
 	_pictures[_selectedStage]->setScale((1 - _per) * _defaultPic.scale + _per * _popedUpPic.scale);
 	_pictures[_selectedStage]->setPosition((1 - _per) * _defaultPic.position + _per * _popedUpPic.position);
-	_pictures[_selectedStage]->setColor(Color3B::WHITE);
+	_pictures[_selectedStage]->setColor(_pictures[_selectedStage]->_defaultColor);
 
 }
 // タッチ処理用関数
@@ -244,7 +244,7 @@ void PictureManager::onTouchEndedP(const std::vector<Touch *> &touches, Event *u
 		Rect rect = _pictures[_selectedStage]->getBoundingBox();
 		if (rect.containsPoint(pTouch->getLocation()))
 		{
-			_pictures[_selectedStage]->setColor(Color3B::WHITE);
+			_pictures[_selectedStage]->setColor(_pictures[_selectedStage]->_defaultColor);
 			// シーン切り替え
 			replaceScene();
 		}
@@ -288,20 +288,20 @@ void PictureManager::defaultSize()
 {
 	if (_selectedStage == -1) return;
 	_pictures[_selectedStage]->setScale(1.0f);
-	_pictures[_selectedStage]->setColor(Color3B::WHITE);
+	_pictures[_selectedStage]->setColor(_pictures[_selectedStage]->_defaultColor);
 	_pictures[_selectedStage]->setZOrder(0);
 }
 void PictureManager::selectedSize()
 {
 	if (_selectedStage == -1) return;
-	_pictures[_selectedStage]->setColor(Color3B::GRAY);
+	//_pictures[_selectedStage]->setColor(Color3B::GRAY);
 	_pictures[_selectedStage]->setScale(1.2f);
 }
 void PictureManager::popedUpSize()
 {
 	if (_selectedStage == -1) return;
 	_pictures[_selectedStage]->setScale(2.0f);
-	_pictures[_selectedStage]->setColor(Color3B::WHITE);
+	_pictures[_selectedStage]->setColor(_pictures[_selectedStage]->_defaultColor);
 	_pictures[_selectedStage]->setPosition(designResolutionSize*0.5f);
 	_pictures[_selectedStage]->setZOrder(1);
 }
