@@ -1,5 +1,6 @@
 #include "Picture.h"
 #include "AllTags.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 
@@ -10,10 +11,43 @@ bool Picture::init(int id)
 		return false;
 	}
 
-	String* str = String::createWithFormat("HelloWorld.png");
+	String* str = String::createWithFormat("Select/Frame.png");
 	//String* str = String::createWithFormat("Stage%f.png", id);
 	
 	this->initWithFile(str->getCString());
+	switch (id)
+	{
+	case 0:
+		this->setColor(Color3B(255, 36, 80));
+		break;
+	case 1:
+		this->setColor(Color3B(110, 223, 255));
+		break;
+	case 2:
+		this->setColor(Color3B(125, 31, 255));
+		break;
+	case 3:
+		this->setColor(Color3B(31, 157, 34));
+		break;
+	case 4:
+		this->setColor(Color3B(255, 108, 0));
+		break;
+	case 5:
+		this->setColor(Color3B(164, 82, 0));
+		break;
+	case 6:
+		this->setColor(Color3B(13, 81, 255));
+		break;
+	case 7:
+		this->setColor(Color3B(245, 135, 215));
+		break;
+	case 8:
+		this->setColor(Color3B(23, 23, 128));
+		break;
+	case 9:
+		this->setColor(Color3B(255, 242, 102));
+		break;
+	}
 	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
 	_clip = Sprite::create("CloseNormal.png");

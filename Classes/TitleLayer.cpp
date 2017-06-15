@@ -10,6 +10,8 @@ bool TitleLayer::init()
 {
 	if (!Layer::init()) return false;
 
+	_replacedScene = false;
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
@@ -46,6 +48,8 @@ TitleLayer* TitleLayer::create()
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
+	if (_replacedScene) return false;
+	_replacedScene = true;
 	((TitleSelectScene*)this->getParent())->replaceSelect();
 	return true;
 }

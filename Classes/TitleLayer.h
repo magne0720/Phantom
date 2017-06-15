@@ -10,6 +10,7 @@ public:
 	bool init();
 	static TitleLayer* create();
 	TitleBackground* tbg;
+	bool _replacedScene;
 	
 	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
 };
