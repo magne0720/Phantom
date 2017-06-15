@@ -40,6 +40,7 @@ bool PlayerRobot::init(Vec2 pos)
 	initialize(pos,DIR_DEGREE::DIR_RIGHT);
 
 	angleNum = 0;
+	isNext = false;
 	isStandby = false;
 	setState(STATUS::STAND);
 
@@ -96,6 +97,7 @@ void PlayerRobot::nextPosition()
 {
 	targetPosition = getDirectionDegree(Vec2(1,0),angles.at(angleNum), doubtDegree)+myPosition;
 	angleNum++;
+	isNext = true;
 };
 
 void PlayerRobot::stopPosition()
@@ -106,8 +108,10 @@ void PlayerRobot::stopPosition()
 	isStandby = false;
 	isStart = false;
 	targetPosition = myPosition;
-	if(myState!=STATUS::FIND)
-	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
+	if (myState != STATUS::FIND)
+		for (int i = 0; i < 10; i++) {
+			moveRangeSp->drawCircle(Vec2(0, 0), moveRange+i, 0, 360, false, Color4F::GREEN);
+		}
 }
 
 //ê‚ëŒà⁄ìÆ
@@ -167,7 +171,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			touchPosition.y = 0;
 
 		if (isMoveWait) {
-			if (angles.size() < 10) {
+			if (angles.size() < 10&&!isStandby) {
 			if (length(endPosition - touchPosition) >= doubtDegree)
 				{
 					////log("[%f,%f]", startPosition.x, startPosition.y);
@@ -195,10 +199,6 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
 	if (!isStart) {
-		if (angles.size() != 10)
-		{
-			stopPosition();
-		}
 		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {
 			angleNum = 0;

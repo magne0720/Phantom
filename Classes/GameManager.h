@@ -34,6 +34,13 @@ public:
 
 	float timer;
 
+
+	//プレイヤーの操作が異なるので仮想化
+	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
+	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
+	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
+
+
 };
 
 

@@ -113,9 +113,6 @@ void Character::move(float plusSpeed)
 {
 	//移動に必要
 	Vec2 aPos = normalize(targetPosition - myPosition);
-	if (getTag() == 0) {
-		//log("aPos[%f,%f]", aPos.x, aPos.y);
-	}
 
 	moveRangeSp->clear();
 	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
@@ -194,6 +191,37 @@ bool Character::onWall(SEGMENT s0, SEGMENT s1)
 	return false;
 };
 
+
+//進む方向が壁かどうか
+bool Character::onWall(SEGMENT s0, Vec2 pos,float range)
+{
+	Vec2 AP = s0.from - pos;//先端
+	Vec2 BP = s0.from + s0.to - pos;//末尾
+
+	if (cross(AP, BP) / length(AP - BP) >range)//範囲より遠いなら
+	{
+		return false;
+	}
+	else
+	{
+		if (dot(AP, s0.to) * dot(BP, s0.to) > 0)//どちらも鋭角であるなら
+		{
+			return false;
+		}
+		else
+		{
+			if (length(AP) < range | length(BP) < range)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+
+};
+
 //タッチした位置が移動範囲かどうか
 bool Character::onMoveRange(Point target)
 {
@@ -245,6 +273,7 @@ void Character::allCollision()
 		for (int j = 0; j < walls.at(i)->segmentCount; j++)
 		{
 			if (onWall(mySeg,SEGMENT(walls.at(i)->points[j],walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1))))
+			//if(onWall(SEGMENT(walls.at(i)->points[j],walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1)),myPosition,moveRange))
 			{
 				setEvasionWall(walls.at(i)->getSegment(j), movement);
 			}

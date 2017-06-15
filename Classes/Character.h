@@ -38,6 +38,8 @@ public:
 
 	//–Ú‚Ì‘O‚ª•Ç‚©‚Ç‚¤‚©
 	bool onWall(SEGMENT s0, SEGMENT s1);
+	//‰~‚Ì”ÍˆÍ
+	bool onWall(SEGMENT s0, Vec2 pos, float range);
 	//ˆÚ“®‰Â”\”»’è
 	bool onMoveRange(Point target);
 	//‰E‘¤‚É‚ ‚é‚©

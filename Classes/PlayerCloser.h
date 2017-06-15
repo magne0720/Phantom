@@ -17,11 +17,13 @@ public:
 	PlayerRobot* leftRobot	;
 
 	int touchCount;
+	float effectTimer;
 	//ƒƒ{ƒbƒg‚ª“®‚¢‚Ä‚¢‚é‚©
 	bool isRobotMoving;
 	bool isStart;
 	bool isGoal;
 
+	DrawNode* infraredEffect;
 	DrawNode* infraredLine;
 	DrawNode* moveLineRight;
 	DrawNode* moveLineLeft;

@@ -43,6 +43,7 @@ public:
 	bool isStandby;
 	bool isPut;
 	bool isStart;
+	bool isNext;
 	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
 	int angleNum;
