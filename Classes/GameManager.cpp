@@ -21,6 +21,14 @@ bool GameManager::init(int num)
 {
 	if (!Node::init())return false;
 
+	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
+	// 対象のイベントが実行された後、下位のイベントは発動されなくする
+	listener->onTouchBegan = CC_CALLBACK_2(GameManager::onTouchBegan, this);
+	listener->onTouchMoved = CC_CALLBACK_2(GameManager::onTouchMoved, this);
+	listener->onTouchEnded = CC_CALLBACK_2(GameManager::onTouchEnded, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+
 	map = MapCreator::create(num);
 	addChild(map);
 
@@ -35,7 +43,7 @@ bool GameManager::init(int num)
 	isGoalAnimation = false;
 	gameState = GAMESTATE::SANDBY;
 
-	messageSp = Sprite::create("MessageBox.png");
+	messageSp = Sprite::create("MessageBox_0.png");
 	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	addChild(messageSp);
@@ -165,3 +173,20 @@ void GameManager::StayCloseMessage()
 	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->runAction(moveUpS);
 };
+
+//プレイヤーの操作が異なるので仮想化
+bool GameManager::onTouchBegan(const Touch * touch, Event *unused_event) 
+{
+	return true;
+};
+
+void GameManager::onTouchMoved(const Touch * touch, Event *unused_event)
+{
+
+};
+
+void GameManager::onTouchEnded(const Touch * touch, Event *unused_event)
+{
+
+};
+

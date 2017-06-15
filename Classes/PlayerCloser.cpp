@@ -47,6 +47,9 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	moveLineLeft = DrawNode::create();
 	addChild(moveLineLeft);
 
+	infraredEffect = DrawNode::create();
+	addChild(infraredEffect);
+
 	isRobotMoving = false;
 	isGoal = false;
 	isStart = false;
@@ -58,6 +61,21 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 
 void PlayerCloser::update(float delta) 
 {
+	infraredLine->clear();
+	infraredLine->drawSegment(rightRobot->myPosition, leftRobot->myPosition, 4, Color4F::RED);
+
+	if (rightRobot->isNext&&leftRobot->isNext) 
+	{
+		effectTimer += 5.0f;
+		infraredEffect->clear();
+		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer/255.0f*5, Color4F(1, 0, 0, 255.0f-effectTimer / 225.0f));		
+		if (effectTimer >= 225.0f) {
+			effectTimer = 0;
+			rightRobot->isNext = false;
+			leftRobot->isNext = false;
+		}
+		
+	}
 
 	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)
 	{
@@ -86,8 +104,7 @@ void PlayerCloser::update(float delta)
 		moveLineLeft->clear();
 	}
 
-	infraredLine->clear();
-	infraredLine->drawSegment(rightRobot->myPosition, leftRobot->myPosition, 5, Color4F::RED);
+
 
 	if (rightRobot->isPut) drawMoveLineRight(rightRobot->touchPosition);
 	if (leftRobot->isPut) drawMoveLineLeft(leftRobot->touchPosition);
