@@ -1,9 +1,11 @@
 #ifndef _ColorEnum_h_
 #define _ColorEnum_h_
 
+#include "cocos2d.h"
+
 enum class eColor
 {
-	RED = 0,
+	RED = 0xff0000,
 	SKY,
 	PURPLE,
 	GREEN,
@@ -12,7 +14,7 @@ enum class eColor
 	BLUE,
 	PINK,
 	INDIGO,
-	YELLOW
+	YELLOW 
 };
 
 #endif // !_ClorEnum_h_

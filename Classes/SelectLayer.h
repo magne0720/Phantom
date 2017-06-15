@@ -12,6 +12,9 @@ public:
 	static SelectLayer* create(cocos2d::Color4F color);
 
 	cocos2d::DrawNode* _dot;
+
+	cocos2d::Sprite* _toTitle;
+	bool _isSceneReplace = false;
 };
 
 #endif

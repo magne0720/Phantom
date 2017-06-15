@@ -51,6 +51,10 @@ bool SelectLayer::init()
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
+	//_toTitle = Sprite::create("Select/ToTitle.png");
+	//_toTitle->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
+	//this->addChild(_toTitle);
+
 	return true;
 }
 

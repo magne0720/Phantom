@@ -1,6 +1,8 @@
 #include "Batterfly.h"
+#include <cmath>
 
 using namespace cocos2d;
+using namespace std;
 
 bool Batterfly::init(bool purple, bool blue)
 {
