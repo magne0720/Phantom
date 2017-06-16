@@ -27,6 +27,23 @@ bool TitleLayer::init()
 	TitleLogo* titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
 
+	//auto sample = Sprite::create("Character/Sample.png");
+	//sample->setPosition(designResolutionSize.width*0.7f, designResolutionSize.height*0.5f);
+	//this->addChild(sample);
+
+	//auto player = Sprite::create();
+	//auto rect = Rect(0, 0, 300, 300);
+	//player->setPosition(designResolutionSize.width*0.5f, 203.0f);
+	//player->setTextureRect(rect);
+	//player->setColor(Color3B::BLUE);
+	//this->addChild(player);
+
+	////ƒuƒŒƒ“ƒh
+	//ccBlendFunc blend;
+	//blend.src = GL_ZERO;
+	//blend.dst = GL_SRC_COLOR;
+	//player->setBlendFunc(blend);
+
 	return true;
 }
 
