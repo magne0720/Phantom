@@ -116,10 +116,11 @@ void Character::move(float plusSpeed)
 
 	moveRangeSp->clear();
 	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
-	mySprite->setRotation(atan2(aPos.x, aPos.y) * 180 / M_PI);
+	//mySprite->setRotation(atan2(aPos.x, aPos.y) * 180 / M_PI);
 
 
 	myPosition += aPos*moveSpeed;
+	mySprite->changeAnimation(aPos);
 
 	setPosition(myPosition);
 };
@@ -346,23 +347,6 @@ void Character::setDirection(DIR_DEGREE degree)
 		break;
 	}
 	myDirection = (float)degree;
-};
-
-
-//方向ベクトルから右方向に固有角度で自身の視認範囲のベクトルを取得する
-Vec2 Character::getDirectionDegree(Vec2 target, float deg, float range)
-{
-	Vec2 vector = normalize(target);
-	//ラジアンに変換
-	float rag=degToRag(deg);
-
-	float ax = vector.x*cos(rag) - vector.y*sin(rag);
-	float ay = vector.x*sin(rag) + vector.y*cos(rag);
-
-	vector.x = ax*range;
-	vector.y = ay*range;
-
-	return vector;
 };
 
 //向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める(壁ずり)

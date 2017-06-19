@@ -33,7 +33,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	setDoubtDgree(150.0f);
 	checkTime = 60.0f;
 
-	initWithFileCenter("Character/GameAnim.png", Size(200, 200));
+	initWithFileCenter("Character/TitleAnim.png", Size(250, 250));
 
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
@@ -92,9 +92,10 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 //çsÇ≠Ç◊Ç´Ç∆Ç±ÇÎÇÃê›íË
 void PlayerRobot::nextPosition()
 {
-	targetPosition = getDirectionDegree(Vec2(1,0),angles.at(angleNum), doubtDegree)+myPosition;
-	angleNum++;
-	isNext = true;
+	if (angles.size() <= 0)return;
+		targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+		angleNum++;
+		isNext = true;
 };
 
 void PlayerRobot::stopPosition()
@@ -105,10 +106,10 @@ void PlayerRobot::stopPosition()
 	isStandby = false;
 	isStart = false;
 	targetPosition = myPosition;
-	if (myState != STATUS::FIND)
-		for (int i = 0; i < 10; i++) {
-			moveRangeSp->drawCircle(Vec2(0, 0), moveRange+i, 0, 360, false, Color4F::BLACK);
-		}
+	for (int i = 0; i < 10; i++)
+	{
+		moveRangeSp->drawCircle(Vec2(0, 0), moveRange + i, 0, 360, false, Color4F::BLACK);
+	}
 	angleNum = 0;
 	startPosition = myPosition;
 }
@@ -217,7 +218,7 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 	}
 	if (myState == STATUS::FIND) 
 	{
-		setAngle(myPosition, targetPosition);
+		stopPosition();
 		isStandby = true;
 	}
 };

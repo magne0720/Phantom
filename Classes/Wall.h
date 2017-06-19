@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 #include "AllTags.h"
+#include "CutParticle.h"
+
 USING_NS_CC;
 
 #define SQUARE_SIZE 4
@@ -31,6 +33,7 @@ public:
 	Color4F cutedColor;
 	//”»’è‚ğæ‚éü
 	Vec2 *fromPos,*toPos;
+	CutParticle* particle;
 
 	//------------------------------------------
 	//Ÿ‚Í‚±‚ê‚ğg‚Á‚Ä•ªŠ„ˆ—‚ğ‚·‚é

@@ -116,6 +116,22 @@ static bool onCollisionCross(SEGMENT fromSegment, SEGMENT toSegment, float* outT
 	return true;
 };
 
+//方向ベクトルから右方向に固有角度で自身の視認範囲のベクトルを取得する
+static Vec2 getDirectionDegree(Vec2 target, float deg, float range=1.0f)
+{
+	Vec2 vector = normalize(target);
+	//ラジアンに変換
+	float rag = degToRag(deg);
+
+	float ax = vector.x*cos(rag) - vector.y*sin(rag);
+	float ay = vector.x*sin(rag) + vector.y*cos(rag);
+
+	vector.x = ax*range;
+	vector.y = ay*range;
+
+	return vector;
+};
+
 enum GAMESTATE 
 {
 	SANDBY = 0,PLAY,MOVING,CLEAR,MISS

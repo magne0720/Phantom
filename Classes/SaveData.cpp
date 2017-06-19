@@ -23,7 +23,6 @@ bool SaveData::init()
 	user = UserDefault::getInstance();
 
 	return true;
-
 };
 
 void SaveData::saveClear(int clearNum) 

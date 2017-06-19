@@ -38,6 +38,8 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	if (!Node::init())return false;
 
+	particle = CutParticle::create(10);
+	addChild(particle);
 
 	Sprite* sp = Sprite::create();
 
@@ -244,8 +246,11 @@ int Wall::checkPoint(Vec2* hitPos,float* s0Slope, SEGMENT s0, SEGMENT s1)
 		float a1 = s1.to.y / s1.to.x;
 	
 		//ŒX‚«‚ğ•Û‘¶
-		if (s0Slope)*s0Slope = a0;
-		
+		if (s0Slope)*s0Slope = a1;
+		log("a0=%f", a0);
+		log("a1=%f", a1);
+
+
 		//ŒX‚«‚ª“¯ˆê‚Ìê‡‚Í•½s‚È‚Ì‚ÅÕ“Ë‚µ‚È‚¢
 		if ((a0 == a1) || a0 == -a1)return 0;
 
@@ -413,11 +418,10 @@ void Wall::rebuildingDust(Vec2 points[], int corner)
 	DrawNode* dDust = DrawNode::create();
 	addChild(dDust);
 	dDust->drawPolygon(&vecs[0], corner, cutedColor, 4, Color4F::WHITE);
-
+	log("dustSlope=%f", dustSlope);
+	MoveBy* by = MoveBy::create(1,getDirectionDegree(Vec2(1,0), ragToDeg(dustSlope),100));
+	dDust->runAction(by);
 };
-
-
-
 
 //Ø‚èæ‚ç‚ê‚é‰‰o
 void Wall::cutEffect()

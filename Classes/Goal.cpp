@@ -42,7 +42,7 @@ void Goal::update(float delta)
 	animationTimer += 0.02f;
 	if (animationTimer > 1.0f)
 		animationTimer = -1.0f;
-
+	drawGoalAction();
 	draw->clear();
 	draw->drawDot(Vec2(0, 0), cos(animationTimer*2.0f)*25.0f + 50, myColor);
 };
