@@ -274,17 +274,12 @@ void CharacterAnimation::setDelay(float delayTime)
 	_animationChache->animationByName("STOP_L")->setDelayPerUnit(delayTime);
 }
 
-//void CharacterAnimation::setDelay(float delayTime, eDIR dirName)
-//{
-//	// –¢ŽÀ‘•
-//}
-
 float CharacterAnimation::getDelay()
 {
 	return _animationChache->animationByName("FRONT")->getDelayPerUnit();
 }
 
-//float CharacterAnimation::getDelay(eDIR dirName)
-//{
-//	// –¢ŽÀ‘•
-//}
+void CharacterAnimation::setDir(Vec2 dir)
+{
+	changeAnimation(dir);
+}
