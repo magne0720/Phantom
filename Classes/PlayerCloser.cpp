@@ -1,9 +1,9 @@
 #include "PlayerCloser.h"
 
-PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left)
+PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left,Color4F col)
 {
 	PlayerCloser *pRet = new PlayerCloser();
-	if (pRet && pRet->init(right, left))
+	if (pRet && pRet->init(right, left,col))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,7 @@ PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left)
 	};
 };
 
-bool PlayerCloser::init(Vec2 right,Vec2 left) 
+bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col) 
 {
 	if (!Node::init())return false;
 
@@ -29,10 +29,10 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 
-	rightRobot = PlayerRobot::create(right);
+	rightRobot = PlayerRobot::create(right,col);
 	addChild(rightRobot);
 	rightRobot->setTag(0);
-	leftRobot = PlayerRobot::create(left);
+	leftRobot = PlayerRobot::create(left,col);
 	addChild(leftRobot);
 	leftRobot->setTag(1);
 
@@ -50,6 +50,8 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	infraredEffect = DrawNode::create();
 	addChild(infraredEffect);
 
+
+	delayTimer = 0;
 	isRobotMoving = false;
 	isGoal = false;
 	isStart = false;
@@ -93,6 +95,7 @@ void PlayerCloser::update(float delta)
 		leftRobot->isStart = true;
 		moveLineRight->clear();
 		moveLineLeft->clear();
+
 	}
 
 		if (rightRobot->angles.size() == 0)
@@ -103,44 +106,67 @@ void PlayerCloser::update(float delta)
 				{
 		moveLineLeft->clear();
 	}
-
-
-
-	if (rightRobot->isPut) drawMoveLineRight(rightRobot->touchPosition);
-	if (leftRobot->isPut) drawMoveLineLeft(leftRobot->touchPosition);
-
+		drawMoveLineRight();
+		drawMoveLineLeft();
+	
+		delayTimer += 1.0f / 60.0f;
+//		log("del=%f", delayTimer);
+		if (delayTimer != 0)isRobotMoving = false;
 };
 
-void PlayerCloser::drawMoveLineRight(Vec2 touch)
+//右のロボットが進む軌道の表示
+void PlayerCloser::drawMoveLineRight()
 {
-	//
-	moveLineRight->drawDot(touch, 10, Color4F::GREEN);
-	//タッチした位置から前回の位置
-	moveLineRight->drawSegment(touch, rightRobot->endPosition, 3, Color4F::ORANGE);
-	//前回の位置から前々回の位置
-	moveLineRight->drawSegment(rightRobot->endPosition , rightRobot->startPosition , 3, Color4F::GREEN);
-
-	rightRobot->isPut = false;
+	Vec2 start=rightRobot->startPosition, end;
+	moveLineRight->clear();
+	for (int i =0; i < rightRobot->angles.size(); i++) 
+	{
+		end = rightRobot->getDirectionDegree(Vec2(1,0), rightRobot->angles.at(i),rightRobot->doubtDegree)+start;
+		//moveLineRight->drawDot(touch, 10, Color4F::BLACK);
+		if (i >= rightRobot->angleNum) 
+		{
+			//タッチした位置から前回の位置
+			moveLineRight->drawSegment(end, start, 5, Color4F::BLACK);
+			//前回の位置から前々回の位置
+			//moveLineRight->drawSegment(rightRobot->endPosition, rightRobot->startPosition, 3, Color4F::BLACK);
+		}
+		start = end;
+	}
+	//rightRobot->isPut = false;
 };
 
-
-void PlayerCloser::drawMoveLineLeft(Vec2 touch)
+//左のロボットが進む軌道を表示
+void PlayerCloser::drawMoveLineLeft()
 {
-	//
-	moveLineLeft->drawDot(touch, 10, Color4F::GREEN);
-	//タッチした位置から前回の位置
-	moveLineLeft->drawSegment(touch, leftRobot->endPosition, 3, Color4F::ORANGE);
-	//前回の位置から前々回の位置
-	moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::GREEN);
-
-	leftRobot->isPut = false;
+	Vec2 start = leftRobot->startPosition, end = Vec2(1, 0);
+	moveLineLeft->clear();
+	for (int i = 0; i < leftRobot->angles.size(); i++)
+	{
+		end = leftRobot->getDirectionDegree(Vec2(1, 0), leftRobot->angles.at(i), leftRobot->doubtDegree) + start;
+		//moveLineLeft->drawDot(touch, 10, Color4F::BLACK);
+		if (i >= leftRobot->angleNum)
+		{
+			//タッチした位置から前回の位置
+			moveLineLeft->drawSegment(end, start, 5, Color4F::BLACK);
+			//前回の位置から前々回の位置
+			//moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::BLACK);
+		}
+		start = end;
+	}
+	//leftRobot->isPut = false;
 };
 
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
-	if (rightRobot->isStart&&leftRobot->isStart) 
-	{
-		isRobotMoving = true;
+	if (delayTimer >= 2.0f) {
+		if (rightRobot->isStart&&leftRobot->isStart)
+		{
+			isRobotMoving = true;
+			delayTimer = 0;
+		}
+	}
+	else {
+		isRobotMoving = false;
 	}
 	return true;
 };
@@ -152,6 +178,6 @@ void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
-	isRobotMoving = false;
+
 };
 

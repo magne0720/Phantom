@@ -8,8 +8,8 @@ USING_NS_CC;
 class PlayerCloser :public Node 
 {
 public:
-	static PlayerCloser* create(Vec2 one,Vec2 two);
-	bool init(Vec2 one, Vec2 two);
+	static PlayerCloser* create(Vec2 one,Vec2 two,Color4F col=Color4F::WHITE);
+	bool init(Vec2 one, Vec2 two,Color4F col);
 
 	void update(float delta);
 
@@ -18,6 +18,7 @@ public:
 
 	int touchCount;
 	float effectTimer;
+	float delayTimer;
 	//ÉçÉ{ÉbÉgÇ™ìÆÇ¢ÇƒÇ¢ÇÈÇ©
 	bool isRobotMoving;
 	bool isStart;
@@ -30,8 +31,8 @@ public:
 
 	Vec2 startPosition;
 	Vec2 endPosition;
-	void drawMoveLineRight(Vec2 touch);
-	void drawMoveLineLeft(Vec2 touch);
+	void drawMoveLineRight();
+	void drawMoveLineLeft();
 
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);

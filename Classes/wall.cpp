@@ -63,8 +63,13 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 	vecs.push_back(points[3]);
 
 	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
+
+	
 	myWall->setPosition(-getPosition());
+
 	addChild(myWall);
+
+
 
 	clipp = ClippingNode::create();
 	clipp->setStencil(myWall);
@@ -99,6 +104,11 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	addChild(debug, 51);
 
 	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
+	myWall->drawSegment(points[0], points[2], 5, Color4F::WHITE);
+	myWall->drawSegment(points[1], points[3], 5, Color4F::WHITE); 
+
+
+
 	myWall->setPosition(-getPosition());
 	addChild(myWall);
 
@@ -106,7 +116,6 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	clipp->setStencil(myWall);
 	clipp->addChild(sp);
 	addChild(clipp);
-
 
 	isCuted = false;
 	segmentCount = 4;
@@ -141,6 +150,12 @@ void Wall::update(float delta)
 	}
 };
 
+//カットした後の色を設定する
+void Wall::setCutedColor(Color4F cColor) 
+{
+	cutedColor = cColor;
+};
+
 void Wall::setTargets(Vec2* from, Vec2* to) 
 {
 	fromPos = from;
@@ -153,33 +168,40 @@ void Wall::setPoint(int number, Vec2 point)
 //	points[number] = point;
 };
 
+//切り取られるほうのポイントを設定する
+void Wall::setDustPoints(Vec2* dust) 
+{
+
+};
+
 //衝突判定命令
 void Wall::callCollision()
 {
-	if (isCuted)return;
+	if (segmentCount + 2 > POINT_SIZE)return;
+
 	Vec2 temp[POINT_SIZE];
 	Vec2 pos;
 	int count = segmentCount;
-	for (int i = 0; i < POINT_SIZE; i++) {
+	for (int i = 0; i < segmentCount+2; i++) {
 		temp[i] = points[i];
 	}
 
 	for (int i = 0; i < count; i++)
 	{
 		//点が当たっているか
-		if (checkPoint(&pos, SEGMENT(*fromPos, *toPos), SEGMENT(temp[i], getOverPoint(temp, count, i + 1))) == 1)
+		if (checkPoint(&pos,&dustSlope, SEGMENT(*fromPos, *toPos), SEGMENT(temp[i], getOverPoint(temp, count, i + 1))) == 1)
 		{
 			//点を追加
 			i++;
 			addPointNum[count - 4] = i;
 			addPoint(&pos, temp, i);
 			count++;
-		//	if (count ==6)break;
+			if (count ==segmentCount+2)break;
 		}
 	}
-	if (count == POINT_SIZE)
+	if (count == segmentCount+2)
 	{
-		for (int i = 0; i < POINT_SIZE; i++){
+		for (int i = 0; i < segmentCount+2; i++){
 			points[i] = temp[i];
 		}
 		isCuted = true;
@@ -188,7 +210,7 @@ void Wall::callCollision()
 };
 
 //from-to間の線とtargetの交点を調べる
-int Wall::checkPoint(Vec2* hitPos, SEGMENT s0, SEGMENT s1)
+int Wall::checkPoint(Vec2* hitPos,float* s0Slope, SEGMENT s0, SEGMENT s1)
 {
 	//X軸方向のベクトルが0かどうか
 	if (s0.to.x == 0.0f || s1.to.x == 0.0f) {
@@ -220,7 +242,10 @@ int Wall::checkPoint(Vec2* hitPos, SEGMENT s0, SEGMENT s1)
 		//線分の傾きを求める
 		float a0 = s0.to.y / s0.to.x;
 		float a1 = s1.to.y / s1.to.x;
-
+	
+		//傾きを保存
+		if (s0Slope)*s0Slope = a0;
+		
 		//傾きが同一の場合は平行なので衝突しない
 		if ((a0 == a1) || a0 == -a1)return 0;
 
@@ -249,7 +274,7 @@ void Wall::addPoint(Vec2* hitPos, Vec2* points	,int toNum)
 {
 	Vec2 point;
 	point = *hitPos;
-	for (int i =POINT_SIZE-1; i > toNum; i--) 
+	for (int i =segmentCount+2-1; i > toNum; i--) 
 	{
 		points[i] = points[i - 1];
 	}
@@ -295,9 +320,10 @@ void Wall::changePentagon(Vec2 *vPoint, int onePoint, int twoPoint)
 //切り取る場所検出
 void Wall::checkCutArea(Vec2* points)
 {
+	Vec2 dustPoints[POINT_SIZE];
 	int right[POINT_SIZE], left[POINT_SIZE];
 	int rightcount = 0, leftcount = 0;
-	for (int i = 0; i < POINT_SIZE; i++) {
+	for (int i = 0; i < segmentCount+2; i++) {
 		if (i != addPointNum[0] && i != addPointNum[1])
 			//追加した二つの点でできた線の右側かどうか
 			if (cross(points[addPointNum[0]] - points[addPointNum[1]], points[addPointNum[0]] - points[i])>0)
@@ -319,40 +345,42 @@ void Wall::checkCutArea(Vec2* points)
 	left[leftcount++] = addPointNum[1];
 	left[leftcount] = -1;//NULLコード
 
-		//結果が四角形になる場合
-	if (rightcount == 4 && leftcount == 4)
-	{		
-		//log("box");
+	for (int i = 0; i < segmentCount+2; i++)
+	{
+		log("left%d-%d", i, left[i]);
+	}
+	for (int i = 0; i < segmentCount+2; i++)
+	{
+		log("right%d-%d", i, right[i]);
+	}
 		//面積比を見る
 		if (sumArea(points, right) > sumArea(points, left))
 		{
+			copyPoints(points, dustPoints,segmentCount+2);
+			sortPoints(dustPoints, left);
+			for (int i = 0; i < segmentCount+2; i++)
+			{
+				log("left%d-%d", i, left[i]);
+			}
+		
+			rebuildingDust(dustPoints, leftcount);
 			sortPoints(points, right);
+			//構築
+			rebuildingArea(points, rightcount);
 		}
 		else
 		{
+			copyPoints(points, dustPoints, segmentCount + 2);
+			sortPoints(dustPoints, right);
+			for (int i = 0; i < segmentCount + 2; i++)
+			{
+				log("right%d-%d", i, right[i]);
+			}
+			rebuildingDust(dustPoints, rightcount);
 			sortPoints(points, left);
+			//構築
+			rebuildingArea(points, leftcount);
 		}
-		//構築
-		rebuildingArea(points, 4);
-	}
-	else {
-		//五角形
-		if (rightcount > leftcount)
-		{
-			//右側で描画
-			sortPoints(points, right);
-		}
-		else {
-			//左側で描画
-			sortPoints(points,left);
-		}
-		//構築
-		rebuildingArea(points, 5);
-	}
-	for (int i = 0; i < segmentCount; i++)
-	{
-		//log("[%d][%f,%f]", i, points[i].x, points[i].y);
-	}
 };
 
 //切り取った後に面積を再構築する
@@ -363,6 +391,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	std::vector<Vec2>vecs;
 	for (int i = 0; i < corner; i++) {
 		vecs.push_back(points[i]);
+		log("points[%0.1f,%0.1f]", points[i].x, points[i].y);
 	}
 	myWall->clear();
 	myWall->drawPolygon(&vecs[0], corner, Color4F::RED, 4, Color4F::WHITE);
@@ -372,12 +401,37 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	segmentCount = corner;
 };
 
+//切り取った後に面積を再構築する
+void Wall::rebuildingDust(Vec2 points[], int corner)
+{
+	//log("rebuild-%d", corner);
+	//頂点座標設定
+	std::vector<Vec2>vecs;
+	for (int i = 0; i < corner; i++) {
+		vecs.push_back(points[i]);
+	}
+	DrawNode* dDust = DrawNode::create();
+	addChild(dDust);
+	dDust->drawPolygon(&vecs[0], corner, cutedColor, 4, Color4F::WHITE);
+
+};
+
+
 
 
 //切り取られる演出
 void Wall::cutEffect()
 {
 
+};
+
+
+//コピーする
+void Wall::copyPoints(Vec2* from, Vec2* out, int number) 
+{
+	for (int i = 0; i<number; i++) {
+		out[i] = from[i];
+	}
 };
 
 

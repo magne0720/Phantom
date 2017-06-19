@@ -1,9 +1,9 @@
 #include "PlayerRobot.h"
 
-PlayerRobot* PlayerRobot::create(Vec2 pos)
+PlayerRobot* PlayerRobot::create(Vec2 pos,Color4F col)
 {
 	PlayerRobot *pRet = new PlayerRobot();
-	if (pRet && pRet->init(pos))
+	if (pRet && pRet->init(pos,col))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,7 @@ PlayerRobot* PlayerRobot::create(Vec2 pos)
 	};
 };
 
-bool PlayerRobot::init(Vec2 pos) 
+bool PlayerRobot::init(Vec2 pos,Color4F col)
 {
 	if (!Node::init())return false;
 
@@ -33,24 +33,21 @@ bool PlayerRobot::init(Vec2 pos)
 	setDoubtDgree(150.0f);
 	checkTime = 60.0f;
 
-	initWithFileCenter("Character/GameAnim.png", Size(200,200));
+	initWithFileCenter("Character/GameAnim.png", Size(200, 200));
 
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
-	initialize(pos,DIR_DEGREE::DIR_RIGHT);
+	initialize(pos, DIR_DEGREE::DIR_RIGHT);
 
 	angleNum = 0;
 	isNext = false;
 	isStandby = false;
 	setState(STATUS::STAND);
 
-	/*
-	for (int i = 0; i < 64; i++) {
-		float d = i * 15;
-		angles.push_back(d);
-	}*/
-
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
+
+	//キャラクターの色変化
+	mySprite->getSp()->setColor(Color3B(col.r*255.0f,col.g*255.0f,col.b*255.0f));
 
 	return true;
 };
@@ -110,8 +107,10 @@ void PlayerRobot::stopPosition()
 	targetPosition = myPosition;
 	if (myState != STATUS::FIND)
 		for (int i = 0; i < 10; i++) {
-			moveRangeSp->drawCircle(Vec2(0, 0), moveRange+i, 0, 360, false, Color4F::GREEN);
+			moveRangeSp->drawCircle(Vec2(0, 0), moveRange+i, 0, 360, false, Color4F::BLACK);
 		}
+	angleNum = 0;
+	startPosition = myPosition;
 }
 
 //絶対移動
@@ -135,29 +134,33 @@ void PlayerRobot::stopPositionB()
 //プレイヤーの操作が異なるので仮想化
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-	if (!isStart) {
 		mySprite->setColor(Color3B::RED);
 
 		if (myState != STATUS::FIND)
 			if (onMoveRange(touch->getLocation()))
 			{
+				if (isStandby)
+				{
+					stopPosition();
+				}
+				isPut = true;
 				isMoveWait = true;
 				if (!isStandby)
 				{
-					startPosition = myPosition;
-					endPosition = startPosition + Vec2(1, 0);
+					endPosition = myPosition + Vec2(1, 0);
 				}
 			}
 			else
 			{
 				isMoveWait = false;
 			}
-	}
 	return true;
 };
 
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
+	Vec2 touchPosition = touch->getLocation();
+	Vec2 stepPosition = myPosition;
 	if (myState != STATUS::FIND)
 	if (!isStart) {
 		touchPosition = touch->getLocation();
@@ -172,24 +175,26 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 
 		if (isMoveWait) {
 			if (angles.size() < 10&&!isStandby) {
-			if (length(endPosition - touchPosition) >= doubtDegree)
+			while (length(endPosition - touchPosition) >= doubtDegree)
 				{
-					////log("[%f,%f]", startPosition.x, startPosition.y);
+					log("check");
+					////log("[%f,%f]", stepPosition.x, stepPosition.y);
 					Vec2 a = Vec2(1,0);
 					//Vec2 b = normalize(touchPosition - endPosition)*doubtDegree;
 					Vec2 b=touchPosition-endPosition;
-					//moveRangeSp->drawDot(touchPosition - myPosition, 10, Color4F::GREEN);
+					//-------------------------------------------------------------------------------------------------------------------------
+					stepPosition = endPosition;
+					endPosition = normalize(touchPosition - endPosition)*doubtDegree + endPosition;
 					////タッチした位置から前回の位置
-					//moveRangeSp->drawSegment(touchPosition - myPosition, endPosition - myPosition, 3, Color4F::WHITE);
+					//moveRangeSp->drawSegment(touchPosition - myPosition, endPosition - myPosition, 3, Color4F::GRAY);
 					////前回の位置から前々回の位置
-					//moveRangeSp->drawSegment(endPosition - myPosition, startPosition - myPosition, 3, Color4F::BLACK);
+					//moveRangeSp->drawSegment(endPosition - myPosition, stepPosition - myPosition, 3, Color4F::WHITE);
+
+					moveRangeSp->drawDot(endPosition - myPosition, 10, Color4F::BLACK);
 					//-------------------------------------------------------------------------------------------------------------------------
 					//軌道の保存
 					setAngle(a, b);
-					//-------------------------------------------------------------------------------------------------------------------------
-					startPosition = endPosition;
-					endPosition = normalize(touchPosition-endPosition)*doubtDegree+endPosition;
-					isPut = true;
+
 				}
 			}
 		}
@@ -198,6 +203,8 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
+
+	isPut = false;
 	if (!isStart) {
 		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {

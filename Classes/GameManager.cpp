@@ -29,15 +29,15 @@ bool GameManager::init(int num)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 
-	map = MapCreator::create(num);
+	user = SaveData::create();
+	addChild(user);
+	log("%d", user->loadClear());
+
+	map = MapCreator::create(num,user->loadPlayerColor());
 	addChild(map);
 
 	isGoal = &map->robot->isGoal;
 	stageColor = map->goal->getStageColor();
-
-	user = SaveData::create();
-	addChild(user);
-	log("%d", user->loadClear());
 
 	timer = 0;
 	isGoalAnimation = false;
@@ -47,6 +47,7 @@ bool GameManager::init(int num)
 	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	addChild(messageSp);
+
 
 	scheduleUpdate();
 
@@ -112,7 +113,11 @@ void GameManager::dispGoal()
 		circle->drawDot(Vec2(0,0), map->goal->getAnimationScale()+50, map->goal->getStageColor());
 	*/
 
+	//データの保存
 		user->saveClear(map->getLevel());
+		user->savePlayerColor(stageColor);
+
+
 		//map->goal->stopAnimation();
 		CallFunc* goSelect = CallFunc::create([&]()
 		{
@@ -157,21 +162,27 @@ bool GameManager::standbyAnimation()
 	return false;
 };
 
-void GameManager::StayShowMessage(int num) 
+void GameManager::StayShowMessage(int num)
 {
-	String* name = String::createWithFormat("MessageBox_%d.png", num);
-
-	messageSp->setTexture(name->getCString());
-	messageSp->stopAllActions();
-	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*0.1f));
-	messageSp->runAction(moveUpS);
+	if (messageSp->getTag() != 0) 
+	{
+		String* name = String::createWithFormat("MessageBox_%d.png", num);
+		messageSp->setTexture(name->getCString());
+		messageSp->stopAllActions();
+		MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*0.1f));
+		messageSp->runAction(moveUpS);
+		messageSp->setTag(0);
+	}
 };
 
 void GameManager::StayCloseMessage() 
 {
-	messageSp->stopAllActions();
-	MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
-	messageSp->runAction(moveUpS);
+	if (messageSp->getTag() != 1) {
+		messageSp->stopAllActions();
+		MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
+		messageSp->runAction(moveUpS);
+		messageSp->setTag(1);
+	}
 };
 
 //プレイヤーの操作が異なるので仮想化

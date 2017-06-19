@@ -13,8 +13,8 @@ USING_NS_CC;
 class PlayerRobot :public Character 
 {
 public:
-	static PlayerRobot* create(Vec2 pos);
-	bool init(Vec2 pos);
+	static PlayerRobot* create(Vec2 pos,Color4F col=Color4F(0,0,0,0));
+	bool init(Vec2 pos,Color4F col);
 
 	void plusAction();
 
@@ -33,13 +33,11 @@ public:
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
 	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
 
-
+	//
 	//設定時のスタート位置
 	Vec2 startPosition;
 	//一定区間超えた位置
 	Vec2 endPosition;
-	//
-	Vec2 touchPosition;
 	bool isStandby;
 	bool isPut;
 	bool isStart;
