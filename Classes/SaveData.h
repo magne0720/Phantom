@@ -10,6 +10,9 @@ class SaveData :public Node
 public:
 	const char* CLEARKEY = "clear";//ƒNƒŠƒA‚µ‚½”
 	const char*  GRADEKEY = "grade";//‚Å‚«‚½ƒ‰ƒ“ƒN
+	const char*  COLOR_R_KEY = "colorR";//r
+	const char*  COLOR_G_KEY = "colorG";//g
+	const char*  COLOR_B_KEY = "colorB";//b
 	UserDefault* user;
 
 	static SaveData* create();
@@ -17,9 +20,11 @@ public:
 
 	void saveClear(int clearNum);
 	void saveGrade(int gladeNum);
+	void savePlayerColor(Color4F col);
 
 	int loadClear();
 	int loadGrade();
+	Color4F loadPlayerColor();
 
 };
 

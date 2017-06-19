@@ -1,9 +1,9 @@
 #include "PlayerCloser.h"
 
-PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left)
+PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left,Color4F col)
 {
 	PlayerCloser *pRet = new PlayerCloser();
-	if (pRet && pRet->init(right, left))
+	if (pRet && pRet->init(right, left,col))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,7 +16,7 @@ PlayerCloser* PlayerCloser::create(Vec2 right,Vec2 left)
 	};
 };
 
-bool PlayerCloser::init(Vec2 right,Vec2 left) 
+bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col) 
 {
 	if (!Node::init())return false;
 
@@ -29,18 +29,8 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 
-	rightRobot = PlayerRobot::create(right);
-	addChild(rightRobot);
-	rightRobot->setTag(0);
-	leftRobot = PlayerRobot::create(left);
-	addChild(leftRobot);
-	leftRobot->setTag(1);
-
 	infraredLine = DrawNode::create();
 	addChild(infraredLine);
-
-	rightRobot->scheduleUpdate();
-	leftRobot->scheduleUpdate();
 
 	moveLineRight = DrawNode::create();
 	addChild(moveLineRight);
@@ -50,6 +40,17 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	infraredEffect = DrawNode::create();
 	addChild(infraredEffect);
 
+	rightRobot = PlayerRobot::create(right,col);
+	addChild(rightRobot);
+	rightRobot->setTag(0);
+	leftRobot = PlayerRobot::create(left,col);
+	addChild(leftRobot);
+	leftRobot->setTag(1);
+
+	rightRobot->scheduleUpdate();
+	leftRobot->scheduleUpdate();
+
+	delayTimer = 0;
 	isRobotMoving = false;
 	isGoal = false;
 	isStart = false;
@@ -59,29 +60,28 @@ bool PlayerCloser::init(Vec2 right,Vec2 left)
 	return true;
 };
 
-void PlayerCloser::update(float delta) 
+void PlayerCloser::update(float delta)
 {
 	infraredLine->clear();
-	infraredLine->drawSegment(rightRobot->myPosition, leftRobot->myPosition, 4, Color4F::RED);
+	//infraredLine->drawSegment(Vec2(rightRobot->myPosition.x, rightRobot->myPosition.y+80),Vec2(leftRobot->myPosition.x,leftRobot->myPosition.y+80), 4, Color4F::RED);
 
-	if (rightRobot->isNext&&leftRobot->isNext) 
+	if (rightRobot->isNext&&leftRobot->isNext)
 	{
 		effectTimer += 5.0f;
 		infraredEffect->clear();
-		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer/255.0f*5, Color4F(1, 0, 0, 255.0f-effectTimer / 225.0f));		
-		if (effectTimer >= 225.0f) {
+		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer / 255.0f * 8, Color4F(1, 0, 0, 255.0f - effectTimer / 225.0f));
+		if (effectTimer >= 225.0f)
+		{
 			effectTimer = 0;
 			rightRobot->isNext = false;
 			leftRobot->isNext = false;
 		}
-		
 	}
-
 	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)
 	{
 		isGoal = true;
 	}
-	if (rightRobot->isStandby&&leftRobot->isStandby) 
+	if (rightRobot->isStandby&&leftRobot->isStandby)
 	{
 		rightRobot->moveTimer = 0;
 		leftRobot->moveTimer = 0;
@@ -94,53 +94,76 @@ void PlayerCloser::update(float delta)
 		moveLineRight->clear();
 		moveLineLeft->clear();
 	}
-
-		if (rightRobot->angles.size() == 0)
-		{
+	if (rightRobot->angles.size() == 0)
+	{
 		moveLineRight->clear();
 	}
-		if (leftRobot->angles.size() == 0)
-				{
+	if (leftRobot->angles.size() == 0)
+	{
 		moveLineLeft->clear();
 	}
+	drawMoveLineRight();
+	drawMoveLineLeft();
 
-
-
-	if (rightRobot->isPut) drawMoveLineRight(rightRobot->touchPosition);
-	if (leftRobot->isPut) drawMoveLineLeft(leftRobot->touchPosition);
-
+	delayTimer += 1.0f / 60.0f;
+	//		log("del=%f", delayTimer);
+	if (delayTimer != 0)isRobotMoving = false;
 };
 
-void PlayerCloser::drawMoveLineRight(Vec2 touch)
+//右のロボットが進む軌道の表示
+void PlayerCloser::drawMoveLineRight()
 {
-	//
-	moveLineRight->drawDot(touch, 10, Color4F::GREEN);
-	//タッチした位置から前回の位置
-	moveLineRight->drawSegment(touch, rightRobot->endPosition, 3, Color4F::ORANGE);
-	//前回の位置から前々回の位置
-	moveLineRight->drawSegment(rightRobot->endPosition , rightRobot->startPosition , 3, Color4F::GREEN);
-
-	rightRobot->isPut = false;
+	Vec2 start=rightRobot->startPosition, end;
+	moveLineRight->clear();
+	for (int i =0; i < rightRobot->angles.size(); i++) 
+	{
+		end = getDirectionDegree(Vec2(1,0), rightRobot->angles.at(i),rightRobot->doubtDegree)+start;
+		//moveLineRight->drawDot(touch, 10, Color4F::BLACK);
+		if (i >= rightRobot->angleNum) 
+		{
+			//タッチした位置から前回の位置
+			moveLineRight->drawSegment(end, start, 5, Color4F::BLACK);
+			//前回の位置から前々回の位置
+			//moveLineRight->drawSegment(rightRobot->endPosition, rightRobot->startPosition, 3, Color4F::BLACK);
+		}
+		start = end;
+	}
+	//rightRobot->isPut = false;
 };
 
-
-void PlayerCloser::drawMoveLineLeft(Vec2 touch)
+//左のロボットが進む軌道を表示
+void PlayerCloser::drawMoveLineLeft()
 {
-	//
-	moveLineLeft->drawDot(touch, 10, Color4F::GREEN);
-	//タッチした位置から前回の位置
-	moveLineLeft->drawSegment(touch, leftRobot->endPosition, 3, Color4F::ORANGE);
-	//前回の位置から前々回の位置
-	moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::GREEN);
-
-	leftRobot->isPut = false;
+	Vec2 start = leftRobot->startPosition, end = Vec2(1, 0);
+	moveLineLeft->clear();
+	for (int i = 0; i < leftRobot->angles.size(); i++)
+	{
+		end = getDirectionDegree(Vec2(1, 0), leftRobot->angles.at(i), leftRobot->doubtDegree) + start;
+		//moveLineLeft->drawDot(touch, 10, Color4F::BLACK);
+		if (i >= leftRobot->angleNum)
+		{
+			//タッチした位置から前回の位置
+			moveLineLeft->drawSegment(end, start, 5, Color4F::BLACK);
+			//前回の位置から前々回の位置
+			//moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::BLACK);
+		}
+		start = end;
+	}
+	//leftRobot->isPut = false;
 };
 
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
-	if (rightRobot->isStart&&leftRobot->isStart) 
+	if (delayTimer >= 2.0f)
 	{
-		isRobotMoving = true;
+		if (rightRobot->isStart&&leftRobot->isStart)
+		{
+			isRobotMoving = true;
+			delayTimer = 0;
+		}
+	}
+	else {
+		isRobotMoving = false;
 	}
 	return true;
 };
@@ -152,6 +175,6 @@ void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
-	isRobotMoving = false;
+
 };
 

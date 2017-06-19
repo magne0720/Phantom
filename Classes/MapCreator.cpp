@@ -1,9 +1,9 @@
 #include "MapCreator.h"
 
-MapCreator* MapCreator::create(int num) 
+MapCreator* MapCreator::create(int num,Color4F col) 
 {
 	MapCreator *pRet = new MapCreator();
-	if (pRet && pRet->init(num))
+	if (pRet && pRet->init(num,col))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -16,12 +16,14 @@ MapCreator* MapCreator::create(int num)
 	};
 };
 
-bool MapCreator::init(int num) 
+bool MapCreator::init(int num,Color4F col) 
 {
 	if (!Node::init()) 
 	{
 		return false;
 	}
+
+	playerColor = Color4F(col.r/255.0f,col.g / 255.0f,col.b / 255.0f,1.0f);
 	
 	Wall* aroundWall = Wall::create(
 		Rect(designResolutionSize.width*0.05f,designResolutionSize.height*0.05f,
@@ -119,7 +121,7 @@ void MapCreator::analyzePlayer(char* data)
 	log("human[%f,%f]", oneP.x, oneP.y);
 	log("dog[%f,%f]", twoP.x, twoP.y);
 
-	robot = PlayerCloser ::create(oneP, twoP);
+	robot = PlayerCloser ::create(oneP, twoP,playerColor);
 	log("push-player");
 
 };
@@ -345,6 +347,7 @@ Layer* MapCreator::printMap()
 	{
 		robot->rightRobot->setTargetWall(walls.at(i));
 		robot->leftRobot->setTargetWall(walls.at(i));
+		walls.at(i)->setCutedColor(playerColor);
 		walls.at(i)->playerCut = &robot->isRobotMoving;
 		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
 		layer->addChild(walls.at(i), 2);

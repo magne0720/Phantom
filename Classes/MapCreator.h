@@ -37,8 +37,8 @@ private:
 
 public:
 
-	static MapCreator* create(int num);
-	bool init(int num);
+	static MapCreator* create(int num,Color4F col);
+	bool init(int num,Color4F col);
 
 	//解析データ置き場
 	char analyzeData[2048];
@@ -49,6 +49,7 @@ public:
 	Vector<String*> names;
 	Vector<Wall*> walls;
 	Vector<Node*> floors;
+	Color4F playerColor;
 
 	//マップ作成処理---------------------------------------------------------------------------
 	//マップファイル読み込み

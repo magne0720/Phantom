@@ -54,8 +54,6 @@ public:
 	//ゲッター
 	//-----------------------------------------
 
-	//方向ベクトルから指定角度で自身の視認範囲のベクトルを取得する
-	Vec2 getDirectionDegree(Vec2 target, float deg, float range = 1.0f);
 	//向きの取得
 	Vec2 getDirectionVector();
 	//-----------------------------------------
