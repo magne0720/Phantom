@@ -34,6 +34,7 @@ public:
 	static CharacterAnimation* createInMove(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
 	
 	void changeAnimation(eDIR dirName);	// アニメーション切り替え
+	void changeAnimation(cocos2d::Vec2 dir);	// アニメーションの向きから画像切り替え
 
 	void stopAnimation(eDIR dirName);	// 停止アニメーションに切り替え(向き指定)
 	void stopAnimation();				// 停止アニメーションに切り替え

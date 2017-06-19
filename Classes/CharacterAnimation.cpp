@@ -1,4 +1,5 @@
 #include "CharacterAnimation.h"
+#include <cmath>
 
 using namespace cocos2d;
 using namespace std;
@@ -150,6 +151,36 @@ void CharacterAnimation::changeAnimation(eDIR dirName)
 	else
 	{
 		stopAnimation(dirName);
+	}
+}
+
+void CharacterAnimation::changeAnimation(Vec2 dir)
+{
+	if (abs(dir.x) > abs(dir.y))
+	{
+		if (dir.x > 0.0f)
+		{
+			// ‰E
+			changeAnimation(eDIR::RIGHT);
+		}
+		else
+		{
+			// ¶
+			changeAnimation(eDIR::LEFT);
+		}
+	}
+	else
+	{
+		if (dir.y > 0.0f)
+		{
+			// Œã‚ë
+			changeAnimation(eDIR::BACK);
+		}
+		else
+		{
+			// ‘O
+			changeAnimation(eDIR::FRONT);
+		}
 	}
 }
 
