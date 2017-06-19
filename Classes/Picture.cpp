@@ -55,7 +55,9 @@ bool Picture::init(int id)
 	_clip->setPosition(this->getContentSize().width*0.5f, this->getContentSize().height);
 	this->addChild(_clip);
 
-	_shadow = Sprite::create("Select/Frame.png");
+	_shadow = Sprite::create();
+	Rect rect = Rect(0, 0, this->getContentSize().width, this->getContentSize().height);
+	_shadow->setTextureRect(rect);
 	_shadow->setPosition(this->getContentSize().width*0.6f, this->getContentSize().height*0.45f);
 	_shadow->setColor(Color3B::BLACK);
 	_shadow->setOpacity(133);

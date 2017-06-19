@@ -2,6 +2,7 @@
 #include "PictureManager.h"
 #include "SelectBackground.h"
 #include "AllTags.h"
+#include "TitleSelectScene.h"
 
 using namespace cocos2d;
 
@@ -44,6 +45,12 @@ bool SelectLayer::init()
 		return false;
 	}
 
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(SelectLayer::onTouchBegan, this);
+	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
 	PictureManager* pictureManager = PictureManager::create();
 	this->addChild(pictureManager);
 
@@ -51,9 +58,9 @@ bool SelectLayer::init()
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
-	//_toTitle = Sprite::create("Select/ToTitle.png");
-	//_toTitle->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
-	//this->addChild(_toTitle);
+	_toTitleButton = ToTitleButton::create();
+	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
+	this->addChild(_toTitleButton);
 
 	return true;
 }
@@ -87,4 +94,24 @@ bool SelectLayer::init(Color4F color)
 	_dot->runAction(seq);
 
 	return true;
+}
+
+bool SelectLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
+{
+	Rect rect = _toTitleButton->getBoundingBox();
+	if (rect.containsPoint(pTouch->getLocation()))
+	{
+		return true;
+	}
+	return false;
+}
+
+void SelectLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
+{
+	if (_isSceneReplace) return;
+	_isSceneReplace = true;
+
+	auto scene = TitleSelectScene::createTitleScene();
+	auto transition = TransitionFade::create(0.5f, scene);
+	Director::getInstance()->replaceScene(transition);
 }
