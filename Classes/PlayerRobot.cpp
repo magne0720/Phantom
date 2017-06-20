@@ -27,14 +27,15 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-
 	setSpeed(12.0f);
 	setMoveRange(100.0f);
 	setDoubtDgree(150.0f);
 	checkTime = 60.0f;
 
 	initWithFileCenter("Character/TitleAnim.png", Size(250, 250));
-
+	initWithFileCenterB("Character/TitleAnim_Normal.png", Size(250, 250));
+	
+	
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
 	initialize(pos, DIR_DEGREE::DIR_RIGHT);
@@ -47,7 +48,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 
 	//キャラクターの色変化
-	mySprite->getSp()->setColor(Color3B(col.r*255.0f,col.g*255.0f,col.b*255.0f));
+	myBlendSprite->getSp()->setColor(Color3B(col.r*255.0f,col.g*255.0f,col.b*255.0f));
 
 	return true;
 };
@@ -57,7 +58,7 @@ void PlayerRobot::plusAction()
 		moveTimer ++;
 
 		//一コマ分移動したら
-		if (moveTimer > checkTime)
+		if (moveTimer > checkTime/2)
 		{
 			moveTimer = 0;
 			if(isStart)
@@ -135,8 +136,6 @@ void PlayerRobot::stopPositionB()
 //プレイヤーの操作が異なるので仮想化
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-		mySprite->setColor(Color3B::RED);
-
 		if (myState != STATUS::FIND)
 			if (onMoveRange(touch->getLocation()))
 			{
@@ -207,7 +206,6 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 
 	isPut = false;
 	if (!isStart) {
-		mySprite->setColor(Color3B::WHITE);
 		if (!isStandby) {
 			angleNum = 0;
 			if (angles.size() > 0)

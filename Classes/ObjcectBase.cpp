@@ -13,6 +13,12 @@ void ObjectBase::initWithFileCenter(std::string name, Size chipSize)
 	mySprite = CharacterAnimation::create(name, chipSize, 0.5f);
 	addChild(mySprite, 5);
 };
+//画像を中央にして自身の画像を置く
+void ObjectBase::initWithFileCenterB(std::string name, Size chipSize)
+{
+	myBlendSprite = CharacterAnimation::create(name, chipSize, 0.5f);
+	addChild(myBlendSprite, 5);
+};
 
 //キャラクターpとの範囲円が重なっているか
 bool ObjectBase::onCollision(ObjectBase* p)

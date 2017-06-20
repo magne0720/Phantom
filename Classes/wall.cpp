@@ -38,8 +38,8 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	if (!Node::init())return false;
 
-	particle = CutParticle::create(10);
-	addChild(particle);
+	particle = CutParticle::create(1);
+	addChild(particle,60);
 
 	Sprite* sp = Sprite::create();
 
@@ -91,6 +91,9 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	if (!Node::init())return false;
 
 
+	particle = CutParticle::create(1);
+	addChild(particle, 60);
+
 	Sprite* sp = Sprite::create();
 
 	for (int i = 0; i < count; i++) 
@@ -131,6 +134,7 @@ void Wall::update(float delta)
 {
 	if (*playerCut)
 	{
+		particle->setLine(*fromPos,*toPos);
 		callCollision();
 	}
 	if (cutTimer < 0)cutTimer += 0.02f;//速度変化
@@ -195,10 +199,11 @@ void Wall::callCollision()
 		{
 			//点を追加
 			i++;
-			addPointNum[count - 4] = i;
+			addPointNum[count - segmentCount] = i;
 			addPoint(&pos, temp, i);
 			count++;
-			if (count ==segmentCount+2)break;
+			if (count ==segmentCount+2)
+				break;
 		}
 	}
 	if (count == segmentCount+2)
@@ -328,7 +333,7 @@ void Wall::checkCutArea(Vec2* points)
 	Vec2 dustPoints[POINT_SIZE];
 	int right[POINT_SIZE], left[POINT_SIZE];
 	int rightcount = 0, leftcount = 0;
-	for (int i = 0; i < segmentCount+2; i++) {
+	for (int i = 0; i < segmentCount + 2; i++) {
 		if (i != addPointNum[0] && i != addPointNum[1])
 			//追加した二つの点でできた線の右側かどうか
 			if (cross(points[addPointNum[0]] - points[addPointNum[1]], points[addPointNum[0]] - points[i])>0)
@@ -350,42 +355,37 @@ void Wall::checkCutArea(Vec2* points)
 	left[leftcount++] = addPointNum[1];
 	left[leftcount] = -1;//NULLコード
 
-	for (int i = 0; i < segmentCount+2; i++)
+	//切り取りエフェクト
+	cutEffect();
+
+	//面積比を見る
+	if (sumArea(points, right) < sumArea(points, left))
 	{
-		log("left%d-%d", i, left[i]);
+		copyPoints(points, dustPoints, segmentCount + 2);
+		sortPoints(dustPoints, left);
+		for (int i = 0; i < segmentCount + 2; i++)
+		{
+			log("left%d-%d", i, left[i]);
+		}
+
+		rebuildingDust(dustPoints, leftcount);
+		sortPoints(points, right);
+		//構築
+		rebuildingArea(points, rightcount);
 	}
-	for (int i = 0; i < segmentCount+2; i++)
+	else
 	{
-		log("right%d-%d", i, right[i]);
+		copyPoints(points, dustPoints, segmentCount + 2);
+		sortPoints(dustPoints, right);
+		for (int i = 0; i < segmentCount + 2; i++)
+		{
+			log("right%d-%d", i, right[i]);
+		}
+		rebuildingDust(dustPoints, rightcount);
+		sortPoints(points, left);
+		//構築
+		rebuildingArea(points, leftcount);
 	}
-		//面積比を見る
-		if (sumArea(points, right) > sumArea(points, left))
-		{
-			copyPoints(points, dustPoints,segmentCount+2);
-			sortPoints(dustPoints, left);
-			for (int i = 0; i < segmentCount+2; i++)
-			{
-				log("left%d-%d", i, left[i]);
-			}
-		
-			rebuildingDust(dustPoints, leftcount);
-			sortPoints(points, right);
-			//構築
-			rebuildingArea(points, rightcount);
-		}
-		else
-		{
-			copyPoints(points, dustPoints, segmentCount + 2);
-			sortPoints(dustPoints, right);
-			for (int i = 0; i < segmentCount + 2; i++)
-			{
-				log("right%d-%d", i, right[i]);
-			}
-			rebuildingDust(dustPoints, rightcount);
-			sortPoints(points, left);
-			//構築
-			rebuildingArea(points, leftcount);
-		}
 };
 
 //切り取った後に面積を再構築する
@@ -404,6 +404,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	clipp->setStencil(myWall);
 
 	segmentCount = corner;
+	log("changeSegment=%d", segmentCount);
 };
 
 //切り取った後に面積を再構築する
@@ -426,7 +427,7 @@ void Wall::rebuildingDust(Vec2 points[], int corner)
 //切り取られる演出
 void Wall::cutEffect()
 {
-
+	particle->createParticle(50);
 };
 
 
