@@ -1,5 +1,6 @@
 #include "TitleScroll.h"
 #include "AllTags.h"
+#include "TitleBackground.h"
 
 using namespace cocos2d;
 
@@ -15,14 +16,14 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::landscape:
 		while (1)
 		{
-			Sprite* sp = Sprite::create();
-			if (scrollSpeed>0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-			else sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-			this->addChild(sp);
+			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
+			if (scrollSpeed>0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+			this->addChild(ts);
 
-			Size size = sp->getBoundingBox().size;
-			sp->setPosition(size.width * (cnt - 1), 0.0f);
-			_bgSprites.push_back(sp);
+			Size size = ts->getBoundingBox().size;
+			ts->setPosition(size.width * (cnt - 1), 0.0f);
+			_bgSprites.push_back(ts);
 			spriteWidthAll += size.width;
 
 			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 1) break;
@@ -34,13 +35,13 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::portrait:
 		while (1)
 		{
-			Sprite* sp = Sprite::create();
-			sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-			this->addChild(sp);
+			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
+			ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			this->addChild(ts);
 
-			Size size = sp->getBoundingBox().size;
-			sp->setPosition(0.0f, size.height * (cnt - 1));
-			_bgSprites.push_back(sp);
+			Size size = ts->getBoundingBox().size;
+			ts->setPosition(0.0f, size.height * (cnt - 1));
+			_bgSprites.push_back(ts);
 			spriteWidthAll += size.height;
 
 			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 1) break;
