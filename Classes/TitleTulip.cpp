@@ -9,7 +9,7 @@ bool TitleTulip::init()
 	if (!Node::init()) return false;
 
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
-	Sprite* sp = Sprite::create("Title/Tulip.png");	// 画像読み込み
+	Sprite* sp = Sprite::create("Title/Tulip/BlackLine.png");	// 画像読み込み
 
 	int i = 0;
 	Size chipSize = Size(500, 500);
