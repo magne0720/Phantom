@@ -17,7 +17,8 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 		while (1)
 		{
 			Sprite* sp = Sprite::create(fileName);
-			sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			if(scrollSpeed>0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			else sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(sp);
 
 			Size size = sp->getBoundingBox().size;
@@ -25,10 +26,9 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 			_bgSprites.push_back(sp);
 			spriteWidthAll += size.width;
 
-			if (spriteWidthAll > designResolutionSize.width + size.width * 2 && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 1) break;
 
 			cnt++;
-			log("%d", _bgSprites.size());
 		}
 		this->schedule(schedule_selector(ScrollSprite::updateL));
 		break;
@@ -44,7 +44,7 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 			_bgSprites.push_back(sp);
 			spriteWidthAll += size.height;
 
-			if (spriteWidthAll > designResolutionSize.height + size.height * 2 && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 1) break;
 
 			cnt++;
 		}
