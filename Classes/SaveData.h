@@ -2,6 +2,7 @@
 #define __SAVEDATA_H__
 
 #include	 "cocos2d.h"
+#include "AllTags.h"
 
 USING_NS_CC;
 
@@ -9,10 +10,12 @@ class SaveData :public Node
 {
 public:
 	const char* CLEARKEY = "clear";//クリアした数
-	const char*  GRADEKEY = "grade";//できたランク
-	const char*  COLOR_R_KEY = "colorR";//r
-	const char*  COLOR_G_KEY = "colorG";//g
-	const char*  COLOR_B_KEY = "colorB";//b
+	const char* GRADEKEY = "grade";//できたランク
+	const char* COLOR_R_KEY = "colorR";//r
+	const char* COLOR_G_KEY = "colorG";//g
+	const char* COLOR_B_KEY = "colorB";//b
+	const char* TIME_ZONE_KEY = "time";//時間帯
+	const char* STAR_APPEAR_KEY = "star";//星が出ていいか
 	UserDefault* user;
 
 	static SaveData* create();
@@ -21,11 +24,14 @@ public:
 	void saveClear(int clearNum);
 	void saveGrade(int gladeNum);
 	void savePlayerColor(Color4F col);
+	void saveTimeZone(TIME_ZONE time);
+	void saveStarAppear(bool is);
 
 	int loadClear();
 	int loadGrade();
 	Color4F loadPlayerColor();
-
+	TIME_ZONE loadTimeZone();
+	bool loadStarAppear();
 };
 
 #endif // !__SAVEDATA_H__

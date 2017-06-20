@@ -116,11 +116,10 @@ void Character::move(float plusSpeed)
 
 	moveRangeSp->clear();
 	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
-	//mySprite->setRotation(atan2(aPos.x, aPos.y) * 180 / M_PI);
-
 
 	myPosition += aPos*moveSpeed;
 	mySprite->changeAnimation(aPos);
+	myBlendSprite->changeAnimation(aPos);
 
 	setPosition(myPosition);
 };

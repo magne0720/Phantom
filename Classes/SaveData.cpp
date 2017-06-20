@@ -47,6 +47,15 @@ void SaveData::savePlayerColor(Color4F col)
 	user->setIntegerForKey(COLOR_B_KEY, b);
 };
 
+void SaveData::saveTimeZone(TIME_ZONE time) 
+{
+	user->setIntegerForKey(TIME_ZONE_KEY, (int)time);
+};
+
+void SaveData::saveStarAppear(bool is) 
+{
+	user->setBoolForKey(STAR_APPEAR_KEY, is);
+}
 
 int SaveData::loadClear() 
 {
@@ -63,4 +72,12 @@ Color4F SaveData::loadPlayerColor()
 	return Color4F(user->getIntegerForKey(COLOR_R_KEY), user->getIntegerForKey(COLOR_G_KEY), user->getIntegerForKey(COLOR_B_KEY),1.0f);
 };
 
+TIME_ZONE SaveData::loadTimeZone()
+{
+	return (TIME_ZONE)user->getIntegerForKey(TIME_ZONE_KEY);
+};
 
+bool SaveData::loadStarAppear() 
+{
+	return user->getBoolForKey(STAR_APPEAR_KEY);
+}

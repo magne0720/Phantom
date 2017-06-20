@@ -21,6 +21,7 @@ public:
 	void StayCloseMessage();
 
 	void dispGoal();
+	void checkTime();
 
 	SaveData* user;
 	MapCreator* map;

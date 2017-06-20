@@ -113,10 +113,10 @@ void GameManager::dispGoal()
 		circle->drawDot(Vec2(0,0), map->goal->getAnimationScale()+50, map->goal->getStageColor());
 	*/
 
-	//データの保存
+		//データの保存
 		user->saveClear(map->getLevel());
 		user->savePlayerColor(stageColor);
-
+		checkTime();
 
 		//map->goal->stopAnimation();
 		CallFunc* goSelect = CallFunc::create([&]()
@@ -133,6 +133,30 @@ void GameManager::dispGoal()
 			RotateBy* rotate = RotateBy::create(2, 360);
 			clipp->runAction(RepeatForever::create(rotate));
 		*/
+	}
+};
+
+void GameManager::checkTime()
+{
+	switch (map->getLevel())
+	{
+	case TIME_ZONE::MORNING:
+		user->saveTimeZone(TIME_ZONE::MORNING);
+		user->saveStarAppear(false);
+		break;
+	case TIME_ZONE::EVENING:
+		user->saveTimeZone(TIME_ZONE::EVENING);
+		user->saveStarAppear(false);
+		break;
+	case TIME_ZONE::NIGHT:
+		user->saveTimeZone(TIME_ZONE::NIGHT);
+		user->saveStarAppear(false);
+		break;
+	case TIME_ZONE::STAR:
+		user->saveStarAppear(true);
+		break;
+	default:
+		break;
 	}
 };
 

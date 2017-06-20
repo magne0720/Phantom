@@ -6,21 +6,6 @@
 
 USING_NS_CC;
 
-class CutParticle :public Node 
-{
-public:
-	static CutParticle* create(float scaleMax, Color4F baseColor=Color4F::WHITE);
-	bool init(float scaleMax, Color4F baseColor = Color4F::WHITE);
-	void update(float delta);	
-
-	//---------------------------------------------------------------------------
-	//パーティクルの生成数
-	int absoluteNumber;
-	//ループさせるか
-	bool isRoop;
-	//---------------------------------------------------------------------------
-
-};
 
 class CutSingle :public Node 
 {
@@ -38,9 +23,36 @@ public:
 	float decayTimer;
 	//放射角度
 	float emissionRotate;
+	//終了したか
+	bool isEnd;
 	//画像
 	Sprite* mySprite;
 	//---------------------------------------------------------------------------
+
+};
+
+class CutParticle :public Node
+{
+public:
+	static CutParticle* create(float scale, Color4F baseColor = Color4F::WHITE);
+	bool init(float scale, Color4F baseColor = Color4F::WHITE);
+	void update(float delta);
+	void createParticle(int num);
+	void startParticle();
+	void stopParticle();
+	void setLine(Vec2 from, Vec2 to);
+	Vec2 getRandoLine(float alpha);
+	//---------------------------------------------------------------------------
+	Vec2 fromPosition;
+	Vec2 toPosition;
+	//パーティクルの生成数
+	int absoluteNumber;
+	//大きさ
+	float scaleMax;
+	//ループさせるか
+	bool isRoop;
+	//---------------------------------------------------------------------------
+	Vector<CutSingle*> cuts;
 
 };
 
