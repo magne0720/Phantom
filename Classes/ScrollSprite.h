@@ -21,7 +21,7 @@ public:
 	void updateP(float delta);
 	void setScrollSpriteSpeed(float speed);	// スクロールスピード変更
 
-	std::vector<cocos2d::Sprite*> _bgSprites;
+	std::vector<cocos2d::Node*> _bgSprites;
 	float _scrollSpeed;
 };
 

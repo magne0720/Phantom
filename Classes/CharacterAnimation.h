@@ -46,10 +46,9 @@ public:
 	cocos2d::Sprite* getSp();			// クラス内のスプライトを取得(オススメしない)
 
 	void setDelay(float delayTime);		// スプライトの切り替わる早さを指定
-	//void setDelay(float delayTime, eDIR dirName);	// スプライトの切り替わる早さを指定(向き指定)
-
 	float getDelay();					// スプライトの切り替わる早さを取得
-	//float getDelay(eDIR dirName);		// スプライトの切り替わる早さを取得(向き指定)
+
+	void setDir(cocos2d::Vec2 dir);	// アニメーションの向きを変更
 
 private:
 	cocos2d::Sprite* _mySprite;

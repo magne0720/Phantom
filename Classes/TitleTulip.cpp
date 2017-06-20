@@ -32,11 +32,11 @@ bool TitleTulip::init()
 	_tulip[2]->setPosition(designResolutionSize.width*0.505, h);
 	_tulip[3]->setPosition(designResolutionSize.width*0.677, h);
 	_tulip[4]->setPosition(designResolutionSize.width*0.911, h);
-	_tulip[5]->setPosition(designResolutionSize.width*1.083, h);
-	_tulip[6]->setPosition(designResolutionSize.width*1.255, h);
-	_tulip[7]->setPosition(designResolutionSize.width*1.510, h);
-	_tulip[8]->setPosition(designResolutionSize.width*1.718, h);
-	_tulip[9]->setPosition(designResolutionSize.width*1.916, h);
+	//_tulip[5]->setPosition(designResolutionSize.width*1.083, h);
+	//_tulip[6]->setPosition(designResolutionSize.width*1.255, h);
+	//_tulip[7]->setPosition(designResolutionSize.width*1.510, h);
+	//_tulip[8]->setPosition(designResolutionSize.width*1.718, h);
+	//_tulip[9]->setPosition(designResolutionSize.width*1.916, h);
 
 	return true;
 }
