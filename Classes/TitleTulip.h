@@ -10,8 +10,8 @@ public:
 	bool init();
 	static TitleTulip* create();
 
-	const int TULIP_NUM = 10;
-	Tulip* _tulip[10];
+	const int TULIP_NUM = 5;
+	Tulip* _tulip[5];
 	void update(float delta);
 };
 

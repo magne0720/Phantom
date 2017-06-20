@@ -7,11 +7,13 @@
 class Wood : public cocos2d::Sprite
 {
 public:
-	bool init(cocos2d::SpriteFrame* spFrame, bool green, bool brown);
-	static Wood* create(cocos2d::SpriteFrame* spFrame, bool green = false, bool brown = false);
+	bool init(cocos2d::SpriteFrame* bl, cocos2d::SpriteFrame* gr, cocos2d::SpriteFrame* br, int clearedStage);
+	static Wood* create(cocos2d::SpriteFrame* bl, cocos2d::SpriteFrame* gr, cocos2d::SpriteFrame* br, int clearedStage);
 
-	eColor _colors[2] = { eColor::GREEN, eColor::BROWN };
-	bool _bGreen, _bBrown;
+	cocos2d::Sprite* _bl;
+	cocos2d::Sprite* _gr;
+	cocos2d::Sprite* _br;
+
 };
 
 #endif // !_Wood_h_
