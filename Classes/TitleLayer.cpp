@@ -3,6 +3,9 @@
 #include "AllTags.h"
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
+#include "SaveData.h"
+#include "ColorEnum.h"
+#include "ScrollSprite.h"
 
 using namespace cocos2d;
 
@@ -17,11 +20,24 @@ bool TitleLayer::init()
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	tbg = TitleBackground::create();
-	this->addChild(tbg);
+	auto saveData = SaveData::create();
+
+	Rect rect = Rect(0, 0, designResolutionSize.width, designResolutionSize.height);
+	Sprite* sky = Sprite::create();
+	sky->setTextureRect(rect);
+	sky->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	sky->setColor(getColorCode(eColor::SKY));
+	this->addChild(sky);
+
+	auto cloud = ScrollSprite::create("Title/Back.png", 2.0f, ScrollSprite::eOrientation::landscape);
+	cloud->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	this->addChild(cloud);
+
+	ts = TitleScroll::create(5.0f, ScrollSprite::eOrientation::landscape);
+	this->addChild(ts);
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
-	titleCharacter->setPosition(designResolutionSize.width*0.5f, 203.0f);
+	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.175f);
 	this->addChild(titleCharacter);
 
 	TitleLogo* titleLogo = TitleLogo::create();

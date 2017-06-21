@@ -16,7 +16,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::landscape:
 		while (1)
 		{
-			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
+			auto ts = TitleBackground::create();
 			if (scrollSpeed>0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(ts);
@@ -35,8 +35,9 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::portrait:
 		while (1)
 		{
-			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
-			ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			auto ts = TitleBackground::create();
+			if (scrollSpeed>0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(ts);
 
 			Size size = ts->getBoundingBox().size;

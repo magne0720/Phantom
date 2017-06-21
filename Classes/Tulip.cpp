@@ -2,15 +2,25 @@
 
 using namespace cocos2d;
 
-bool Tulip::init(SpriteFrame* spFrame, bool red, bool pink, bool green)
+bool Tulip::init(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
 {
 	if (!Sprite::init()) return false;
-	this->initWithSpriteFrame(spFrame);
-	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 
-	_bRed = red;
-	_bPink = pink;
-	_bGreen = green;
+	_flower = Sprite::create();
+	_flower->setSpriteFrame(flower);
+	_flower->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+
+	this->addChild(_flower);
+
+	_leaf = Sprite::create();
+	_leaf->setSpriteFrame(leaf);
+	_leaf->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	this->addChild(_leaf);
+
+	_bl = Sprite::create();
+	_bl->setSpriteFrame(bl);
+	_bl->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	this->addChild(_bl);
 
 	float time = 0.6f;
 	auto scaleMin = ScaleTo::create(time*0.5f, 0.95f);
@@ -27,10 +37,10 @@ bool Tulip::init(SpriteFrame* spFrame, bool red, bool pink, bool green)
 	return true;
 }
 
-Tulip* Tulip::create(SpriteFrame* spFrame, bool red, bool pink, bool green)
+Tulip* Tulip::create(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
 {
 	auto pRet = new Tulip();
-	if (pRet && pRet->init(spFrame, red, pink, green))
+	if (pRet && pRet->init(bl, flower, leaf, clearedStage))
 	{
 		pRet->autorelease();
 		return pRet;

@@ -1,5 +1,7 @@
 #include "TitleTulip.h"
 #include "AllTags.h"
+#include "SaveData.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 using namespace std;
@@ -8,19 +10,33 @@ bool TitleTulip::init()
 {
 	if (!Node::init()) return false;
 
+	auto sd = SaveData::create();
+	this->addChild(sd);
+
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
-	Sprite* sp = Sprite::create("Title/Tulip/BlackLine.png");	// 画像読み込み
+	Sprite* bl = Sprite::create("Title/Tulip/BlackLine.png");	// 画像読み込み
+	Sprite* flower = Sprite::create("Title/Tulip/Flower.png");
+	Sprite* green = Sprite::create("Title/Tulip/Green.png");
 
 	int i = 0;
 	Size chipSize = Size(500, 500);
-	int width = sp->getContentSize().width / chipSize.width;
-	int height = sp->getContentSize().height / chipSize.height;
+	int width = bl->getContentSize().width / chipSize.width;
+	int height = bl->getContentSize().height / chipSize.height;
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
 			Rect rect(x*chipSize.width, y*chipSize.height, chipSize.width, chipSize.height);
-			_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(sp->getTexture(), rect));		// キャラクタースプライト作成
+			if (i == 0 || i == 3)
+			{
+				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(bl->getTexture(), rect), SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), sd->loadClear());		// キャラクタースプライト作成
+				if (sd->loadClear() >= static_cast<int>(eColor::RED)) _tulip[i]->_flower->setColor(getColorCode(static_cast<int>(eColor::RED)));
+			}
+			else
+			{
+				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(bl->getTexture(), rect), SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), sd->loadClear());		// キャラクタースプライト作成
+				if (sd->loadClear() >= static_cast<int>(eColor::PINK)) _tulip[i]->_flower->setColor(getColorCode(static_cast<int>(eColor::PINK)));
+			}
 			this->addChild(_tulip[i]);
 			i++;
 		}
