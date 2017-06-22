@@ -17,8 +17,8 @@ static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
 
-static float gameSpeed = 1.0f;
 static float viewSize = 1.0f;
+
 //ìÒÇ¬ÇÃê‚ëŒç¿ïW
 struct SEGMENT
 {
@@ -152,7 +152,7 @@ enum DIR_DEGREE
 
 enum TIME_ZONE 
 {
-	MORNING=0, EVENING,NIGHT,STAR
+	ZEROTIME=0,MORNING, EVENING,NIGHT,STAR
 };
 
 #endif // !__ALL_TAGS_H__

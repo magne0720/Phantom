@@ -31,7 +31,7 @@ bool GameManager::init(int num)
 
 	user = SaveData::create();
 	addChild(user);
-	log("%d", user->loadClear());
+	//log("%d", user->loadClear());
 
 	map = MapCreator::create(num,user->loadPlayerColor());
 	addChild(map);

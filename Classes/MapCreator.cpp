@@ -31,7 +31,7 @@ bool MapCreator::init(int num,Color4F col)
 
 	walls.pushBack(aroundWall);
 
-	openMapFile("text",num);
+	openMapFile("test",num);
 
 	return true;
 };
@@ -318,8 +318,6 @@ void MapCreator::checkWall(Character* obj, Vector<Wall*>wall, float range)
 	for (int i = 0; i < wall.size(); i++) 
 	{
 		//“¯‚¶‚à‚Ì‚ð“ü‚ê‚é‚±‚Æ‚Í‚È‚¢‚æ‚¤‚É‚·‚é
-
-
 		if (length(obj->myPosition-wall.at(i)->getPosition()) < range)
 		{
 			obj->setTargetWall(wall.at(i));

@@ -25,6 +25,10 @@ bool SaveData::init()
 	return true;
 };
 
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//セーブ
+
 void SaveData::saveClear(int clearNum) 
 {
 	if(loadClear()>clearNum)
@@ -57,6 +61,14 @@ void SaveData::saveStarAppear(bool is)
 	user->setBoolForKey(STAR_APPEAR_KEY, is);
 }
 
+void SaveData::saveStartUpNum() 
+{
+	user->setIntegerForKey(START_UP_NUM_KEY, loadStartUpNum());
+}
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//ロード
+
 int SaveData::loadClear() 
 {
 	return user->getIntegerForKey(CLEARKEY);
@@ -80,4 +92,19 @@ TIME_ZONE SaveData::loadTimeZone()
 bool SaveData::loadStarAppear() 
 {
 	return user->getBoolForKey(STAR_APPEAR_KEY);
+};
+
+int SaveData::loadStartUpNum() 
+{
+	return user->getIntegerForKey(START_UP_NUM_KEY);
 }
+
+//リセット
+void SaveData::AllResset() 
+{
+	saveClear(0);
+	saveGrade(0);
+	savePlayerColor(Color4F::WHITE);
+	saveTimeZone(TIME_ZONE::ZEROTIME);
+	saveStarAppear(false);
+};

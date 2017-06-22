@@ -68,6 +68,8 @@ public:
 	void setTargetWall(Wall* p);
 	//速度の変更
 	void setSpeed(float speed);
+	//ゲーム中に変化するスピード変化
+	void setGameSpeed(float speed);
 	//移動可能範囲変更
 	void setMoveRange(float range);
 	//視認範囲設定
@@ -99,6 +101,8 @@ public:
 	float myDirection;
 	//移動速度
 	float moveSpeed;
+	//増減スピード
+	float gameSpeed;	
 	//移動可能範囲半径
 	float moveRange;
 	//視認範囲

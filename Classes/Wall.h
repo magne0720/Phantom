@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "AllTags.h"
 #include "CutParticle.h"
+#include "WallDust.h"
 
 USING_NS_CC;
 
@@ -24,7 +25,6 @@ public:
 	int drawCount;
 	float dustSlope;
 	float cutTimer;
-	float cutDelay;
 	Vec2 points[POINT_SIZE];
 	bool* playerCut;
 	bool isCuted;

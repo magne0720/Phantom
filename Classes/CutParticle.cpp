@@ -31,7 +31,7 @@ bool CutSingle::init(float scaletimer, float decaytimer, float emissionrotate, b
 	{
 
 	}
-	mySprite = Sprite::create("slash4.png");
+	mySprite = Sprite::create("slash.png");
 	addChild(mySprite);
 
 	isEnd = false;
@@ -106,27 +106,40 @@ void CutParticle::update(float delta)
 			cuts.erase(i);
 		}
 	}
+	if (isRoop) 
+	{
+		CutSingle* b = CutSingle::create(scaleMax);
+		addChild(b);
+		b->setPosition(getRandoLine(random<float>(1,100)/100));
+		cuts.pushBack(b);
+	}
 };
 
-void CutParticle::createParticle(int num)
+//ìôä‘äuÇ…ê∂ê¨
+void CutParticle::createParticle(int num,float scale)
 {
+	cuts.clear();
 	for (int i = 0; i < num; i++)
 	{
-		CutSingle* b = CutSingle::create((float)i / (float)num);
+		CutSingle* b = CutSingle::create(scale);
 		addChild(b);
-		b->setPosition(getRandoLine((float)i / (float)num));
+		b->setPosition(getRandoLine((float)i/(float)num));
 		cuts.pushBack(b);
+		CutSingle* a = CutSingle::create(scale);
+		addChild(a);
+		a->setPosition(getRandoLine((float)(num-i)/(float)num));
+		cuts.pushBack(a);
 	}
 };
 
 void CutParticle::startParticle() 
 {
-	scheduleUpdate();
+	isRoop = true;
 };
 
 void CutParticle::stopParticle() 
 {
-	unscheduleUpdate();
+	isRoop = false;
 };
 
 void CutParticle::setLine(Vec2 from, Vec2 to) 
