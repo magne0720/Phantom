@@ -26,7 +26,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 			_bgSprites.push_back(ts);
 			spriteWidthAll += size.width;
 
-			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 0) break;
 
 			cnt++;
 		}
@@ -45,7 +45,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 			_bgSprites.push_back(ts);
 			spriteWidthAll += size.height;
 
-			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 0) break;
 
 			cnt++;
 		}

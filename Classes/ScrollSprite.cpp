@@ -17,16 +17,16 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 		while (1)
 		{
 			Sprite* sp = Sprite::create(fileName);
-			if(_scrollSpeed >0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			if(scrollSpeed > 0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			else sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(sp);
 
 			Size size = sp->getBoundingBox().size;
-			sp->setPosition(size.width * (cnt - 1), 0.0f);
+			sp->setPosition(size.width * cnt, 0.0f);
 			_bgSprites.push_back(sp);
 			spriteWidthAll += size.width;
 
-			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 0) break;
 
 			cnt++;
 			log("%d", _bgSprites.size());
@@ -46,7 +46,7 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 			_bgSprites.push_back(sp);
 			spriteWidthAll += size.height;
 
-			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 0) break;
 
 			cnt++;
 		}
@@ -81,7 +81,7 @@ ScrollSprite* ScrollSprite::create(string fileName, float scrollSpeed, eOrientat
 void ScrollSprite::updateL(float delta)
 {
 	if (_scrollSpeed == 0) return;	// スクロールしないなら出る
-
+	
 									// 向き取得
 	float scrollDir = _scrollSpeed / abs(_scrollSpeed);
 

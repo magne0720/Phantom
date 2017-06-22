@@ -19,7 +19,7 @@ bool TitleWood::init()
 	Sprite* br = Sprite::create("Title/Wood/Brown.png");	// ‰æ‘œ“Ç‚Ýž‚Ý
 
 	int i = 0;
-	Size chipSize = Size(1000, 1150);
+	Size chipSize = Size(900, 1035);
 	int width = bl->getContentSize().width / chipSize.width;
 	int height = bl->getContentSize().height / chipSize.height;
 	for (int y = 0; y < height; y++)

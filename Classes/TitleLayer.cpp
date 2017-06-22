@@ -30,11 +30,15 @@ bool TitleLayer::init()
 	this->addChild(sky);
 
 	auto cloud = ScrollSprite::create("Title/Back.png", 2.0f, ScrollSprite::eOrientation::landscape);
-	cloud->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	//cloud->setPosition(designResolutionSize*0.5f);
 	this->addChild(cloud);
 
 	ts = TitleScroll::create(5.0f, ScrollSprite::eOrientation::landscape);
 	this->addChild(ts);
+
+	auto ground = Sprite::create("Title/Ground.png");
+	ground->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	this->addChild(ground);
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
 	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.175f);

@@ -11,9 +11,6 @@ bool TitleBackground::init()
 {
 	if (!Sprite::init()) return false;
 
-	//this->initWithFile("Title/Back.png");
-	//this->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-
 	auto wood = TitleWood::create();
 	this->addChild(wood);
 
@@ -24,11 +21,7 @@ bool TitleBackground::init()
 	fly->setPosition(designResolutionSize*0.5f);
 	this->addChild(fly);
 
-	auto ground = Sprite::create("Title/Ground.png");
-	ground->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	this->addChild(ground);
-
-	this->setContentSize(ground->getContentSize());
+	this->setContentSize(designResolutionSize * 2.0f);
 
 	return true;
 }
