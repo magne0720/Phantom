@@ -6,9 +6,11 @@
 class Tulip : public cocos2d::Sprite
 {
 public:
-	bool init(cocos2d::SpriteFrame* spFrame, bool red, bool pink, bool green);
-	static Tulip* create(cocos2d::SpriteFrame* spFrame, bool red = false, bool pink = false, bool green = false);
-	bool _bRed, _bPink, _bGreen;
+	bool init(cocos2d::SpriteFrame* bl, cocos2d::SpriteFrame* flower, cocos2d::SpriteFrame* leaf, int clearedStage);
+	static Tulip* create(cocos2d::SpriteFrame* spFrame, cocos2d::SpriteFrame* flower, cocos2d::SpriteFrame* leaf, int clearedStage);
+	cocos2d::Sprite* _bl;
+	cocos2d::Sprite* _flower;
+	cocos2d::Sprite* _leaf;
 
 	void update(float delta);
 };

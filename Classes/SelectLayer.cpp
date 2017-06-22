@@ -72,12 +72,22 @@ bool SelectLayer::init(Color4F color)
 		return false;
 	}
 
+	auto listener = EventListenerTouchOneByOne::create();
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(SelectLayer::onTouchBegan, this);
+	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
 	PictureManager* pictureManager = PictureManager::create();
 	this->addChild(pictureManager);
 
 	SelectBackground* selectBackground = SelectBackground::create(color);
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
+
+	_toTitleButton = ToTitleButton::create();
+	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
+	this->addChild(_toTitleButton);
 
 	// “h‚è‚Â‚Ô‚µ‚½‰~i‘å‚«‚È“_j
 	_dot = DrawNode::create();

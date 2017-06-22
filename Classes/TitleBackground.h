@@ -5,13 +5,12 @@
 #include <vector>
 #include "ScrollSprite.h"
 
-class TitleBackground : public cocos2d::Node
+class TitleBackground : public cocos2d::Sprite
 {
 public:
 	bool init();
 	static TitleBackground* create();
 	std::vector<cocos2d::Sprite*> _bgSprites;
-	float _scrollSpeed;
 	ScrollSprite* _scSp;
 };
 

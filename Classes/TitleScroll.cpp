@@ -16,7 +16,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::landscape:
 		while (1)
 		{
-			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
+			auto ts = TitleBackground::create();
 			if (scrollSpeed>0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(ts);
@@ -26,7 +26,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 			_bgSprites.push_back(ts);
 			spriteWidthAll += size.width;
 
-			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.width + size.width && cnt > 0) break;
 
 			cnt++;
 		}
@@ -35,8 +35,9 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 	case ScrollSprite::portrait:
 		while (1)
 		{
-			auto ts = TitleScroll::create(_scrollSpeed, ScrollSprite::landscape);
-			ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			auto ts = TitleBackground::create();
+			if (scrollSpeed>0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(ts);
 
 			Size size = ts->getBoundingBox().size;
@@ -44,7 +45,7 @@ bool TitleScroll::init(float scrollSpeed, eOrientation orientation)
 			_bgSprites.push_back(ts);
 			spriteWidthAll += size.height;
 
-			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 1) break;
+			if (spriteWidthAll > designResolutionSize.height + size.height && cnt > 0) break;
 
 			cnt++;
 		}

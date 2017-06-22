@@ -57,6 +57,7 @@ bool PictureManager::init()
 	Vec2 vec, vec1;
 	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
+	node->setGlobalZOrder(-1);
 	if (_stageNum <= _LINE_MAX)
 	{
 		basePos.y = designResolutionSize.height*0.75f;

@@ -9,12 +9,10 @@ using namespace std;
 
 bool TitleBackground::init()
 {
-	if (!Node::init()) return false;
+	if (!Sprite::init()) return false;
 
-	_scrollSpeed = 5.0f;
-	_scSp = ScrollSprite::create("Title/Back.png", _scrollSpeed, ScrollSprite::landscape);
-	this->addChild(_scSp);
-
+	auto wood = TitleWood::create();
+	this->addChild(wood);
 
 	auto tulip = TitleTulip::create();
 	this->addChild(tulip);
@@ -23,8 +21,7 @@ bool TitleBackground::init()
 	fly->setPosition(designResolutionSize*0.5f);
 	this->addChild(fly);
 
-	auto wood = TitleWood::create();
-	this->addChild(wood);
+	this->setContentSize(designResolutionSize * 2.0f);
 
 	return true;
 }
