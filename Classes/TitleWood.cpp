@@ -39,6 +39,8 @@ bool TitleWood::init()
 		}
 	}
 
+	this->setContentSize(designResolutionSize*2.0f);
+
 	return true;
 }
 

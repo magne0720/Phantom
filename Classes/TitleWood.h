@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Wood.h"
+#include "ScrollSprite.h"
 
 class TitleWood : public cocos2d::Node
 {

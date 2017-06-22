@@ -11,8 +11,8 @@ bool TitleBackground::init()
 {
 	if (!Sprite::init()) return false;
 
-	auto wood = TitleWood::create();
-	this->addChild(wood);
+	//auto wood = TitleWood::create();
+	//this->addChild(wood);
 
 	auto tulip = TitleTulip::create();
 	this->addChild(tulip);

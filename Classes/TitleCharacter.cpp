@@ -44,7 +44,7 @@ void TitleCharacter::update(float delta)
 			_timer = 0.0f;
 			_charAnim->stopAnimation(DIR::FRONT);
 			changeState();
-			((TitleLayer*)this->getParent())->ts->setScrollSpriteSpeed(0);
+			((TitleLayer*)this->getParent())->setScrollStop();
 		}
 		break;
 	case TitleCharacter::STAND:
@@ -72,7 +72,7 @@ void TitleCharacter::update(float delta)
 			_state = eSTATE::MOVE;
 			_timer = 0.0f;
 			_charAnim->startAnimation(DIR::RIGHT);
-			((TitleLayer*)this->getParent())->ts->setScrollSpriteSpeed(((TitleLayer*)this->getParent())->_scrollSpeed);
+			((TitleLayer*)this->getParent())->setDefaultSpeed();
 			changeState();
 		}
 		break;

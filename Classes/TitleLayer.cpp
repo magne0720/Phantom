@@ -5,7 +5,6 @@
 #include "TitleSelectScene.h"
 #include "SaveData.h"
 #include "ColorEnum.h"
-#include "ScrollSprite.h"
 
 using namespace cocos2d;
 
@@ -33,7 +32,10 @@ bool TitleLayer::init()
 	//cloud->setPosition(designResolutionSize*0.5f);
 	this->addChild(cloud);
 
-	ts = TitleScroll::create(5.0f, ScrollSprite::eOrientation::landscape);
+	ws = WoodScroll::create(_woodScrollSpeed);
+	this->addChild(ws);
+
+	ts = TitleScroll::create(_scrollSpeed);
 	this->addChild(ts);
 
 	auto ground = Sprite::create("Title/Ground.png");
@@ -89,4 +91,16 @@ bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 	_replacedScene = true;
 	((TitleSelectScene*)this->getParent())->replaceSelect();
 	return true;
+}
+
+void TitleLayer::setScrollStop()
+{
+	ws->setScrollSpriteSpeed(0);
+	ts->setScrollSpriteSpeed(0);
+}
+
+void TitleLayer::setDefaultSpeed()
+{
+	ws->setScrollSpriteSpeed(_woodScrollSpeed);
+	ts->setScrollSpriteSpeed(_scrollSpeed);
 }
