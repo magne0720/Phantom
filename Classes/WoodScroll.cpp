@@ -4,7 +4,7 @@
 
 using namespace cocos2d;
 
-bool WoodScroll::init(float scrollSpeed)
+bool WoodScroll::init(float scrollSpeed, int clearedStage)
 {
 	if (!Node::init()) return false;
 
@@ -13,7 +13,7 @@ bool WoodScroll::init(float scrollSpeed)
 
 	while (1)
 	{
-		auto ts = TitleWood::create();
+		auto ts = TitleWood::create(clearedStage);
 		if (scrollSpeed > 0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 		else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 		this->addChild(ts);
@@ -34,10 +34,10 @@ bool WoodScroll::init(float scrollSpeed)
 	return true;
 }
 
-WoodScroll* WoodScroll::create(float scrollSpeed)
+WoodScroll* WoodScroll::create(float scrollSpeed, int clearedStage)
 {
 	auto pRet = new WoodScroll();
-	if (pRet && pRet->init(scrollSpeed))
+	if (pRet && pRet->init(scrollSpeed, clearedStage))
 	{
 		pRet->autorelease();
 		return pRet;

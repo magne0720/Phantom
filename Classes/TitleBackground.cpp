@@ -7,14 +7,14 @@
 using namespace cocos2d;
 using namespace std;
 
-bool TitleBackground::init()
+bool TitleBackground::init(int clearedStage)
 {
 	if (!Sprite::init()) return false;
 
 	//auto wood = TitleWood::create();
 	//this->addChild(wood);
 
-	auto tulip = TitleTulip::create();
+	auto tulip = TitleTulip::create(clearedStage);
 	this->addChild(tulip);
 
 	auto fly = Batterfly::create();
@@ -26,10 +26,10 @@ bool TitleBackground::init()
 	return true;
 }
 
-TitleBackground* TitleBackground::create()
+TitleBackground* TitleBackground::create(int clearedStage)
 {
 	TitleBackground* pRet = new TitleBackground();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(clearedStage))
 	{
 		pRet->autorelease();
 		return pRet;

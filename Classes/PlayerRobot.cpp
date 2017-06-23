@@ -20,6 +20,8 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 {
 	if (!Node::init())return false;
 
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/move.mp3");
+
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->onTouchBegan = CC_CALLBACK_2(PlayerRobot::onTouchBegan, this);
@@ -28,9 +30,10 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	setSpeed(12.0f);
+	setGameSpeed(1.0f);
 	setMoveRange(100.0f);
 	setDoubtDgree(150.0f);
-	checkTime = 60.0f;
+	checkTime = 120.0f;
 
 	initWithFileCenter("Character/TitleAnim.png", Size(250, 250));
 	initWithFileCenterB("Character/TitleAnim_Normal.png", Size(250, 250));
@@ -55,7 +58,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
-		moveTimer ++;
+		moveTimer+=1.0*gameSpeed;
 
 		//一コマ分移動したら
 		if (moveTimer > checkTime/2)
@@ -73,7 +76,6 @@ void PlayerRobot::plusAction()
 	{
 		setState(STATUS::FIND);
 	}
-
 };
 
 //角度の保存
@@ -93,6 +95,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 //行くべきところの設定
 void PlayerRobot::nextPosition()
 {
+	SimpleAudioEngine::getInstance()->playEffect("Sounds/move.mp3");
 	if (angles.size() <= 0)return;
 		targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
 		angleNum++;

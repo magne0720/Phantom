@@ -7,8 +7,8 @@
 class TitleTulip : public cocos2d::Node
 {
 public:
-	bool init();
-	static TitleTulip* create();
+	bool init(int clearedStage);
+	static TitleTulip* create(int clearedStage);
 
 	const int TULIP_NUM = 5;
 	Tulip* _tulip[5];

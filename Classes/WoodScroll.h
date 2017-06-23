@@ -7,8 +7,8 @@
 class WoodScroll : public ScrollSprite
 {
 public:
-	static WoodScroll* create(float scrollSpeed);
-	bool init(float scrollSpeed);
+	static WoodScroll* create(float scrollSpeed, int clearedStage);
+	bool init(float scrollSpeed, int clearedStage);
 };
 
 #endif // !_WoodScroll_h_

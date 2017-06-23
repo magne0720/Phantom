@@ -80,7 +80,7 @@ void Character::action()
 			setState(STATUS::STAND); 
 			break;
 		}
-		move();
+		move(gameSpeed);
 		break;
 	case DOUBT:
 		break;
@@ -117,7 +117,7 @@ void Character::move(float plusSpeed)
 	moveRangeSp->clear();
 	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
 
-	myPosition += aPos*moveSpeed;
+	myPosition += aPos*moveSpeed*plusSpeed;
 	mySprite->changeAnimation(aPos);
 	myBlendSprite->changeAnimation(aPos);
 
@@ -290,9 +290,15 @@ void Character::setState(STATUS state)
 };
 
 //速度変更
-void Character::setSpeed(float speed) 
+void Character::setSpeed(float speed)
 {
 	moveSpeed = speed;
+};
+
+//速度変更
+void Character::setGameSpeed(float speed)
+{
+	gameSpeed = speed;
 };
 
 void Character::setTargetWall(Wall* p)

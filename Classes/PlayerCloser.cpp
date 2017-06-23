@@ -154,6 +154,21 @@ void PlayerCloser::drawMoveLineLeft()
 
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
+	rightRobot->setGameSpeed(0.5f);
+	leftRobot->setGameSpeed(0.5f);
+	return true;
+};
+
+void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event) 
+{
+
+};
+
+void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
+{
+	rightRobot->setGameSpeed(1.0f);
+	leftRobot->setGameSpeed(1.0f);
+
 	if (delayTimer >= 2.0f)
 	{
 		if (rightRobot->isStart&&leftRobot->isStart)
@@ -165,16 +180,5 @@ bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event)
 	else {
 		isRobotMoving = false;
 	}
-	return true;
-};
-
-void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event) 
-{
-
-};
-
-void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
-{
-
 };
 

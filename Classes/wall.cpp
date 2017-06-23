@@ -38,6 +38,8 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 {
 	if (!Node::init())return false;
 
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/walldust.mp3");
+
 	particle = CutParticle::create(1);
 	addChild(particle,60);
 
@@ -183,7 +185,7 @@ void Wall::setDustPoints(Vec2* dust)
 //衝突判定命令
 void Wall::callCollision()
 {
-	if (segmentCount + 2 > POINT_SIZE)return;
+	if (segmentCount + 2 >= POINT_SIZE)return;
 
 	Vec2 temp[POINT_SIZE];
 	Vec2 pos;
@@ -252,9 +254,7 @@ int Wall::checkPoint(Vec2* hitPos,float* s0Slope, SEGMENT s0, SEGMENT s1)
 	
 		//傾きを保存
 		if (s0Slope)*s0Slope = a1;
-		log("a0=%f", a0);
-		log("a1=%f", a1);
-
+	
 
 		//傾きが同一の場合は平行なので衝突しない
 		if ((a0 == a1) || a0 == -a1)return 0;
@@ -359,14 +359,11 @@ void Wall::checkCutArea(Vec2* points)
 	cutEffect();
 
 	//面積比を見る
-	if (sumArea(points, right) < sumArea(points, left))
+	if (sumArea(points, right) > sumArea(points, left))
 	{
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, left);
-		for (int i = 0; i < segmentCount + 2; i++)
-		{
-			log("left%d-%d", i, left[i]);
-		}
+		
 
 		rebuildingDust(dustPoints, leftcount);
 		sortPoints(points, right);
@@ -377,10 +374,7 @@ void Wall::checkCutArea(Vec2* points)
 	{
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, right);
-		for (int i = 0; i < segmentCount + 2; i++)
-		{
-			log("right%d-%d", i, right[i]);
-		}
+	
 		rebuildingDust(dustPoints, rightcount);
 		sortPoints(points, left);
 		//構築
@@ -391,43 +385,43 @@ void Wall::checkCutArea(Vec2* points)
 //切り取った後に面積を再構築する
 void Wall::rebuildingArea(Vec2 points[], int corner)
 {
-	//log("rebuild-%d", corner);
 	//頂点座標設定
 	std::vector<Vec2>vecs;
 	for (int i = 0; i < corner; i++) {
 		vecs.push_back(points[i]);
-		log("points[%0.1f,%0.1f]", points[i].x, points[i].y);
 	}
 	myWall->clear();
 	myWall->drawPolygon(&vecs[0], corner, Color4F::RED, 4, Color4F::WHITE);
 
 	clipp->setStencil(myWall);
-
+	log("segment=%d", segmentCount);
 	segmentCount = corner;
-	log("changeSegment=%d", segmentCount);
 };
 
 //切り取った後に面積を再構築する
 void Wall::rebuildingDust(Vec2 points[], int corner)
 {
-	//log("rebuild-%d", corner);
-	//頂点座標設定
-	std::vector<Vec2>vecs;
-	for (int i = 0; i < corner; i++) {
-		vecs.push_back(points[i]);
-	}
-	DrawNode* dDust = DrawNode::create();
-	addChild(dDust);
-	dDust->drawPolygon(&vecs[0], corner, cutedColor, 4, Color4F::WHITE);
-	log("dustSlope=%f", dustSlope);
+	WallDust* dust = WallDust::create(points, corner, cutedColor);
+	addChild(dust);
+	//	//頂点座標設定
+	//std::vector<Vec2>vecs;
+	//for (int i = 0; i < corner; i++) {
+	//	vecs.push_back(points[i]);
+	//}
+	//DrawNode* dDust = DrawNode::create();
+	//addChild(dDust);
+	//dDust->drawPolygon(&vecs[0], corner, cutedColor, 4, Color4F::WHITE);
+	/*
 	MoveBy* by = MoveBy::create(1,getDirectionDegree(Vec2(1,0), ragToDeg(dustSlope),100));
 	dDust->runAction(by);
+	*/
 };
 
 //切り取られる演出
 void Wall::cutEffect()
 {
-	particle->createParticle(50);
+	SimpleAudioEngine::getInstance()->playEffect("Sounds/walldust.mp3");
+	particle->createParticle(25,particle->scaleMax);
 };
 
 
@@ -452,7 +446,6 @@ void Wall::sortPoints(Vec2* points, int*nums)
 			if (nums[i] > nums[j]) 
 			{
 				//入れ替え
-				//log("change");
 				temp = nums[i];
 				nums[i] = nums[j];
 				nums[j] = temp;
@@ -460,7 +453,6 @@ void Wall::sortPoints(Vec2* points, int*nums)
 		}
 	for (int i = 0; nums[i] != -1; i++)
 	{
-		//log("i=%d!=%d", i, nums[i]);
 		pos = points[i];
 		points[i] = points[nums[i]];
 		points[nums[i]] = pos;
@@ -477,7 +469,6 @@ Vec2 Wall::getOverPoint(Vec2 points[],int limit,int num)
 	if (num >= limit)
 	{
 		c = num%limit;
-	//	//log("%d/%d=%d...%d", num, limit,num/limit, num%limit);
 	}
 	return points[c];
 };

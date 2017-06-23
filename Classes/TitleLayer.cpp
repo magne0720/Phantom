@@ -1,6 +1,6 @@
 #include "TitleLayer.h"
 #include "TitleCharacter.h"
-#include "AllTags.h"
+#include "SaveData.h"
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
 #include "SaveData.h"
@@ -25,17 +25,31 @@ bool TitleLayer::init()
 	Sprite* sky = Sprite::create();
 	sky->setTextureRect(rect);
 	sky->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	sky->setColor(getColorCode(eColor::SKY));
+	/*switch (TIME_ZONE)
+	{
+	case MORNING:
+		sky->setColor(getColorCode(eColor::SKY));
+		break;
+	case EVENING:
+		sky->setColor(getColorCode(eColor::ORANGE));
+		break;
+	case NIGHT:
+		sky->setColor(getColorCode(eColor::INDIGO));
+		break;
+	case STAR:
+		sky->setColor(getColorCode(eColor::INDIGO));
+		break;
+	}*/
 	this->addChild(sky);
 
 	auto cloud = ScrollSprite::create("Title/Back.png", 2.0f, ScrollSprite::eOrientation::landscape);
 	//cloud->setPosition(designResolutionSize*0.5f);
 	this->addChild(cloud);
 
-	ws = WoodScroll::create(_woodScrollSpeed);
+	ws = WoodScroll::create(_woodScrollSpeed, saveData->loadClear());
 	this->addChild(ws);
 
-	ts = TitleScroll::create(_scrollSpeed);
+	ts = TitleScroll::create(_scrollSpeed, saveData->loadClear());
 	this->addChild(ts);
 
 	auto ground = Sprite::create("Title/Ground.png");

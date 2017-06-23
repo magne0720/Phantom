@@ -16,6 +16,7 @@ public:
 	const char* COLOR_B_KEY = "colorB";//b
 	const char* TIME_ZONE_KEY = "time";//ŠÔ‘Ñ
 	const char* STAR_APPEAR_KEY = "star";//¯‚ªo‚Ä‚¢‚¢‚©
+	const char* START_UP_NUM_KEY = "startNum";//‹N“®‰ñ”
 	UserDefault* user;
 
 	static SaveData* create();
@@ -26,12 +27,16 @@ public:
 	void savePlayerColor(Color4F col);
 	void saveTimeZone(TIME_ZONE time);
 	void saveStarAppear(bool is);
+	void saveStartUpNum();
 
 	int loadClear();
 	int loadGrade();
 	Color4F loadPlayerColor();
 	TIME_ZONE loadTimeZone();
 	bool loadStarAppear();
+	int loadStartUpNum();
+
+	void AllResset();
 };
 
 #endif // !__SAVEDATA_H__
