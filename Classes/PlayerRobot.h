@@ -24,9 +24,6 @@ public:
 	void nextPosition();
 	//次に行く場所がなくなった時に配列の中を削除し、動きを止める
 	void stopPosition();
-	//絶対操作
-	void nextPositionB();
-	void stopPositionB();
 
 	//プレイヤーの操作が異なるので仮想化
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
@@ -46,7 +43,6 @@ public:
 	float checkTime;//コマの区切り
 	int angleNum;
 	std::vector<float> angles;
-	std::vector<Vec2> anglesB;
 
 };
 #endif // !__PLAYER_ROBOT_H__

@@ -134,7 +134,7 @@ static Vec2 getDirectionDegree(Vec2 target, float deg, float range=1.0f)
 
 enum GAMESTATE 
 {
-	SANDBY = 0,PLAY,MOVING,CLEAR,MISS
+	SANDBY = 0,PLAY,MOVE_START,MOVING,MOVE_STOP,CLEAR,MISS
 };
 
 //キャラクターの動き

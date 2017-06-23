@@ -35,6 +35,11 @@ void SaveData::saveClear(int clearNum)
 	user->setIntegerForKey(CLEARKEY, clearNum);
 };
 
+void SaveData::saveLastClear(int clearNum) 
+{
+		user->setIntegerForKey(LASTCLEARKEY, clearNum);
+};
+
 void SaveData::saveGrade(int gradeNum) 
 {
 	if (loadGrade()>gradeNum)
@@ -69,9 +74,14 @@ void SaveData::saveStartUpNum()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //ロード
 
-int SaveData::loadClear() 
+int SaveData::loadClear()
 {
 	return user->getIntegerForKey(CLEARKEY);
+};
+
+int SaveData::loadLastClear()
+{
+	return user->getIntegerForKey(LASTCLEARKEY);
 };
 
 int SaveData::loadGrade() 
@@ -102,8 +112,8 @@ int SaveData::loadStartUpNum()
 //リセット
 void SaveData::AllResset() 
 {
-	saveClear(0);
-	saveGrade(0);
+	saveClear(-1);
+	saveGrade(-1);
 	savePlayerColor(Color4F::WHITE);
 	saveTimeZone(TIME_ZONE::ZEROTIME);
 	saveStarAppear(false);

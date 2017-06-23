@@ -20,7 +20,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 {
 	if (!Node::init())return false;
 
-	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/move.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/move_4.mp3");
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
@@ -95,46 +95,24 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 //行くべきところの設定
 void PlayerRobot::nextPosition()
 {
-	SimpleAudioEngine::getInstance()->playEffect("Sounds/move.mp3");
 	if (angles.size() <= 0)return;
-		targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
-		angleNum++;
-		isNext = true;
+	SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
+	targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+	angleNum++;
+	isNext = true;
 };
 
 void PlayerRobot::stopPosition()
 {
-	//log("length=%f", length(targetPosition - myPosition));
 	moveRangeSp->clear();
 	angles.clear();
 	isStandby = false;
 	isStart = false;
 	targetPosition = myPosition;
-	for (int i = 0; i < 10; i++)
-	{
-		moveRangeSp->drawCircle(Vec2(0, 0), moveRange + i, 0, 360, false, Color4F::BLACK);
-	}
+	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::BLACK);
 	angleNum = 0;
 	startPosition = myPosition;
 }
-
-//絶対移動
-void PlayerRobot::nextPositionB() 
-{
-	targetPosition = anglesB.at(angleNum);
-	angleNum++;
-	setRotation(atan2(targetPosition.y-myPosition.y,targetPosition.x-myPosition.x));
-};
-
-//絶対移動設定
-void PlayerRobot::stopPositionB() 
-{
-	isStandby = false;
-	anglesB.clear();
-	moveRangeSp->clear();
-	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
-};
-
 
 //プレイヤーの操作が異なるので仮想化
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
@@ -221,6 +199,7 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 	{
 		stopPosition();
 		isStandby = true;
+		isStart = true;
 	}
 };
 

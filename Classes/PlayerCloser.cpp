@@ -47,10 +47,11 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 	addChild(leftRobot);
 	leftRobot->setTag(1);
 
+
 	rightRobot->scheduleUpdate();
 	leftRobot->scheduleUpdate();
 
-	delayTimer = 0;
+	delayTimer = 2.0f;
 	isRobotMoving = false;
 	isGoal = false;
 	isStart = false;
@@ -65,7 +66,7 @@ void PlayerCloser::update(float delta)
 	infraredLine->clear();
 	//infraredLine->drawSegment(Vec2(rightRobot->myPosition.x, rightRobot->myPosition.y+80),Vec2(leftRobot->myPosition.x,leftRobot->myPosition.y+80), 4, Color4F::RED);
 
-	if (rightRobot->isNext&&leftRobot->isNext)
+	if (rightRobot->isNext||leftRobot->isNext)
 	{
 		effectTimer += 5.0f;
 		infraredEffect->clear();
@@ -77,22 +78,10 @@ void PlayerCloser::update(float delta)
 			leftRobot->isNext = false;
 		}
 	}
+
 	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)
 	{
 		isGoal = true;
-	}
-	if (rightRobot->isStandby&&leftRobot->isStandby)
-	{
-		rightRobot->moveTimer = 0;
-		leftRobot->moveTimer = 0;
-		rightRobot->nextPosition();
-		leftRobot->nextPosition();
-		rightRobot->isStandby = false;
-		leftRobot->isStandby = false;
-		rightRobot->isStart = true;
-		leftRobot->isStart = true;
-		moveLineRight->clear();
-		moveLineLeft->clear();
 	}
 	if (rightRobot->angles.size() == 0)
 	{
@@ -152,10 +141,26 @@ void PlayerCloser::drawMoveLineLeft()
 	//leftRobot->isPut = false;
 };
 
+void PlayerCloser::startRobot() 
+{
+		rightRobot->moveTimer = 0;
+		leftRobot->moveTimer = 0;
+		rightRobot->nextPosition();
+		leftRobot->nextPosition();
+		rightRobot->isStandby = false;
+		leftRobot->isStandby = false;
+		rightRobot->isStart = true;
+		leftRobot->isStart = true;
+		moveLineRight->clear();
+		moveLineLeft->clear();
+};
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
-	rightRobot->setGameSpeed(0.5f);
-	leftRobot->setGameSpeed(0.5f);
+	if (rightRobot->isStart || leftRobot->isStart) 
+	{
+		rightRobot->setGameSpeed(0.5f);
+		leftRobot->setGameSpeed(0.5f);
+	}
 	return true;
 };
 
@@ -166,9 +171,11 @@ void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
-	rightRobot->setGameSpeed(1.0f);
-	leftRobot->setGameSpeed(1.0f);
-
+	if (rightRobot->isStart || leftRobot->isStart)
+	{
+		rightRobot->setGameSpeed(1.0f);
+		leftRobot->setGameSpeed(1.0f);
+	}
 	if (delayTimer >= 2.0f)
 	{
 		if (rightRobot->isStart&&leftRobot->isStart)

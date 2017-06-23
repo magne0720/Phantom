@@ -17,11 +17,17 @@ public:
 	void update(float delta);
 
 	bool standbyAnimation();
+	bool startAnimation();
+	bool stopAnimation();
+
 	void StayShowMessage(int num);
 	void StayCloseMessage();
 
+
 	void dispGoal();
 	void checkTime();
+
+
 
 	SaveData* user;
 	MapCreator* map;
@@ -32,6 +38,7 @@ public:
 	GAMESTATE gameState;
 	Sprite* messageSp;
 
+	int playerCount;//プレイヤーの行動可能回数
 
 	float timer;
 

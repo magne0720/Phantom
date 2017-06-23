@@ -33,6 +33,7 @@ public:
 	Vec2 endPosition;
 	void drawMoveLineRight();
 	void drawMoveLineLeft();
+	void startRobot();
 
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);

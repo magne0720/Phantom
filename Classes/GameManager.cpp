@@ -39,6 +39,7 @@ bool GameManager::init(int num)
 	isGoal = &map->robot->isGoal;
 	stageColor = map->goal->getStageColor();
 
+	playerCount = 5;
 	timer = 0;
 	isGoalAnimation = false;
 	gameState = GAMESTATE::SANDBY;
@@ -59,10 +60,12 @@ void GameManager::update(float delta)
 	switch (gameState)
 	{
 	case SANDBY:
+		//ゲームが始まった時
 		if (standbyAnimation())
 			gameState = GAMESTATE::PLAY;
 		break;
 	case PLAY:
+		//プレイヤーの軌道を決めている時
 		timer += 1.0f / 60.0f;
 		{
 			if (timer > 6.0f)
@@ -85,18 +88,37 @@ void GameManager::update(float delta)
 					timer = 0;
 				}
 			}
-			if (map->robot->rightRobot->isStart&&map->robot->leftRobot->isStart)gameState = GAMESTATE::MOVING;
-			if (*isGoal)gameState = GAMESTATE::CLEAR;
+			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby) 
+			{
+				StayCloseMessage();
+				timer = 0;
+				gameState = GAMESTATE::MOVE_START;
+			}
+		}
+		break;
+	case MOVE_START:
+		//プレイヤーが始める時
+		if (startAnimation())
+		{
+			map->robot->startRobot();
+			gameState = GAMESTATE::MOVING;
 		}
 		break;
 	case MOVING:
-		if (!map->robot->rightRobot->isStart&&!map->robot->leftRobot->isStart)gameState = GAMESTATE::PLAY;
+		if (!map->robot->rightRobot->isStart&&!map->robot->leftRobot->isStart)gameState = GAMESTATE::MOVE_STOP;
 		if (*isGoal)gameState = GAMESTATE::CLEAR;
 		break;
+	case MOVE_STOP:
+		//プレイヤーが歩くのを止めた時
+		if (stopAnimation())
+			gameState = GAMESTATE::PLAY;
+		break;
 	case CLEAR:
+		//クリアした時
 		dispGoal();
 		break;
 	case MISS:
+		//すべての行動回数をなくしてしまった時
 		break;
 	default:
 		break;
@@ -173,7 +195,6 @@ bool GameManager::standbyAnimation()
 		FadeOut* out = FadeOut::create(0.5f);
 		sp->runAction(Sequence::create(sZoomIn,rTo ,sZoomOut, out, nullptr));
 	}
-	timer += 1.0 / 60.0f;
 	if (timer > 2.5f) {
 
 		map->robot->scheduleUpdate();
@@ -181,10 +202,56 @@ bool GameManager::standbyAnimation()
 		timer = 0;
 		return true;
 	}
-
-
+	timer += 1.0 / 60.0f;
 	return false;
 };
+
+bool GameManager::startAnimation() 
+{
+	log("start");
+	if (timer == 0)
+	{
+		Sprite* sp = Sprite::create("StartLogo.png");
+		sp->setPosition(designResolutionSize*0.5f);
+		addChild(sp);
+		RotateBy* rTo = RotateBy::create(1, 360);
+		ScaleTo* sZoomIn = ScaleTo::create(0.5, 2);
+		ScaleTo* sZoomOut = ScaleTo::create(0.5, 2);
+		FadeOut* out = FadeOut::create(0.5f);
+		sp->runAction(Sequence::create(sZoomIn, rTo, sZoomOut, out, nullptr));
+	}
+	if (timer > 2.5f) {
+
+		map->robot->scheduleUpdate();
+
+		timer = 0;
+		return true;
+	}
+	timer += 1.0 / 60.0f;
+	return false;
+};
+
+bool GameManager::stopAnimation()
+{
+	if (timer == 0)
+	{
+		Sprite* sp = Sprite::create("StartLogo.png");
+		sp->setPosition(designResolutionSize*0.5f);
+		addChild(sp);
+		RotateBy* rTo = RotateBy::create(1, 360);
+		ScaleTo* sZoomIn = ScaleTo::create(0.5, 2);
+		ScaleTo* sZoomOut = ScaleTo::create(0.5, 2);
+		FadeOut* out = FadeOut::create(0.5f);
+		sp->runAction(Sequence::create(sZoomIn, rTo, sZoomOut, out, nullptr));
+	}
+	if (timer > 2.5f) {
+		timer = 0;
+		return true;
+	}
+	timer += 1.0 / 60.0f;
+	return false;
+};
+
 
 void GameManager::StayShowMessage(int num)
 {
