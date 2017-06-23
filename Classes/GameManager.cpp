@@ -137,6 +137,7 @@ void GameManager::dispGoal()
 
 		//ƒf[ƒ^‚Ì•Û‘¶
 		user->saveClear(map->getLevel());
+		user->saveLastClear(map->getLevel());
 		user->savePlayerColor(stageColor);
 		checkTime();
 

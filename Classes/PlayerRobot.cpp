@@ -75,6 +75,7 @@ void PlayerRobot::plusAction()
 	if (onCollision(targets.at(0)->myPosition, moveRange)) 
 	{
 		setState(STATUS::FIND);
+		//stopPosition();
 	}
 };
 

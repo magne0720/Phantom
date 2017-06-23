@@ -31,8 +31,10 @@ bool SaveData::init()
 
 void SaveData::saveClear(int clearNum) 
 {
-	if(loadClear()>clearNum)
-	user->setIntegerForKey(CLEARKEY, clearNum);
+	if (loadClear() < clearNum) 
+	{
+		user->setIntegerForKey(CLEARKEY, clearNum);
+	}
 };
 
 void SaveData::saveLastClear(int clearNum) 
