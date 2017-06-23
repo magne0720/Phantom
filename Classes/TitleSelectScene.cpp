@@ -1,5 +1,6 @@
 #include "TitleSelectScene.h"
 #include "AllTags.h"
+#include "SoundSystem.h"
 
 using namespace cocos2d;
 
@@ -8,6 +9,10 @@ bool TitleSelectScene::init()
 	if (!Scene::init()) return false;
 
 	_replacedLayer = false;
+
+	auto soundSystem = SoundSystem::create();
+	this->addChild(soundSystem);
+	soundSystem->preloadBGM("Sounds/TitleBGM.png");
 
 	return true;
 }

@@ -46,10 +46,12 @@ bool TitleLayer::init()
 	//cloud->setPosition(designResolutionSize*0.5f);
 	this->addChild(cloud);
 
-	ws = WoodScroll::create(_woodScrollSpeed, saveData->loadClear());
+	int cleareStage = saveData->loadClear();
+
+	ws = WoodScroll::create(_woodScrollSpeed, cleareStage);
 	this->addChild(ws);
 
-	ts = TitleScroll::create(_scrollSpeed, saveData->loadClear());
+	ts = TitleScroll::create(_scrollSpeed, cleareStage);
 	this->addChild(ts);
 
 	auto ground = Sprite::create("Title/Ground.png");
