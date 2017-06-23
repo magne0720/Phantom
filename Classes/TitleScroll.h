@@ -7,7 +7,7 @@
 class TitleScroll : public ScrollSprite
 {
 public:
-	bool init(float scrollSpeed, eOrientation orientation);
-	static TitleScroll* create(float scrollSpeed, eOrientation orientation);
+	bool init(float scrollSpeed, int clearedStage);
+	static TitleScroll* create(float scrollSpeed, int clearedStage);
 };
 #endif // !_TitleScroll_h_

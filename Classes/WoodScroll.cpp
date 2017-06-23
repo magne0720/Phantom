@@ -1,20 +1,19 @@
-#include "TitleScroll.h"
+#include "WoodScroll.h"
 #include "AllTags.h"
-#include "TitleBackground.h"
+#include "TitleWood.h"
 
 using namespace cocos2d;
 
-bool TitleScroll::init(float scrollSpeed, int clearedStage)
+bool WoodScroll::init(float scrollSpeed, int clearedStage)
 {
 	if (!Node::init()) return false;
 
 	float spriteWidthAll = 0.0f;
 	int cnt = 0;
 
-
 	while (1)
 	{
-		auto ts = TitleBackground::create(clearedStage);
+		auto ts = TitleWood::create(clearedStage);
 		if (scrollSpeed > 0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 		else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 		this->addChild(ts);
@@ -35,9 +34,9 @@ bool TitleScroll::init(float scrollSpeed, int clearedStage)
 	return true;
 }
 
-TitleScroll* TitleScroll::create(float scrollSpeed, int clearedStage)
+WoodScroll* WoodScroll::create(float scrollSpeed, int clearedStage)
 {
-	TitleScroll* pRet = new TitleScroll();
+	auto pRet = new WoodScroll();
 	if (pRet && pRet->init(scrollSpeed, clearedStage))
 	{
 		pRet->autorelease();

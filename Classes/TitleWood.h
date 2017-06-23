@@ -3,12 +3,13 @@
 
 #include "cocos2d.h"
 #include "Wood.h"
+#include "ScrollSprite.h"
 
 class TitleWood : public cocos2d::Node
 {
 public:
-	bool init();
-	static TitleWood* create();
+	bool init(int clearedStage);
+	static TitleWood* create(int clearedStage);
 	
 	Wood* _wood[4];
 
