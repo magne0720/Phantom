@@ -3,6 +3,8 @@
 #include "SelectBackground.h"
 #include "AllTags.h"
 #include "TitleSelectScene.h"
+#include "SaveData.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 
@@ -54,7 +56,8 @@ bool SelectLayer::init()
 	PictureManager* pictureManager = PictureManager::create();
 	this->addChild(pictureManager);
 
-	SelectBackground* selectBackground = SelectBackground::create();
+	auto saveData = SaveData::create();
+	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(saveData->loadLastClear())));
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
@@ -118,10 +121,8 @@ bool SelectLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 
 void SelectLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	if (_isSceneReplace) return;
+	if (_isSceneReplace && ((TitleSelectScene*)this->getParent())->_replaceLayer) return;
 	_isSceneReplace = true;
 
-	auto scene = TitleSelectScene::createTitleScene();
-	auto transition = TransitionFade::create(0.5f, scene);
-	Director::getInstance()->replaceScene(transition);
+	((TitleSelectScene*)this->getParent())->replaceTitle();
 }

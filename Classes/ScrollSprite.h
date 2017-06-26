@@ -13,9 +13,9 @@ public:
 		portrait	// èc
 	};
 
-	static ScrollSprite* create(std::string fileName, float scrollSpeed, eOrientation orientation = landscape);
+	static ScrollSprite* create(std::string fileName, float scrollSpeed, eOrientation orientation = landscape, cocos2d::Color3B color = cocos2d::Color3B::WHITE);
 	
-	bool init(std::string fileName, float scrollSpeed, eOrientation orientation);
+	bool init(std::string fileName, float scrollSpeed, eOrientation orientation, cocos2d::Color3B color);
 	//void update(float delta);
 	void updateL(float delta);
 	void updateP(float delta);

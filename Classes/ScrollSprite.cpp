@@ -4,7 +4,7 @@
 using namespace cocos2d;
 using namespace std;
 
-bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orientation)
+bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orientation, Color3B color)
 {
 	if (!Node::init()) return false;
 
@@ -17,7 +17,8 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 		while (1)
 		{
 			Sprite* sp = Sprite::create(fileName);
-			if(scrollSpeed > 0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			sp->setColor(color);
+			if(scrollSpeed >= 0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			else sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(sp);
 
@@ -37,7 +38,7 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 		while (1)
 		{
 			Sprite* sp = Sprite::create(fileName);
-			if (_scrollSpeed >0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+			if (_scrollSpeed >= 0.0f) sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 			else sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 			this->addChild(sp);
 
@@ -62,10 +63,10 @@ bool ScrollSprite::init(string fileName, float scrollSpeed, eOrientation orienta
 	return true;
 }
 
-ScrollSprite* ScrollSprite::create(string fileName, float scrollSpeed, eOrientation orientation)
+ScrollSprite* ScrollSprite::create(string fileName, float scrollSpeed, eOrientation orientation, Color3B color)
 {
 	ScrollSprite* pRet = new ScrollSprite();
-	if (pRet && pRet->init(fileName, scrollSpeed, orientation))
+	if (pRet && pRet->init(fileName, scrollSpeed, orientation, color))
 	{
 		pRet->autorelease();
 		return pRet;

@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "SelectLayer.h"
 #include "TitleLayer.h"
+#include "AllTags.h"
 
 class TitleSelectScene : public cocos2d::Scene
 {
@@ -14,14 +15,17 @@ public:
 	bool init();
 	CREATE_FUNC(TitleSelectScene);
 	void replaceTitle();
-	void replaceSelect();
+	void replaceSelect(cocos2d::Color4F color = cocos2d::Color4F::WHITE);
+
+	bool _replaceLayer;
+	cocos2d::Sprite* _fadeSp;
 
 private:
 	cocos2d::Sprite* createFadeRect(cocos2d::Sprite*);
-	void replace();
+	void replace(bool toTitle, cocos2d::Color4F color = cocos2d::Color4F::WHITE);
+	bool starReset(TIME_ZONE timeZone);
 
-	bool _replacedLayer;
-	cocos2d::Node* _layer;
+	cocos2d::Node* _layer;	
 
 };
 

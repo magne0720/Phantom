@@ -51,6 +51,7 @@ static cocos2d::Color3B getColorCode(eColor color)
 		return cocos2d::Color3B(255, 242, 102);
 		break;
 	default:
+		return cocos2d::Color3B(255, 255, 255);
 		break;
 	}
 }
@@ -90,6 +91,7 @@ static cocos2d::Color3B getColorCode(int id)
 		return cocos2d::Color3B(255, 242, 102);
 		break;
 	default:
+		return cocos2d::Color3B(255, 255, 255);
 		break;
 	}
 }

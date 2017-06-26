@@ -4,28 +4,24 @@
 using namespace cocos2d;
 using namespace std;
 
-bool Batterfly::init(bool purple, bool blue)
+bool Batterfly::init()
 {
 	if (!Sprite::init()) return false;
-
-	_bPurple = purple;
-	_bBlue = blue;
+	
 	_scaling = 0.1f;
 
-	_mySp = Sprite::create("Title/Batterfly.png");
-	_mySp->setAnchorPoint(Vec2(0.5f,0.2f));
-	
-	this->addChild(_mySp);
+	this->initWithFile("Title/Batterfly.png");
+	this->setAnchorPoint(Vec2(0.5f,0.2f));
 
 	this->scheduleUpdate();
 
 	return true;
 }
 
-Batterfly* Batterfly::create(bool purple, bool blue)
+Batterfly* Batterfly::create()
 {
 	auto pRet = new Batterfly();
-	if (pRet && pRet->init(purple, blue))
+	if (pRet && pRet->init())
 	{
 		pRet->autorelease();
 		return pRet;
@@ -40,15 +36,23 @@ Batterfly* Batterfly::create(bool purple, bool blue)
 
 void Batterfly::update(float delta)
 {
-	if (scaleRange(_mySp->getScaleY()) == 0.0f)
+	if (scaleRange(this->getScaleY()) == 0.0f)
 	{
 		_scaling = abs(_scaling);
 	}
-	else if (scaleRange(_mySp->getScaleY()) == 1.0f)
+	else if (scaleRange(this->getScaleY()) == 1.0f)
 	{
 		_scaling = abs(_scaling) * -1;
 	}
-	_mySp->setScaleY(_mySp->getScaleY() + _scaling);
+	this->setScaleY(this->getScaleY() + _scaling);
+
+	_timer += delta;
+	if (_timer > _SWITCH_TIME)
+	{
+		_dir *= -1;
+		_timer = 0.0f;
+	}
+	this->setPositionY(this->getPositionY() + _dir*_speed);
 }
 
 float Batterfly::scaleRange(float f)

@@ -1,6 +1,7 @@
 #include "TitleSelectScene.h"
-#include "AllTags.h"
 #include "SoundSystem.h"
+#include "SaveData.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 
@@ -8,11 +9,35 @@ bool TitleSelectScene::init()
 {
 	if (!Scene::init()) return false;
 
-	_replacedLayer = false;
+	_replaceLayer = false;
 
 	auto soundSystem = SoundSystem::create();
 	this->addChild(soundSystem);
-	soundSystem->preloadBGM("Sounds/TitleBGM.png");
+	soundSystem->playBGM("Sounds/TitleBGM.mp3");
+
+	SaveData* saveData = SaveData::create();
+
+	switch (saveData->loadLastClear())
+	{
+	case static_cast<int>(eColor::SKY) :
+		saveData->saveStarAppear(false);
+		saveData->saveTimeZone(TIME_ZONE::MORNING);
+		break;
+	case static_cast<int>(eColor::ORANGE) :
+		/*if (saveData->loadTimeZone() != TIME_ZONE::EVENING) */saveData->saveStarAppear(false);
+		saveData->saveTimeZone(TIME_ZONE::EVENING);
+		break;
+	case static_cast<int>(eColor::INDIGO) :
+		/*if (saveData->loadTimeZone() != TIME_ZONE::NIGHT) */saveData->saveStarAppear(false);
+		saveData->saveTimeZone(TIME_ZONE::NIGHT);
+		break;
+	case static_cast<int>(eColor::YELLOW) :
+		if(saveData->loadTimeZone()==TIME_ZONE::EVENING || saveData->loadTimeZone()==TIME_ZONE::NIGHT)
+			saveData->saveStarAppear(true);
+		break;
+	default:
+		break;
+	}
 
 	return true;
 }
@@ -45,47 +70,61 @@ void TitleSelectScene::replaceTitle()
 {
 	for (auto c : getChildren())
 	{
-		if (typeid(*c) == typeid(SelectLayer))
+		if (typeid(*c) == typeid(SelectLayer) && !_replaceLayer)
 		{
 			_layer = c;
-			replace();
+			replace(true);
 			break;
 		}
 	}
 }
 
-void TitleSelectScene::replaceSelect()
+void TitleSelectScene::replaceSelect(Color4F color)
 {
 	for (auto c : getChildren())
 	{
-		if (typeid(*c) == typeid(TitleLayer) && !_replacedLayer)
+		if (typeid(*c) == typeid(TitleLayer) && !_replaceLayer)
 		{
 			_layer = c;
-			replace();
+			replace(false, color);
 			break;
 		}
 	}	
 }
 
-void TitleSelectScene::replace()
+void TitleSelectScene::replace(bool toTitle, Color4F color)
 {
+	if (_replaceLayer) return;
+	_fadeSp = Sprite::create();
 	auto flg0 = CallFunc::create([&]() {
-		_replacedLayer = true;
+		_replaceLayer = true;
 	});
 	auto fadeIn = FadeIn::create(0.5f);
-	auto callFunc = CallFunc::create([&]() {
-		this->removeChild(_layer, true);
-		auto scene = SelectLayer::create();
-		this->addChild(scene);
-	});
+	CallFunc* callFunc;
+	if (toTitle)
+	{
+		callFunc = CallFunc::create([&]() {
+			this->removeChild(_layer, true);
+			auto scene = TitleLayer::create();
+			this->addChild(scene);
+		});
+	}
+	else
+	{
+		callFunc = CallFunc::create([&]() {
+			auto scene = SelectLayer::create(color);
+			this->removeChild(_layer, true);
+			this->addChild(scene);
+		});
+	}
 	auto fadeOut = FadeOut::create(0.5f);
 	auto flg1 = CallFunc::create([&]() {
-		_replacedLayer = false;
+		_replaceLayer = false;
+		this->removeChild(_fadeSp);
 	});
 	auto seq = Sequence::create(flg0, fadeIn, callFunc, fadeOut, flg1, NULL);
-	Sprite* sp = Sprite::create();
-	sp = createFadeRect(sp);
-	sp->runAction(seq);
+	_fadeSp = createFadeRect(_fadeSp);
+	_fadeSp->runAction(seq);
 }
 
 Sprite* TitleSelectScene::createFadeRect(Sprite* square)

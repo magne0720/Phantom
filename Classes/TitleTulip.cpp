@@ -10,14 +10,13 @@ bool TitleTulip::init(int clearedStage)
 	if (!Node::init()) return false;
 
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
-	Sprite* bl = Sprite::create("Title/Tulip/BlackLine.png");	// 画像読み込み
 	Sprite* flower = Sprite::create("Title/Tulip/Flower.png");
 	Sprite* green = Sprite::create("Title/Tulip/Green.png");
 
 	int i = 0;
 	Size chipSize = Size(500, 500);
-	int width = bl->getContentSize().width / chipSize.width;
-	int height = bl->getContentSize().height / chipSize.height;
+	int width = flower->getContentSize().width / chipSize.width;
+	int height = flower->getContentSize().height / chipSize.height;
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
@@ -25,14 +24,15 @@ bool TitleTulip::init(int clearedStage)
 			Rect rect(x*chipSize.width, y*chipSize.height, chipSize.width, chipSize.height);
 			if (i == 0 || i == 3)
 			{
-				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(bl->getTexture(), rect), SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), clearedStage);		// キャラクタースプライト作成
+				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), clearedStage);		// キャラクタースプライト作成
 				if (clearedStage >= static_cast<int>(eColor::RED)) _tulip[i]->_flower->setColor(getColorCode(static_cast<int>(eColor::RED)));
 			}
 			else
 			{
-				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(bl->getTexture(), rect), SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), clearedStage);		// キャラクタースプライト作成
+				_tulip[i] = Tulip::create(SpriteFrame::createWithTexture(flower->getTexture(), rect), SpriteFrame::createWithTexture(green->getTexture(), rect), clearedStage);		// キャラクタースプライト作成
 				if (clearedStage >= static_cast<int>(eColor::PINK)) _tulip[i]->_flower->setColor(getColorCode(static_cast<int>(eColor::PINK)));
 			}
+			if(clearedStage >= static_cast<int>(eColor::GREEN)) _tulip[i]->_leaf->setColor(getColorCode(static_cast<int>(eColor::GREEN)));
 			this->addChild(_tulip[i]);
 			i++;
 		}

@@ -2,7 +2,7 @@
 
 using namespace cocos2d;
 
-bool Tulip::init(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
+bool Tulip::init(SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
 {
 	if (!Sprite::init()) return false;
 
@@ -16,11 +16,6 @@ bool Tulip::init(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int cl
 	_leaf->setSpriteFrame(leaf);
 	_leaf->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 	this->addChild(_leaf);
-
-	_bl = Sprite::create();
-	_bl->setSpriteFrame(bl);
-	_bl->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	this->addChild(_bl);
 
 	float time = 0.6f;
 	auto scaleMin = ScaleTo::create(time*0.5f, 0.95f);
@@ -37,10 +32,10 @@ bool Tulip::init(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int cl
 	return true;
 }
 
-Tulip* Tulip::create(SpriteFrame* bl, SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
+Tulip* Tulip::create(SpriteFrame* flower, SpriteFrame* leaf, int clearedStage)
 {
 	auto pRet = new Tulip();
-	if (pRet && pRet->init(bl, flower, leaf, clearedStage))
+	if (pRet && pRet->init(flower, leaf, clearedStage))
 	{
 		pRet->autorelease();
 		return pRet;
