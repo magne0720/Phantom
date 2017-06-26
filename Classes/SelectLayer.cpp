@@ -118,10 +118,8 @@ bool SelectLayer::onTouchBegan(Touch* pTouch, Event* pEvent)
 
 void SelectLayer::onTouchEnded(Touch* pTouch, Event* pEvent)
 {
-	if (_isSceneReplace) return;
+	if (_isSceneReplace && ((TitleSelectScene*)this->getParent())->_replaceLayer) return;
 	_isSceneReplace = true;
 
-	auto scene = TitleSelectScene::createTitleScene();
-	auto transition = TransitionFade::create(0.5f, scene);
-	Director::getInstance()->replaceScene(transition);
+	((TitleSelectScene*)this->getParent())->replaceTitle();
 }

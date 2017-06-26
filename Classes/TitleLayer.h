@@ -15,8 +15,9 @@ public:
 	bool _replacedScene;
 	TitleScroll* ts;
 	WoodScroll* ws;
-	float _woodScrollSpeed = 4.0f;
-	float _scrollSpeed = 5.0f;
+	float _woodScrollSpeed = 1.2f;
+	float _scrollSpeed = 3.0f;
+	cocos2d::Color4F _lastClearColor = cocos2d::Color4F::WHITE;
 
 	void setScrollStop();
 	void setDefaultSpeed();

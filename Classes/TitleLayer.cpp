@@ -25,27 +25,41 @@ bool TitleLayer::init()
 	Sprite* sky = Sprite::create();
 	sky->setTextureRect(rect);
 	sky->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	/*switch (TIME_ZONE)
+	this->addChild(sky);
+	
+	ScrollSprite* deco;
+	float decoSpeed = 0.05f;
+	switch (saveData->loadTimeZone())
 	{
 	case MORNING:
 		sky->setColor(getColorCode(eColor::SKY));
+
+		decoSpeed = 0.5f;
+		deco = ScrollSprite::create("Title/Cloud.png", decoSpeed, ScrollSprite::eOrientation::landscape);
+		this->addChild(deco);		
 		break;
 	case EVENING:
 		sky->setColor(getColorCode(eColor::ORANGE));
+
+		if (saveData->loadStarAppear())
+		{
+			deco = ScrollSprite::create("Title/OneStar.png", decoSpeed, ScrollSprite::eOrientation::landscape, getColorCode(eColor::YELLOW));
+			this->addChild(deco);
+		}		
 		break;
 	case NIGHT:
 		sky->setColor(getColorCode(eColor::INDIGO));
-		break;
-	case STAR:
-		sky->setColor(getColorCode(eColor::INDIGO));
-		break;
-	}*/
-	this->addChild(sky);
 
-	auto cloud = ScrollSprite::create("Title/Back.png", 2.0f, ScrollSprite::eOrientation::landscape);
-	//cloud->setPosition(designResolutionSize*0.5f);
-	this->addChild(cloud);
-
+		if (saveData->loadStarAppear())
+		{
+			deco = ScrollSprite::create("Title/Star.png", decoSpeed, ScrollSprite::eOrientation::landscape, getColorCode(eColor::YELLOW));
+			this->addChild(deco);
+		}		
+		break;
+	default:
+		break;
+	}
+	
 	int cleareStage = saveData->loadClear();
 
 	ws = WoodScroll::create(_woodScrollSpeed, cleareStage);
@@ -59,28 +73,11 @@ bool TitleLayer::init()
 	this->addChild(ground);
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
-	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.175f);
+	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.18f);
 	this->addChild(titleCharacter);
 
 	TitleLogo* titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
-
-	//auto sample = Sprite::create("Character/Sample.png");
-	//sample->setPosition(designResolutionSize.width*0.7f, designResolutionSize.height*0.5f);
-	//this->addChild(sample);
-
-	//auto player = Sprite::create();
-	//auto rect = Rect(0, 0, 300, 300);
-	//player->setPosition(designResolutionSize.width*0.5f, 203.0f);
-	//player->setTextureRect(rect);
-	//player->setColor(Color3B::BLUE);
-	//this->addChild(player);
-
-	////ƒuƒŒƒ“ƒh
-	//ccBlendFunc blend;
-	//blend.src = GL_ZERO;
-	//blend.dst = GL_SRC_COLOR;
-	//player->setBlendFunc(blend);
 
 	return true;
 }
@@ -103,7 +100,7 @@ TitleLayer* TitleLayer::create()
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
-	if (_replacedScene) return false;
+	if (_replacedScene && ((TitleSelectScene*)this->getParent())->_replaceLayer) return false;
 	_replacedScene = true;
 	((TitleSelectScene*)this->getParent())->replaceSelect();
 	return true;

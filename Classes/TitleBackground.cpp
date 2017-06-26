@@ -1,7 +1,7 @@
 #include "TitleBackground.h"
 #include "AllTags.h"
 #include "TitleTulip.h"
-#include "Batterfly.h"
+#include "TitleBatterfly.h"
 #include "TitleWood.h"
 
 using namespace cocos2d;
@@ -11,14 +11,10 @@ bool TitleBackground::init(int clearedStage)
 {
 	if (!Sprite::init()) return false;
 
-	//auto wood = TitleWood::create();
-	//this->addChild(wood);
-
 	auto tulip = TitleTulip::create(clearedStage);
 	this->addChild(tulip);
 
-	auto fly = Batterfly::create();
-	fly->setPosition(designResolutionSize*0.5f);
+	auto fly = TitleBatterfly::create(clearedStage);
 	this->addChild(fly);
 
 	this->setContentSize(designResolutionSize * 2.0f);
