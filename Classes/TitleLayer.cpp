@@ -3,7 +3,6 @@
 #include "SaveData.h"
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
-#include "SaveData.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
@@ -19,7 +18,8 @@ bool TitleLayer::init()
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	auto saveData = SaveData::create();
+	_saveData = SaveData::create();
+	this->addChild(_saveData);
 
 	Rect rect = Rect(0, 0, designResolutionSize.width, designResolutionSize.height);
 	Sprite* sky = Sprite::create();
@@ -29,7 +29,7 @@ bool TitleLayer::init()
 	
 	ScrollSprite* deco;
 	float decoSpeed = 0.05f;
-	switch (saveData->loadTimeZone())
+	switch (_saveData->loadTimeZone())
 	{
 	case MORNING:
 		sky->setColor(getColorCode(eColor::SKY));
@@ -41,7 +41,7 @@ bool TitleLayer::init()
 	case EVENING:
 		sky->setColor(getColorCode(eColor::ORANGE));
 
-		if (saveData->loadStarAppear())
+		if (_saveData->loadStarAppear())
 		{
 			deco = ScrollSprite::create("Title/OneStar.png", decoSpeed, ScrollSprite::eOrientation::landscape, getColorCode(eColor::YELLOW));
 			this->addChild(deco);
@@ -50,7 +50,7 @@ bool TitleLayer::init()
 	case NIGHT:
 		sky->setColor(getColorCode(eColor::INDIGO));
 
-		if (saveData->loadStarAppear())
+		if (_saveData->loadStarAppear())
 		{
 			deco = ScrollSprite::create("Title/Star.png", decoSpeed, ScrollSprite::eOrientation::landscape, getColorCode(eColor::YELLOW));
 			this->addChild(deco);
@@ -60,7 +60,7 @@ bool TitleLayer::init()
 		break;
 	}
 	
-	int cleareStage = saveData->loadClear();
+	int cleareStage = _saveData->loadClear();
 
 	ws = WoodScroll::create(_woodScrollSpeed, cleareStage);
 	this->addChild(ws);
@@ -102,7 +102,7 @@ bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
 	if (_replacedScene && ((TitleSelectScene*)this->getParent())->_replaceLayer) return false;
 	_replacedScene = true;
-	((TitleSelectScene*)this->getParent())->replaceSelect();
+	((TitleSelectScene*)this->getParent())->replaceSelect(Color4F(1.0f, 0.9490f, 0.4f, 1.0f));
 	return true;
 }
 

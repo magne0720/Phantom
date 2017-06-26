@@ -112,8 +112,8 @@ void TitleSelectScene::replace(bool toTitle, Color4F color)
 	else
 	{
 		callFunc = CallFunc::create([&]() {
-			this->removeChild(_layer, true);
 			auto scene = SelectLayer::create(color);
+			this->removeChild(_layer, true);
 			this->addChild(scene);
 		});
 	}
