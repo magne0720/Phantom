@@ -39,6 +39,11 @@ static SEGMENT setSegment(Vec2 ms, Vec2 mv)
 	return seg;
 }
 
+////â‘Î’l‰»
+//static float abs(float f)
+//{
+//	return (f<0)?f*=1:f;
+//}
 
 ////³‹K‰»
 static Vec2 normalize(Vec2 pos) 

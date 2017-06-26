@@ -47,6 +47,8 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 	addChild(leftRobot);
 	leftRobot->setTag(1);
 
+	myColor = col;
+
 
 	rightRobot->scheduleUpdate();
 	leftRobot->scheduleUpdate();
@@ -70,7 +72,7 @@ void PlayerCloser::update(float delta)
 	{
 		effectTimer += 5.0f;
 		infraredEffect->clear();
-		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer / 255.0f * 8, Color4F(1, 0, 0, 255.0f - effectTimer / 225.0f));
+		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer / 255.0f * 8, Color4F(myColor.r, myColor.g, myColor.b, 255.0f - effectTimer / 225.0f));
 		if (effectTimer >= 225.0f)
 		{
 			effectTimer = 0;

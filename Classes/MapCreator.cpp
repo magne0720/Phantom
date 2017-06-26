@@ -337,7 +337,7 @@ Layer* MapCreator::printMap()
 	log("Goal");
 	robot->rightRobot->setTarget(goal);
 	robot->leftRobot->setTarget(goal);
-	layer->addChild(goal, 4);
+	layer->addChild(goal, 6);
 	goal->setisGoalAddress(&robot->isGoal);
 	log("wall");
 	log("size=%d\n--------------------------------------", walls.size());
@@ -348,7 +348,7 @@ Layer* MapCreator::printMap()
 		walls.at(i)->setCutedColor(playerColor);
 		walls.at(i)->playerCut = &robot->isRobotMoving;
 		walls.at(i)->setTargets(&robot->rightRobot->myPosition, &robot->leftRobot->myPosition);
-		layer->addChild(walls.at(i), 2);
+		layer->addChild(walls.at(i), 5);
 	}
 	log("floor");
 	log("size=%d\n--------------------------------------", floors.size());

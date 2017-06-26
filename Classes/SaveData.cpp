@@ -29,6 +29,7 @@ bool SaveData::init()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //セーブ
 
+//どこまでクリアしたか
 void SaveData::saveClear(int clearNum) 
 {
 	if (loadClear() < clearNum) 
@@ -37,17 +38,20 @@ void SaveData::saveClear(int clearNum)
 	}
 };
 
+//直前にどこをクリアしたか
 void SaveData::saveLastClear(int clearNum) 
 {
 		user->setIntegerForKey(LASTCLEARKEY, clearNum);
 };
 
+//クリアしたグレード
 void SaveData::saveGrade(int gradeNum) 
 {
 	if (loadGrade()>gradeNum)
 		user->setIntegerForKey(GRADEKEY, gradeNum);
 };
 
+//直前にクリアした色
 void SaveData::savePlayerColor(Color4F col) 
 {
 	int r = col.r * 255.0f;
@@ -58,16 +62,19 @@ void SaveData::savePlayerColor(Color4F col)
 	user->setIntegerForKey(COLOR_B_KEY, b);
 };
 
+//時間帯をセーブ
 void SaveData::saveTimeZone(TIME_ZONE time) 
 {
 	user->setIntegerForKey(TIME_ZONE_KEY, (int)time);
 };
 
+//星が出るかどうか
 void SaveData::saveStarAppear(bool is) 
 {
 	user->setBoolForKey(STAR_APPEAR_KEY, is);
 }
 
+//起動した回数
 void SaveData::saveStartUpNum() 
 {
 	user->setIntegerForKey(START_UP_NUM_KEY, loadStartUpNum());
@@ -76,36 +83,43 @@ void SaveData::saveStartUpNum()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //ロード
 
+//どこまでクリアしたか
 int SaveData::loadClear()
 {
 	return user->getIntegerForKey(CLEARKEY);
 };
 
+//直前にどこをクリアしたか
 int SaveData::loadLastClear()
 {
 	return user->getIntegerForKey(LASTCLEARKEY);
 };
 
+//クリアしたグレード
 int SaveData::loadGrade() 
 {
 	return user->getIntegerForKey(GRADEKEY);
 };
 
+//直前にクリアした色
 Color4F SaveData::loadPlayerColor() 
 {
 	return Color4F(user->getIntegerForKey(COLOR_R_KEY), user->getIntegerForKey(COLOR_G_KEY), user->getIntegerForKey(COLOR_B_KEY),1.0f);
 };
 
+//直前までの時間帯
 TIME_ZONE SaveData::loadTimeZone()
 {
 	return (TIME_ZONE)user->getIntegerForKey(TIME_ZONE_KEY);
 };
 
+//星が出ているか
 bool SaveData::loadStarAppear() 
 {
 	return user->getBoolForKey(STAR_APPEAR_KEY);
 };
 
+//起動した回数
 int SaveData::loadStartUpNum() 
 {
 	return user->getIntegerForKey(START_UP_NUM_KEY);

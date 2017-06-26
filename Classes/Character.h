@@ -37,9 +37,9 @@ public:
 	bool onLastTargetPosition(Vec2 pos);
 
 	//目の前が壁かどうか
-	bool onWall(SEGMENT s0, SEGMENT s1);
+	bool onWall(SEGMENT movement, SEGMENT wall);
 	//円の範囲
-	bool onWall(SEGMENT s0, Vec2 pos, float range);
+	bool onWall(SEGMENT movement, SEGMENT wall,Vec2 pos, float range);
 	//移動可能判定
 	bool onMoveRange(Point target);
 	//右側にあるか
@@ -81,7 +81,7 @@ public:
 	//360度の向き変更
 	void setDirection(DIR_DEGREE degree);
 	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める
-	void setEvasionWall(Vec2 wall, Vec2 target);
+	void setEvasionWall(Vec2 wall, Vec2 target,float reflec=1.0f);
 	//-----------------------------------------
 
 	//画像処理

@@ -70,7 +70,7 @@ void GameManager::update(float delta)
 		{
 			if (timer > 6.0f)
 			{
-				if (map->robot->rightRobot->myState == STATUS::FIND | map->robot->leftRobot->myState == STATUS::FIND) 
+				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND)) 
 				{
 					StayShowMessage(2);
 				}
@@ -209,7 +209,6 @@ bool GameManager::standbyAnimation()
 
 bool GameManager::startAnimation() 
 {
-	log("start");
 	if (timer == 0)
 	{
 		Sprite* sp = Sprite::create("StartLogo.png");

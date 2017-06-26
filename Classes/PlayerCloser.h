@@ -31,6 +31,7 @@ public:
 
 	Vec2 startPosition;
 	Vec2 endPosition;
+	Color4F myColor;
 	void drawMoveLineRight();
 	void drawMoveLineLeft();
 	void startRobot();
