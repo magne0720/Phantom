@@ -2,6 +2,7 @@
 #include "AllTags.h"
 #include "MainGameScene.h"
 #include "TitleSelectScene.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 
@@ -59,18 +60,20 @@ bool PictureManager::init(SaveData* saveData)
 	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
 	node->setGlobalZOrder(-1);
-	if (_MAX_STAGE <= _LINE_MAX)
+	
+	int pictureNum = _clearedStage + 2;	// ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
+	if (pictureNum <= _LINE_MAX)
 	{
 		basePos.y = designResolutionSize.height*0.75f;
 		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		for (int i = 0; i < _MAX_STAGE; i++)
+		for (int i = 0; i <= _clearedStage + 1; i++)
 		{
 			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (_MAX_STAGE + 1);
+			float p = 1.0f / (pictureNum + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
+			if (i > _clearedStage) _pictures[i]->setColor(Color3B::GRAY);
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -85,16 +88,19 @@ bool PictureManager::init(SaveData* saveData)
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
 			this->addChild(_pictures[i]);
 		}
 
 		basePos.y = designResolutionSize.height*0.5f;
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		for (int i = _LINE_MAX; i < _MAX_STAGE; i++)
+		int j;
+		if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
+		else if (_clearedStage == _MAX_STAGE) j = _clearedStage;
+		
+		for (int i = _LINE_MAX; i <= _clearedStage + 1; i++)
 		{
 			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (_MAX_STAGE - _LINE_MAX + 1);
+			float p = 1.0f / (pictureNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
@@ -359,5 +365,6 @@ void PictureManager::swap(Vec2 &a, Vec2 &b)
 void PictureManager::replaceScene()
 {
 	auto scene = MainGameScene::createScene(_selectedStage);
-	Director::getInstance()->replaceScene(scene);
+	auto transition = TransitionFade::create(1.0f, scene, getColorCode(_selectedStage));
+	Director::getInstance()->replaceScene(transition);
 }
