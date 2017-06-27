@@ -3,15 +3,14 @@
 #include "SelectBackground.h"
 #include "AllTags.h"
 #include "TitleSelectScene.h"
-#include "SaveData.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
 
-SelectLayer* SelectLayer::create()
+SelectLayer* SelectLayer::create(SaveData* saveData)
 {
 	SelectLayer *pRet = new SelectLayer();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(saveData))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -40,7 +39,7 @@ SelectLayer* SelectLayer::create(cocos2d::Color4F color)
 	}
 }
 
-bool SelectLayer::init()
+bool SelectLayer::init(SaveData* saveData)
 {
 	if (!Layer::init())
 	{
@@ -56,8 +55,8 @@ bool SelectLayer::init()
 	PictureManager* pictureManager = PictureManager::create();
 	this->addChild(pictureManager);
 
-	auto saveData = SaveData::create();
-	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(saveData->loadLastClear())));
+	_saveData = saveData;
+	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(_saveData->loadLastClear())));
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 

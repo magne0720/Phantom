@@ -1,6 +1,5 @@
 #include "TitleSelectScene.h"
 #include "SoundSystem.h"
-#include "SaveData.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
@@ -15,25 +14,26 @@ bool TitleSelectScene::init()
 	this->addChild(soundSystem);
 	soundSystem->playBGM("Sounds/TitleBGM.mp3");
 
-	SaveData* saveData = SaveData::create();
+	_saveData = SaveData::create();
+	this->addChild(_saveData);
 
-	switch (saveData->loadLastClear())
+	switch (_saveData->loadLastClear())
 	{
 	case static_cast<int>(eColor::SKY) :
-		saveData->saveStarAppear(false);
-		saveData->saveTimeZone(TIME_ZONE::MORNING);
+		_saveData->saveStarAppear(false);
+		_saveData->saveTimeZone(TIME_ZONE::MORNING);
 		break;
 	case static_cast<int>(eColor::ORANGE) :
-		/*if (saveData->loadTimeZone() != TIME_ZONE::EVENING) */saveData->saveStarAppear(false);
-		saveData->saveTimeZone(TIME_ZONE::EVENING);
+		/*if (_saveData->loadTimeZone() != TIME_ZONE::EVENING) */_saveData->saveStarAppear(false);
+		_saveData->saveTimeZone(TIME_ZONE::EVENING);
 		break;
 	case static_cast<int>(eColor::INDIGO) :
-		/*if (saveData->loadTimeZone() != TIME_ZONE::NIGHT) */saveData->saveStarAppear(false);
-		saveData->saveTimeZone(TIME_ZONE::NIGHT);
+		/*if (_saveData->loadTimeZone() != TIME_ZONE::NIGHT) */_saveData->saveStarAppear(false);
+		_saveData->saveTimeZone(TIME_ZONE::NIGHT);
 		break;
 	case static_cast<int>(eColor::YELLOW) :
-		if(saveData->loadTimeZone()==TIME_ZONE::EVENING || saveData->loadTimeZone()==TIME_ZONE::NIGHT)
-			saveData->saveStarAppear(true);
+		if(_saveData->loadTimeZone()==TIME_ZONE::EVENING || _saveData->loadTimeZone()==TIME_ZONE::NIGHT)
+			_saveData->saveStarAppear(true);
 		break;
 	default:
 		break;
@@ -45,7 +45,7 @@ bool TitleSelectScene::init()
 TitleSelectScene* TitleSelectScene::createTitleScene()
 {
 	TitleSelectScene* scene = TitleSelectScene::create();
-	auto layer = TitleLayer::create();
+	auto layer = TitleLayer::create(scene->_saveData);
 	scene->addChild(layer);
 	return scene;
 }
@@ -53,7 +53,7 @@ TitleSelectScene* TitleSelectScene::createTitleScene()
 TitleSelectScene* TitleSelectScene::createSelectScene()
 {
 	TitleSelectScene* scene = TitleSelectScene::create();
-	auto layer = SelectLayer::create();
+	auto layer = SelectLayer::create(scene->_saveData);
 	scene->addChild(layer);
 	return scene;
 }
@@ -105,14 +105,14 @@ void TitleSelectScene::replace(bool toTitle, Color4F color)
 	{
 		callFunc = CallFunc::create([&]() {
 			this->removeChild(_layer, true);
-			auto scene = TitleLayer::create();
+			auto scene = TitleLayer::create(_saveData);
 			this->addChild(scene);
 		});
 	}
 	else
 	{
 		callFunc = CallFunc::create([&]() {
-			auto scene = SelectLayer::create(color);
+			auto scene = SelectLayer::create(_saveData);
 			this->removeChild(_layer, true);
 			this->addChild(scene);
 		});

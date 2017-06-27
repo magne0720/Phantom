@@ -5,6 +5,7 @@
 #include "SelectLayer.h"
 #include "TitleLayer.h"
 #include "AllTags.h"
+#include "SaveData.h"
 
 class TitleSelectScene : public cocos2d::Scene
 {
@@ -19,6 +20,7 @@ public:
 
 	bool _replaceLayer;
 	cocos2d::Sprite* _fadeSp;
+	SaveData* _saveData;
 
 private:
 	cocos2d::Sprite* createFadeRect(cocos2d::Sprite*);

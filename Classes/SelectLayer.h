@@ -3,13 +3,14 @@
 
 #include "cocos2d.h"
 #include "ToTitleButton.h"
+#include "SaveData.h"
 
 class SelectLayer : public cocos2d::Layer
 {
 public:
-	bool init();
+	bool init(SaveData* saveData);
 	bool init(cocos2d::Color4F color);
-	static SelectLayer* create();
+	static SelectLayer* create(SaveData* saveData);
 	static SelectLayer* create(cocos2d::Color4F color);
 
 	// タッチイベント処理
@@ -21,6 +22,7 @@ public:
 	bool _selectedButton = false;
 
 	ToTitleButton* _toTitleButton;
+	SaveData* _saveData;
 };
 
 #endif
