@@ -10,8 +10,8 @@
 class TitleLayer : public cocos2d::Layer
 {
 public:
-	bool init();
-	static TitleLayer* create();
+	bool init(SaveData* saveData);
+	static TitleLayer* create(SaveData* saveData);
 	TitleBackground* tbg;
 	bool _replacedScene;
 	TitleScroll* ts;

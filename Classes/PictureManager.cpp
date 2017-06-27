@@ -5,10 +5,10 @@
 
 using namespace cocos2d;
 
-PictureManager* PictureManager::create()
+PictureManager* PictureManager::create(SaveData* saveData)
 {
 	PictureManager *pRet = new PictureManager();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(saveData))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -21,14 +21,15 @@ PictureManager* PictureManager::create()
 	}
 }
 
-bool PictureManager::init()
+bool PictureManager::init(SaveData* saveData)
 {
 	if (!Node::init())
 	{
 		return false;
 	}
 
-	_LINE_MAX = _stageNum * 0.5f;
+	_clearedStage = saveData->loadClear();
+	_LINE_MAX = _MAX_STAGE * 0.5f;
 	_areResizing = false;
 	touchIDInit();
 	selectedInit();
@@ -58,18 +59,18 @@ bool PictureManager::init()
 	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
 	node->setGlobalZOrder(-1);
-	if (_stageNum <= _LINE_MAX)
+	if (_MAX_STAGE <= _LINE_MAX)
 	{
 		basePos.y = designResolutionSize.height*0.75f;
 		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		for (int i = 0; i < _stageNum; i++)
+		for (int i = 0; i < _MAX_STAGE; i++)
 		{
 			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (_stageNum + 1);
+			float p = 1.0f / (_MAX_STAGE + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
+			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -82,22 +83,22 @@ bool PictureManager::init()
 			_pictures[i] = Picture::create(i);
 			float p = 1.0f / (_LINE_MAX + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
+			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
 			this->addChild(_pictures[i]);
 		}
 
 		basePos.y = designResolutionSize.height*0.5f;
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		for (int i = _LINE_MAX; i < _stageNum; i++)
+		for (int i = _LINE_MAX; i < _MAX_STAGE; i++)
 		{
 			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (_stageNum - _LINE_MAX + 1);
+			float p = 1.0f / (_MAX_STAGE - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-			//b.y -= _pictures[i]->getContentSize().width / 2;
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
+			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -151,10 +152,15 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 	if (_touchTimer < _TOUCH_REACTION) return false;
 	_touchTimer = 0.0f;
 
+	int j;
+	if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
+	else if (_clearedStage == _MAX_STAGE) j = _clearedStage;
+
+
 	if (_areResizing || _selectedStage >= 0 || _touchID >= 0) return false;
 	for (auto pTouch : touches)
 	{
-		for (int i = 0; i < _stageNum; i++)
+		for (int i = 0; i <= j; i++)
 		{
 			Rect rect = _pictures[i]->getBoundingBox();
 			if (rect.containsPoint(pTouch->getLocation()))

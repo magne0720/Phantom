@@ -1,13 +1,12 @@
 #include "TitleLayer.h"
 #include "TitleCharacter.h"
-#include "SaveData.h"
 #include "TitleLogo.h"
 #include "TitleSelectScene.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
 
-bool TitleLayer::init()
+bool TitleLayer::init(SaveData* saveData)
 {
 	if (!Layer::init()) return false;
 
@@ -18,8 +17,7 @@ bool TitleLayer::init()
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	_saveData = SaveData::create();
-	this->addChild(_saveData);
+	_saveData = saveData;
 
 	Rect rect = Rect(0, 0, designResolutionSize.width, designResolutionSize.height);
 	Sprite* sky = Sprite::create();
@@ -82,10 +80,10 @@ bool TitleLayer::init()
 	return true;
 }
 
-TitleLayer* TitleLayer::create()
+TitleLayer* TitleLayer::create(SaveData* saveData)
 {
 	TitleLayer* pRet = new TitleLayer();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(saveData))
 	{
 		pRet->autorelease();
 		return pRet;

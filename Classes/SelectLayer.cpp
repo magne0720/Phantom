@@ -3,15 +3,14 @@
 #include "SelectBackground.h"
 #include "AllTags.h"
 #include "TitleSelectScene.h"
-#include "SaveData.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
 
-SelectLayer* SelectLayer::create()
+SelectLayer* SelectLayer::create(SaveData* saveData)
 {
 	SelectLayer *pRet = new SelectLayer();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(saveData))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -24,10 +23,10 @@ SelectLayer* SelectLayer::create()
 	}
 }
 
-SelectLayer* SelectLayer::create(cocos2d::Color4F color)
+SelectLayer* SelectLayer::create(cocos2d::Color4F color, SaveData* saveData)
 {
 	SelectLayer *pRet = new SelectLayer();
-	if (pRet && pRet->init(color))
+	if (pRet && pRet->init(color, saveData))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -40,7 +39,7 @@ SelectLayer* SelectLayer::create(cocos2d::Color4F color)
 	}
 }
 
-bool SelectLayer::init()
+bool SelectLayer::init(SaveData* saveData)
 {
 	if (!Layer::init())
 	{
@@ -53,11 +52,11 @@ bool SelectLayer::init()
 	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	PictureManager* pictureManager = PictureManager::create();
+	PictureManager* pictureManager = PictureManager::create(saveData);
 	this->addChild(pictureManager);
 
-	auto saveData = SaveData::create();
-	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(saveData->loadLastClear())));
+	_saveData = saveData;
+	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(_saveData->loadLastClear())));
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
@@ -68,7 +67,7 @@ bool SelectLayer::init()
 	return true;
 }
 
-bool SelectLayer::init(Color4F color)
+bool SelectLayer::init(Color4F color, SaveData* saveData)
 {
 	if (!Layer::init())
 	{
@@ -81,7 +80,7 @@ bool SelectLayer::init(Color4F color)
 	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	PictureManager* pictureManager = PictureManager::create();
+	PictureManager* pictureManager = PictureManager::create(saveData);
 	this->addChild(pictureManager);
 
 	SelectBackground* selectBackground = SelectBackground::create(color);
