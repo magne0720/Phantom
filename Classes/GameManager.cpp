@@ -177,7 +177,6 @@ void GameManager::dispGoal()
 		user->saveClear(map->getLevel());
 		user->saveLastClear(map->getLevel());
 		user->savePlayerColor(stageColor);
-		checkTime();
 
 		//map->goal->stopAnimation();
 		CallFunc* goSelect = CallFunc::create([&]()
