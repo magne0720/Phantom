@@ -2,7 +2,7 @@
 #include "MainGameScene.h"
 #include "HelloWorldScene.h"
 #include "TitleSelectScene.h"
-#include "GateScene.h"
+#include "SaveData.h"
 
 USING_NS_CC;
 
@@ -75,6 +75,10 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	// create a scene. it's an autorelease object
 	//auto scene = TitleSelectScene::createTitleScene();
 	//auto scene = HelloWorldScene::createScene(0);
+
+	SaveData* save = SaveData::create();
+	save->startUpNum();
+
 	auto scene = TitleSelectScene::createTitleScene();
 
 	// run

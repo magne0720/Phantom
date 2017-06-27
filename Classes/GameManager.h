@@ -19,11 +19,13 @@ public:
 	bool standbyAnimation();
 	bool startAnimation();
 	bool stopAnimation();
+	bool missAnimation();
 
 	void StayShowMessage(int num);
 	void StayCloseMessage();
 
 
+	void dispLife(int life,int max);
 	void dispGoal();
 	void checkTime();
 
@@ -37,6 +39,8 @@ public:
 	Color4F stageColor;
 	GAMESTATE gameState;
 	Sprite* messageSp;
+	Vector<Sprite*> lifeSps;
+	int playerLife,maxLife;
 
 	int playerCount;//プレイヤーの行動可能回数
 

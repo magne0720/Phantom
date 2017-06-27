@@ -49,6 +49,17 @@ bool GameManager::init(int num)
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	addChild(messageSp);
 
+	
+	maxLife = 4;
+	playerLife = 4;
+
+	for (int i = 0; i < playerLife; i++) 
+	{
+		Sprite* sp = Sprite::create("life.png");
+		addChild(sp);
+		lifeSps.pushBack(sp);
+	}
+	dispLife(playerLife,maxLife);
 
 	scheduleUpdate();
 
@@ -105,13 +116,23 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVING:
-		if (!map->robot->rightRobot->isStart&&!map->robot->leftRobot->isStart)gameState = GAMESTATE::MOVE_STOP;
+		if (!map->robot->rightRobot->isStart&&!map->robot->leftRobot->isStart) 
+		{
+			gameState = GAMESTATE::MOVE_STOP;
+			playerLife--;
+		}
 		if (*isGoal)gameState = GAMESTATE::CLEAR;
 		break;
 	case MOVE_STOP:
 		//プレイヤーが歩くのを止めた時
 		if (stopAnimation())
-			gameState = GAMESTATE::PLAY;
+		{
+			dispLife(playerLife,maxLife);
+			if (playerLife == 0)
+				gameState = GAMESTATE::MISS;
+			else
+				gameState = GAMESTATE::PLAY;
+		}
 		break;
 	case CLEAR:
 		//クリアした時
@@ -119,9 +140,26 @@ void GameManager::update(float delta)
 		break;
 	case MISS:
 		//すべての行動回数をなくしてしまった時
+		if (missAnimation()) 
+		{
+			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene());
+		}
 		break;
 	default:
 		break;
+	}
+};
+
+//ライフの表示
+void GameManager::dispLife(int life,int max) 
+{
+	for (int i = 0; i < max; i++) 
+	{
+		lifeSps.at(i)->setPosition(Vec2(designResolutionSize.width*0.1f*i+100, designResolutionSize.height*0.9f));
+		if (i >= life) 
+		{
+			lifeSps.at(i)->setTexture("life_no.png");
+		}
 	}
 };
 
@@ -235,14 +273,9 @@ bool GameManager::stopAnimation()
 {
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("StartLogo.png");
-		sp->setPosition(designResolutionSize*0.5f);
-		addChild(sp);
-		RotateBy* rTo = RotateBy::create(1, 360);
-		ScaleTo* sZoomIn = ScaleTo::create(0.5, 2);
-		ScaleTo* sZoomOut = ScaleTo::create(0.5, 2);
+		ScaleTo* sZoomIn = ScaleTo::create(1, 2);
 		FadeOut* out = FadeOut::create(0.5f);
-		sp->runAction(Sequence::create(sZoomIn, rTo, sZoomOut, out, nullptr));
+		lifeSps.at(playerLife)->runAction(Sequence::create(sZoomIn, out, nullptr));
 	}
 	if (timer > 2.5f) {
 		timer = 0;
@@ -252,6 +285,27 @@ bool GameManager::stopAnimation()
 	return false;
 };
 
+bool GameManager::missAnimation()
+{
+	if (timer == 0)
+	{
+		Sprite* sp = Sprite::create("MissLogo.png");
+		sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*1.2f));
+		addChild(sp);
+
+		MoveTo* up = MoveTo::create(1.0f, designResolutionSize*0.5f);
+		RotateBy* ro = RotateBy::create(0.5f, -15);
+
+
+		sp->runAction(Sequence::create(up,ro, nullptr));
+	}
+	if (timer > 5.0f) {
+		timer = 0;
+		return true;
+	}
+	timer += 1.0 / 60.0f;
+	return false;
+};
 
 void GameManager::StayShowMessage(int num)
 {
