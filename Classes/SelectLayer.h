@@ -9,9 +9,9 @@ class SelectLayer : public cocos2d::Layer
 {
 public:
 	bool init(SaveData* saveData);
-	bool init(cocos2d::Color4F color);
+	bool init(cocos2d::Color4F color, SaveData* saveData);
 	static SelectLayer* create(SaveData* saveData);
-	static SelectLayer* create(cocos2d::Color4F color);
+	static SelectLayer* create(cocos2d::Color4F color, SaveData* saveData);
 
 	// タッチイベント処理
 	virtual bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);

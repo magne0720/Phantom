@@ -61,7 +61,7 @@ TitleSelectScene* TitleSelectScene::createSelectScene()
 TitleSelectScene* TitleSelectScene::createSelectScene(Color4F color)
 {
 	TitleSelectScene* scene = TitleSelectScene::create();
-	auto layer = SelectLayer::create(color);
+	auto layer = SelectLayer::create(color, scene->_saveData);
 	scene->addChild(layer);
 	return scene;
 }

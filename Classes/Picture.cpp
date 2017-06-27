@@ -15,39 +15,7 @@ bool Picture::init(int id)
 	//String* str = String::createWithFormat("Stage%f.png", id);
 	
 	this->initWithFile(str->getCString());
-	switch (id)
-	{
-	case 0:
-		_defaultColor = Color3B(255, 36, 80);
-		break;
-	case 1:
-		_defaultColor = Color3B(110, 223, 255);
-		break;
-	case 2:
-		_defaultColor = Color3B(125, 31, 255);
-		break;
-	case 3:
-		_defaultColor = Color3B(31, 157, 34);
-		break;
-	case 4:
-		_defaultColor = Color3B(255, 108, 0);
-		break;
-	case 5:
-		_defaultColor = Color3B(164, 82, 0);
-		break;
-	case 6:
-		_defaultColor = Color3B(13, 81, 255);
-		break;
-	case 7:
-		_defaultColor = Color3B(245, 135, 215);
-		break;
-	case 8:
-		_defaultColor = Color3B(23, 23, 128);
-		break;
-	case 9:
-		_defaultColor = Color3B(255, 242, 102);
-		break;
-	}
+	_defaultColor = getColorCode(id);
 	this->setColor(_defaultColor);
 	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
