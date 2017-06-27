@@ -197,30 +197,6 @@ void GameManager::dispGoal()
 	}
 };
 
-void GameManager::checkTime()
-{
-	switch (map->getLevel())
-	{
-	case TIME_ZONE::MORNING:
-		user->saveTimeZone(TIME_ZONE::MORNING);
-		user->saveStarAppear(false);
-		break;
-	case TIME_ZONE::EVENING:
-		user->saveTimeZone(TIME_ZONE::EVENING);
-		user->saveStarAppear(false);
-		break;
-	case TIME_ZONE::NIGHT:
-		user->saveTimeZone(TIME_ZONE::NIGHT);
-		user->saveStarAppear(false);
-		break;
-	case TIME_ZONE::STAR:
-		user->saveStarAppear(true);
-		break;
-	default:
-		break;
-	}
-};
-
 bool GameManager::standbyAnimation() 
 {
 	if (timer == 0) 
