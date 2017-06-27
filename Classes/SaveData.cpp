@@ -30,9 +30,13 @@ bool SaveData::init()
 //セーブ
 
 //どこまでクリアしたか
-void SaveData::saveClear(int clearNum) 
+void SaveData::saveClear(int clearNum)
 {
 	if (loadClear() < clearNum) 
+	{
+		user->setIntegerForKey(CLEARKEY, clearNum);
+	}
+	if (clearNum < 0)
 	{
 		user->setIntegerForKey(CLEARKEY, clearNum);
 	}
@@ -49,6 +53,10 @@ void SaveData::saveGrade(int gradeNum)
 {
 	if (loadGrade()>gradeNum)
 		user->setIntegerForKey(GRADEKEY, gradeNum);
+	if (gradeNum < 0)
+	{
+		user->setIntegerForKey(CLEARKEY, gradeNum);
+	}
 };
 
 //直前にクリアした色
@@ -73,13 +81,6 @@ void SaveData::saveStarAppear(bool is)
 {
 	user->setBoolForKey(STAR_APPEAR_KEY, is);
 }
-
-//起動した回数
-void SaveData::saveStartUpNum() 
-{
-	user->setIntegerForKey(START_UP_NUM_KEY, loadStartUpNum());
-}
-
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //ロード
 
@@ -120,10 +121,12 @@ bool SaveData::loadStarAppear()
 };
 
 //起動した回数
-int SaveData::loadStartUpNum() 
+void SaveData::startUpNum()
 {
-	return user->getIntegerForKey(START_UP_NUM_KEY);
-}
+	if (user->getIntegerForKey(START_UP_NUM_KEY) == 0)
+		AllResset();
+	user->setIntegerForKey(START_UP_NUM_KEY, user->getIntegerForKey(START_UP_NUM_KEY)+1);
+};
 
 //リセット
 void SaveData::AllResset() 

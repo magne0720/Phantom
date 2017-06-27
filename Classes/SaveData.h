@@ -29,15 +29,14 @@ public:
 	void savePlayerColor(Color4F col);
 	void saveTimeZone(TIME_ZONE time);
 	void saveStarAppear(bool is);
-	void saveStartUpNum();
-
+	
 	int loadClear();
 	int loadLastClear();
 	int loadGrade();
 	Color4F loadPlayerColor();
 	TIME_ZONE loadTimeZone();
 	bool loadStarAppear();
-	int loadStartUpNum();
+	void startUpNum();
 
 	void AllResset();
 };

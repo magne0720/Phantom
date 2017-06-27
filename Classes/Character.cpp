@@ -278,8 +278,7 @@ bool Character::onDirectionLeft(const Vec2 target)
 //Õ“Ë”»’è‚Ü‚Æ‚ß
 void Character::allCollision()
 {
-	//SEGMENT mySeg = SEGMENT(Vec2(normalize(targetPosition - myPosition) + myPosition), targetPosition);
-	SEGMENT mySeg = SEGMENT(myPosition, targetPosition);
+	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(targetPosition - myPosition)*moveRange+myPosition));
 	Vec2 movement = targetPosition - myPosition;
 	int count = 0;
 
@@ -290,12 +289,7 @@ void Character::allCollision()
 		{
 			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, moveRange))
 			{
-				//if (count >= 2)
-				//{
-				//	setEvasionWall(walls.at(i)->getSegment(j), movement);
-				//}
 				setEvasionWall(walls.at(i)->getSegment(j), movement);
-				//count++;
 			}
 			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1))))
 			{

@@ -159,24 +159,13 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			if (angles.size() < 10&&!isStandby) {
 			while (length(endPosition - touchPosition) >= doubtDegree)
 				{
-					//log("check");
-					////log("[%f,%f]", stepPosition.x, stepPosition.y);
 					Vec2 a = Vec2(1,0);
-					//Vec2 b = normalize(touchPosition - endPosition)*doubtDegree;
 					Vec2 b=touchPosition-endPosition;
-					//-------------------------------------------------------------------------------------------------------------------------
 					stepPosition = endPosition;
 					endPosition = normalize(touchPosition - endPosition)*doubtDegree + endPosition;
-					////タッチした位置から前回の位置
-					//moveRangeSp->drawSegment(touchPosition - myPosition, endPosition - myPosition, 3, Color4F::GRAY);
-					////前回の位置から前々回の位置
-					//moveRangeSp->drawSegment(endPosition - myPosition, stepPosition - myPosition, 3, Color4F::WHITE);
-
 					moveRangeSp->drawDot(endPosition - myPosition, 10, Color4F::BLACK);
-					//-------------------------------------------------------------------------------------------------------------------------
 					//軌道の保存
 					setAngle(a, b);
-
 				}
 			}
 		}

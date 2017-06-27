@@ -329,6 +329,8 @@ void Wall::checkCutArea(Vec2* points)
 	Vec2 dustPoints[POINT_SIZE];
 	int right[POINT_SIZE], left[POINT_SIZE];
 	int rightcount = 0, leftcount = 0;
+	float sumRight = 0;
+	float sumLeft = 0;
 	for (int i = 0; i < segmentCount + 2; i++) {
 		if (i != addPointNum[0] && i != addPointNum[1])
 			//í«â¡ÇµÇΩìÒÇ¬ÇÃì_Ç≈Ç≈Ç´ÇΩê¸ÇÃâEë§Ç©Ç«Ç§Ç©
@@ -355,12 +357,27 @@ void Wall::checkCutArea(Vec2* points)
 	cutEffect();
 
 	//ñ êœî‰Çå©ÇÈ
-	if (sumArea(points, right) > sumArea(points, left))
+	sumRight = sumArea(points, right);
+	sumLeft = sumArea(points, left);
+
+	if (abs((sumRight/100)-(sumLeft/100))<=1.0f)
+	{
+		//ëÂÇ´Ç≥Ç™ÇŸÇ⁄àÍèè
+		copyPoints(points, dustPoints, segmentCount + 2);
+		sortPoints(dustPoints, left);
+		rebuildingDust(dustPoints, leftcount);
+
+		copyPoints(points, dustPoints, segmentCount + 2);
+		sortPoints(dustPoints, right);
+		rebuildingDust(dustPoints, rightcount);
+
+		rebuildingArea(points, 1);
+	}
+	else if(sumRight> sumLeft)
 	{
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, left);
 		
-
 		rebuildingDust(dustPoints, leftcount);
 		sortPoints(points, right);
 		//ç\íz
