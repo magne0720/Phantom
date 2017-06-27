@@ -17,6 +17,7 @@ bool TitleSelectScene::init()
 	_saveData = SaveData::create();
 	this->addChild(_saveData);
 
+	log("LAST %d", _saveData->loadLastClear());
 	switch (_saveData->loadLastClear())
 	{
 	case static_cast<int>(eColor::SKY) :
