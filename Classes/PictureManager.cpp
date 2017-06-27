@@ -152,9 +152,9 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 	if (_touchTimer < _TOUCH_REACTION) return false;
 	_touchTimer = 0.0f;
 
-	int j;
-	if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
-	else if (_clearedStage == _MAX_STAGE) j = _clearedStage;
+	int j = 9;
+	/*if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
+	else if (_clearedStage == _MAX_STAGE) j = _clearedStage;*/
 
 
 	if (_areResizing || _selectedStage >= 0 || _touchID >= 0) return false;
