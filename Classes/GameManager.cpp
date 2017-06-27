@@ -50,8 +50,8 @@ bool GameManager::init(int num)
 	addChild(messageSp);
 
 	
-	maxLife = 4;
-	playerLife = 4;
+	maxLife = 5;
+	playerLife =maxLife;
 
 	for (int i = 0; i < playerLife; i++) 
 	{
@@ -77,26 +77,33 @@ void GameManager::update(float delta)
 		break;
 	case PLAY:
 		//ƒvƒŒƒCƒ„[‚Ì‹O“¹‚ðŒˆ‚ß‚Ä‚¢‚éŽž
+		if (map->robot->rightRobot->isPut || map->robot->leftRobot->isPut)
+		{
+			StayCloseMessage();
+			timer = 0;
+			break;
+		}
 		timer += 1.0f / 60.0f;
 		{
 			if (timer > 6.0f)
 			{
-				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND)) 
-				{
-					StayShowMessage(2);
-				}
-				else 
-				{
-					StayShowMessage(1);
-				}
-				timer = 0;
-			}
-			else
-			{
-				if (map->robot->rightRobot->isPut||map->robot->leftRobot->isPut)
+				if (messageSp->getTag() == 0)
 				{
 					StayCloseMessage();
 					timer = 0;
+					break;
+				}
+				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
+				{
+					StayShowMessage(2);
+					timer = 0;
+					break;
+				}
+				else
+				{
+					StayShowMessage(1);
+					timer = 0;
+					break;
 				}
 			}
 			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby) 
