@@ -204,8 +204,8 @@ bool Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 
 	if (d < 0)d *= -1;
 
-	moveRangeSp->drawSegment(wall.from-pos, wall.from+wall.to-pos, 12, Color4F::MAGENTA);
-	moveRangeSp->drawCircle(Vec2(0, 0), range, 0, 360, false, Color4F::GREEN);
+	//moveRangeSp->drawSegment(wall.from-pos, wall.from+wall.to-pos, 12, Color4F::MAGENTA);
+	//moveRangeSp->drawCircle(Vec2(0, 0), range, 0, 360, false, Color4F::GREEN);
 
 	//垂線からの距離が範囲より大きいなら衝突
 	if (d <= range)
@@ -216,8 +216,8 @@ bool Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 			//スペシャルケースで衝突する可能性
 			if (range > length(AA) || range > length(BB))
 			{
-				moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
-				moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
+				//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
+				//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
 				return true;
 			}
 			return false;
@@ -227,8 +227,8 @@ bool Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 		{
 		return false;
 		}
-		moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
-		moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
+		//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
+		//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
 		return true;
 	}
 	return false;

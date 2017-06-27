@@ -27,7 +27,6 @@ public:
 
 	void dispLife(int life,int max);
 	void dispGoal();
-	void checkTime();
 
 
 
