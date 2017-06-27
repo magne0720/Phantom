@@ -97,7 +97,7 @@ void Character::action()
 		break;
 	}
 
-//	log("myPosition=[%f,%f]", myPosition.x, myPosition.y);
+	//	log("myPosition=[%f,%f]", myPosition.x, myPosition.y);
 	//log("targetPosition=[%f,%f]", targetPosition.x, targetPosition.y);
 };
 
@@ -137,89 +137,101 @@ bool Character::onLastTargetPosition(Vec2 pos)
 	return false;
 };
 
-
-//進む方向が壁かどうか
-bool Character::onWall(SEGMENT s0, SEGMENT s1)
+//進む方向が壁かどうか。
+bool Character::onWall(SEGMENT mover, SEGMENT wall)
 {
 	//X軸方向のベクトルが0かどうか
-	if (s0.to.x == 0.0f || s1.to.x == 0.0f) {
-		if (s0.to.x == 0.0f&&s1.to.x == 0.0f)
+	if (mover.to.x == 0.0f || wall.to.x == 0.0f) {
+		if (mover.to.x == 0.0f&&wall.to.x == 0.0f)
 			return false;
 		//平行
 
 		Vec2 r;
 		float t0, t1;
-		if (s0.to.x == 0.0f) {
-			r.x = s0.from.x;
-			r.y = (s1.to.y / s1.to.x)*(r.x - s1.from.x) + s1.from.y;
+		if (mover.to.x == 0.0f) {
+			r.x = mover.from.x;
+			r.y = (wall.to.y / wall.to.x)*(r.x - wall.from.x) + wall.from.y;
 
-			t0 = (r.y - s0.from.y) / s0.to.y;		//t=0~1の時は線分s0内
-			t1 = (r.x - s1.from.x) / s1.to.x;		//t=0~1の時は線分s1内
+			t0 = (r.y - mover.from.y) / mover.to.y;		//t=0~1の時は線分mover内
+			t1 = (r.x - wall.from.x) / wall.to.x;		//t=0~1の時は線分wall内
 		}
 		else {
-			r.x = s1.from.x;
-			r.y = (s0.to.y / s0.to.x)*(r.x - s0.from.x) + s0.from.y;
+			r.x = wall.from.x;
+			r.y = (mover.to.y / mover.to.x)*(r.x - mover.from.x) + mover.from.y;
 
-			t0 = (r.x - s0.from.x) / s0.to.x;		//t=0~1の時は線分s0内
-			t1 = (r.y - s1.from.y) / s1.to.y;		//t=0~1の時は線分s1内
+			t0 = (r.x - mover.from.x) / mover.to.x;		//t=0~1の時は線分mover内
+			t1 = (r.y - wall.from.y) / wall.to.y;		//t=0~1の時は線分wall内
 		}
 		if ((t0<0.0f) || (t0>1.0f) || (t1 < 0.0f) || (t1 > 1.0f))return false;
+
 		return true;
 	}
 	else {
 		//線分の傾きを求める
-		float a0 = s0.to.y / s0.to.x;
-		float a1 = s1.to.y / s1.to.x;
+		float a0 = mover.to.y / mover.to.x;
+		float a1 = wall.to.y / wall.to.x;
 
 		//傾きが同一の場合は平行なので衝突しない
 		if ((a0 == a1) || a0 == -a1)return false;
 
 		//交点のx,y座標を求める
 		Vec2 r;
-		r.x = (a0*s0.from.x - a1*s1.from.x + s1.from.y - s0.from.y) / (a0 - a1);
-		r.y = a0*(r.x - s0.from.x) + s0.from.y;
+		r.x = (a0*mover.from.x - a1*wall.from.x + wall.from.y - mover.from.y) / (a0 - a1);
+		r.y = a0*(r.x - mover.from.x) + mover.from.y;
 
 		//交点が線分内にあるか調べる
-		float t0 = (r.x - s0.from.x) / s0.to.x;		//t=0~1の時は線分s0内
-		float t1 = (r.x - s1.from.x) / s1.to.x;		//t=0~1の時は線分s1内
+		float t0 = (r.x - mover.from.x) / mover.to.x;		//t=0~1の時は線分mover内
+		float t1 = (r.x - wall.from.x) / wall.to.x;		//t=0~1の時は線分wall内
 
 		if ((t0<0.0f) || (t0>1.0f) || (t1<0.0f) || (t1>1.0f))return false;
 
 		return true;
 	}
-
 	return false;
 };
 
-
 //進む方向が壁かどうか
-bool Character::onWall(SEGMENT s0, Vec2 pos,float range)
+bool Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 {
-	Vec2 AP = s0.from - pos;//先端
-	Vec2 BP = s0.from + s0.to - pos;//末尾
+	//始点からキャラの位置
+	Vec2 AA = wall.from - pos;
+	//終点からキャラの位置
+	Vec2 BB = wall.from + wall.to - pos;
 
-	if (cross(AP, BP) / length(AP - BP) >range)//範囲より遠いなら
+	float d = cross(wall.to, AA) / length(wall.to);
+	if (cross(wall.to, BB) / length(wall.to) < d)
+		d = cross(wall.to, BB) / length(wall.to);
+
+	if (d < 0)d *= -1;
+
+	moveRangeSp->drawSegment(wall.from-pos, wall.from+wall.to-pos, 12, Color4F::MAGENTA);
+	moveRangeSp->drawCircle(Vec2(0, 0), range, 0, 360, false, Color4F::GREEN);
+
+	//垂線からの距離が範囲より大きいなら衝突
+	if (d <= range)
 	{
-		return false;
-	}
-	else
-	{
-		if (dot(AP, s0.to) * dot(BP, s0.to) > 0)//どちらも鋭角であるなら
+		//始点と終点の内積がゼロ以上なら衝突しない
+		if (dot(wall.to, AA)*dot(wall.to, BB) > 0)
 		{
+			//スペシャルケースで衝突する可能性
+			if (range > length(AA) || range > length(BB))
+			{
+				moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
+				moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
+				return true;
+			}
 			return false;
 		}
-		else
+		//左側にいるなら衝突しない
+		if (cross(wall.to, mover.to) > 0) 
 		{
-			if (length(AP) < range | length(BP) < range)
-			{
-				return false;
-			}
+		return false;
 		}
+		moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
+		moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
 		return true;
 	}
-
-
-
+	return false;
 };
 
 //タッチした位置が移動範囲かどうか
@@ -266,16 +278,29 @@ bool Character::onDirectionLeft(const Vec2 target)
 //衝突判定まとめ
 void Character::allCollision()
 {
+	//SEGMENT mySeg = SEGMENT(Vec2(normalize(targetPosition - myPosition) + myPosition), targetPosition);
 	SEGMENT mySeg = SEGMENT(myPosition, targetPosition);
 	Vec2 movement = targetPosition - myPosition;
+	int count = 0;
+
+	moveRangeSp->clear();
 
 	for (int i = 0; i < walls.size(); i++)
 		for (int j = 0; j < walls.at(i)->segmentCount; j++)
 		{
-			if (onWall(mySeg,SEGMENT(walls.at(i)->points[j],walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1))))
-			//if(onWall(SEGMENT(walls.at(i)->points[j],walls.at(i)->getOverPoint(walls.at(i)->points,walls.at(i)->segmentCount,j+1)),myPosition,moveRange))
+			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, moveRange))
+			{
+				//if (count >= 2)
+				//{
+				//	setEvasionWall(walls.at(i)->getSegment(j), movement);
+				//}
+				setEvasionWall(walls.at(i)->getSegment(j), movement);
+				//count++;
+			}
+			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1))))
 			{
 				setEvasionWall(walls.at(i)->getSegment(j), movement);
+				break;
 			}
 		}
 };
@@ -355,21 +380,19 @@ void Character::setDirection(DIR_DEGREE degree)
 };
 
 //向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める(壁ずり)
-void Character::setEvasionWall(Vec2 wall, Vec2 target)
+void Character::setEvasionWall(Vec2 wall, Vec2 target,float reflec)
 {
 	// out : 正規化壁ずりベクトル（戻り値）
 	// front : 進行ベクトル
 	// normal: 衝突点での法線ベクトル
 	//(front - Dot(&front, &normal_n) * normal_n)
 
-
-	Vec2 t ;
 	//壁の法線
 	Vec2 wall_n = getDirectionDegree(wall, 90);
 
-	log("%d,wall_n=[%0.2f,%0.2f]",getTag(), wall_n.x, wall_n.y);
+	//log("%d,wall_n=[%0.2f,%0.2f]",getTag(), wall_n.x, wall_n.y);
 
-	targetPosition = target - dot(target, wall_n)*wall_n+myPosition;
+	targetPosition = target - reflec*dot(target, wall_n)*wall_n+myPosition;
 
 	//if (length(t-myPosition) > moveSpeed) 
 	//{
@@ -392,11 +415,7 @@ Vec2 Character::getDirectionVector()
 	return normalize(myPosition-targetPosition);
 };
 
-
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
 
 bool Character::onTouchBegan(const Touch * touch, Event *unused_event) 
 {

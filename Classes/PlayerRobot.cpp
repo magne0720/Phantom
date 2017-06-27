@@ -159,7 +159,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			if (angles.size() < 10&&!isStandby) {
 			while (length(endPosition - touchPosition) >= doubtDegree)
 				{
-					log("check");
+					//log("check");
 					////log("[%f,%f]", stepPosition.x, stepPosition.y);
 					Vec2 a = Vec2(1,0);
 					//Vec2 b = normalize(touchPosition - endPosition)*doubtDegree;

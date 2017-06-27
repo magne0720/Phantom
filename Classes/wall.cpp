@@ -46,9 +46,9 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 	Sprite* sp = Sprite::create();
 
 	points[0] = Vec2(rect.getMinX(), rect.getMinY());//左下
-	points[1] = Vec2(rect.getMinX(), rect.getMaxY());//左上
+	points[1] = Vec2(rect.getMaxX(), rect.getMinY());//右下
 	points[2] = Vec2(rect.getMaxX(), rect.getMaxY());//右上
-	points[3] = Vec2(rect.getMaxX(), rect.getMinY());//右下
+	points[3] = Vec2(rect.getMinX(), rect.getMaxY());//左上
 	points[4] = Vec2(0, 0);//5角形になった時用
 	points[5] = Vec2(0, 0);//分割時に必要になる
 
@@ -68,18 +68,14 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 
 	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
 
-	
 	myWall->setPosition(-getPosition());
 
 	addChild(myWall);
-
-
 
 	clipp = ClippingNode::create();
 	clipp->setStencil(myWall);
 	clipp->addChild(sp);
 	addChild(clipp);
-
 
 	isCuted = false;
 	segmentCount = 4;
