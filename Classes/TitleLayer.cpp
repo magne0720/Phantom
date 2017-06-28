@@ -18,6 +18,7 @@ bool TitleLayer::init(SaveData* saveData)
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
 	_saveData = saveData;
+	_saveData->saveLookedSky(true);
 
 	Rect rect = Rect(0, 0, designResolutionSize.width, designResolutionSize.height);
 	Sprite* sky = Sprite::create();
@@ -66,15 +67,11 @@ bool TitleLayer::init(SaveData* saveData)
 	ts = TitleScroll::create(_scrollSpeed, cleareStage);
 	this->addChild(ts);
 
-	auto ground = Sprite::create("Title/Ground.png");
-	ground->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	this->addChild(ground);
-
 	TitleCharacter* titleCharacter = TitleCharacter::create();
 	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.18f);
 	this->addChild(titleCharacter);
 
-	TitleLogo* titleLogo = TitleLogo::create();
+	TitleLogo* titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
 	this->addChild(titleLogo);
 
 	return true;

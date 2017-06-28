@@ -6,8 +6,19 @@
 class ToTitleButton : public cocos2d::Sprite
 {
 public:
-	bool init();
-	static ToTitleButton* create();
+	bool init(cocos2d::Color3B color, bool lookedSky);
+	static ToTitleButton* create(cocos2d::Color3B color, bool lookedSky = true);
+	void update(float delta);
+	float adjustRange(float f);
+	float adjustOpacity(float f);
+
+	float _volume = 0.0f;
+	float _timer = 0.0f;
+	int _dir = 1;
+
+	float _SWITCH_TIME = 0.6f;
+	float _MIN_SCALE = 1.0f;
+	float _MAX_SCALE = 1.2f;
 
 	cocos2d::Sprite* _shadow;
 };

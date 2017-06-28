@@ -60,7 +60,7 @@ bool SelectLayer::init(SaveData* saveData)
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
-	_toTitleButton = ToTitleButton::create();
+	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
 	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
 	this->addChild(_toTitleButton);
 
@@ -83,11 +83,12 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	PictureManager* pictureManager = PictureManager::create(saveData);
 	this->addChild(pictureManager);
 
+	_saveData = saveData;
 	SelectBackground* selectBackground = SelectBackground::create(color);
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
-
-	_toTitleButton = ToTitleButton::create();
+	
+	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
 	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
 	this->addChild(_toTitleButton);
 

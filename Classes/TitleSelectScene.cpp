@@ -17,24 +17,27 @@ bool TitleSelectScene::init()
 	_saveData = SaveData::create();
 	this->addChild(_saveData);
 
-	log("LAST %d", _saveData->loadLastClear());
 	switch (_saveData->loadLastClear())
 	{
 	case static_cast<int>(eColor::SKY) :
 		_saveData->saveStarAppear(false);
 		_saveData->saveTimeZone(TIME_ZONE::MORNING);
+		_saveData->saveLookedSky(false);
 		break;
 	case static_cast<int>(eColor::ORANGE) :
 		/*if (_saveData->loadTimeZone() != TIME_ZONE::EVENING) */_saveData->saveStarAppear(false);
 		_saveData->saveTimeZone(TIME_ZONE::EVENING);
+		_saveData->saveLookedSky(false);
 		break;
 	case static_cast<int>(eColor::INDIGO) :
 		/*if (_saveData->loadTimeZone() != TIME_ZONE::NIGHT) */_saveData->saveStarAppear(false);
 		_saveData->saveTimeZone(TIME_ZONE::NIGHT);
+		_saveData->saveLookedSky(false);
 		break;
 	case static_cast<int>(eColor::YELLOW) :
 		if(_saveData->loadTimeZone()==TIME_ZONE::EVENING || _saveData->loadTimeZone()==TIME_ZONE::NIGHT)
 			_saveData->saveStarAppear(true);
+		_saveData->saveLookedSky(false);
 		break;
 	default:
 		break;

@@ -6,8 +6,8 @@
 class TitleLogo : public cocos2d::Node
 {
 public:
-	bool init();
-	static TitleLogo* create();
+	bool init(cocos2d::Color3B color);
+	static TitleLogo* create(cocos2d::Color3B color = cocos2d::Color3B::WHITE);
 private:
 	cocos2d::Sprite* _logoSp;
 	cocos2d::Sprite* _shadowSp;

@@ -60,6 +60,7 @@ bool PictureManager::init(SaveData* saveData)
 	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
 	node->setGlobalZOrder(-1);
+	Color3B notClearColor = Color3B::GRAY;
 	
 	int pictureNum = _clearedStage + 2;	// ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
 	if (pictureNum <= _LINE_MAX)
@@ -73,7 +74,11 @@ bool PictureManager::init(SaveData* saveData)
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage) _pictures[i]->setColor(Color3B::GRAY);
+			if (i > _clearedStage)
+			{
+				_pictures[i]->setColor(notClearColor);
+				_pictures[i]->_defaultColor = notClearColor;
+			}
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -94,17 +99,21 @@ bool PictureManager::init(SaveData* saveData)
 		basePos.y = designResolutionSize.height*0.5f;
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		int j;
-		if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
-		else if (_clearedStage == _MAX_STAGE) j = _clearedStage;
+		if (_clearedStage < _MAX_STAGE - 1) j = _clearedStage + 1;
+		else if (_clearedStage == _MAX_STAGE - 1) j = _clearedStage;
 		
-		for (int i = _LINE_MAX; i <= _clearedStage + 1; i++)
+		for (int i = _LINE_MAX; i <= j; i++)
 		{
 			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (pictureNum - _LINE_MAX + 1);
+			float p = 1.0f / (pictureNum - _LINE_MAX);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage + 1) _pictures[i]->setColor(Color3B::GRAY);
+			if (i > _clearedStage)
+			{
+				_pictures[i]->setColor(notClearColor);
+				_pictures[i]->_defaultColor = notClearColor;
+			}
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -159,8 +168,8 @@ bool PictureManager::onTouchBegan(const std::vector<Touch *> &touches, Event *un
 	_touchTimer = 0.0f;
 
 	int j = 9;
-	/*if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
-	else if (_clearedStage == _MAX_STAGE) j = _clearedStage;*/
+	if (_clearedStage < _MAX_STAGE) j = _clearedStage + 1;
+	else if (_clearedStage == _MAX_STAGE) j = _clearedStage;
 
 
 	if (_areResizing || _selectedStage >= 0 || _touchID >= 0) return false;
