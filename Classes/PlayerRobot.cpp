@@ -61,41 +61,41 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
-	//log("type=%d", (int)myState);
-	//	moveTimer+=1.0*gameSpeed;
-	//	switch (myState)
-	//	{
-	//	case STATUS::STAND:
-	//		if (moveTimer > checkTime / 2)
-	//		{
-	//			moveTimer = 0;
-	//			if (isMove) {
-	//				if (angles.size() > angleNum)
-	//				{
-	//					nextPosition();
-	//				}
-	//				else
-	//				{
-	//					stopPosition();
-	//				}
-	//			}
-	//		}
-	//		break;
-	//	case STATUS::MOVE:
-	//		//一コマ分移動したら
-	//		if (onCollision(targets.at(0)->myPosition, moveRange))
-	//		{
-	//			findPosition();
-	//		}
-	//		break;
-	//	case STATUS::STOP:
-	//		break;
-	//	case STATUS::FIND:
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//	//mySprite->setScale((moveTimer/checkTime)+0.5f);
+	log("type=%d", (int)myState);
+		moveTimer+=1.0*gameSpeed;
+		switch (myState)
+		{
+		case STATUS::STAND:
+			if (moveTimer > checkTime / 2)
+			{
+				moveTimer = 0;
+				if (isMove) {
+					if (angles.size() > angleNum)
+					{
+						nextPosition();
+					}
+					else
+					{
+						stopPosition();
+					}
+				}
+			}
+			break;
+		case STATUS::MOVE:
+			//一コマ分移動したら
+			if (onCollision(targets.at(0)->myPosition, moveRange))
+			{
+				findPosition();
+			}
+			break;
+		case STATUS::STOP:
+			break;
+		case STATUS::FIND:
+			break;
+		default:
+			break;
+		}
+		//mySprite->setScale((moveTimer/checkTime)+0.5f);
 
 };
 
