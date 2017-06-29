@@ -11,6 +11,7 @@ using namespace CocosDenshion;
 #define PLAYER_AI 0
 #define PLAYER_HANSOME 1
 #define MASS_SIZE 50
+#define MOVE_MAX 15
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1200);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
@@ -145,8 +146,8 @@ enum GAMESTATE
 //キャラクターの動き
 enum STATUS
 {
-	//立つ、歩く、疑う、追う、死ぬ
-	STAND=0,MOVE,DOUBT,FIND,CHASE,DEATH
+	//立つ、歩く、止まる、追う、死ぬ
+	STAND=0,MOVE,STOP,FIND,CHASE,DEATH
 };
 
 //向きの開始角

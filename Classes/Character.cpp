@@ -82,7 +82,7 @@ void Character::action()
 		}
 		move(gameSpeed);
 		break;
-	case DOUBT:
+	case STOP:
 		break;
 	case FIND:
 		isMoveWait = true;

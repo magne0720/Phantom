@@ -46,16 +46,20 @@ bool GameManager::init(int num)
 
 	messageSp = Sprite::create("MessageBox_0.png");
 	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
+	messageSp->setOpacity(230);
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	addChild(messageSp);
 
 	
-	maxLife = 5;
+	maxLife = MAX_LIFE;
 	playerLife =maxLife;
 
+	Color4F col = Color4F(user->loadPlayerColor());
 	for (int i = 0; i < playerLife; i++) 
 	{
 		Sprite* sp = Sprite::create("life.png");
+		sp->setColor(Color3B(col.r, col.g, col.b));
+		sp->setOpacity(127);
 		addChild(sp);
 		lifeSps.pushBack(sp);
 	}
@@ -68,6 +72,8 @@ bool GameManager::init(int num)
 
 void GameManager::update(float delta)
 {
+
+	if (*isGoal)gameState = GAMESTATE::CLEAR;
 	switch (gameState)
 	{
 	case SANDBY:
@@ -77,12 +83,12 @@ void GameManager::update(float delta)
 		break;
 	case PLAY:
 		//プレイヤーの軌道を決めている時
-		if (map->robot->rightRobot->isPut || map->robot->leftRobot->isPut)
-		{
-			StayCloseMessage();
-			timer = 0;
-			break;
-		}
+		//if (map->robot->rightRobot->isMoveWait || map->robot->leftRobot->isMoveWait)
+		//{
+		//	StayCloseMessage();
+		//	timer = 0;
+		//	break;
+		//}
 		timer += 1.0f / 60.0f;
 		{
 			if (timer > 6.0f)
@@ -123,22 +129,26 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVING:
-		if (!map->robot->rightRobot->isStart&&!map->robot->leftRobot->isStart) 
+		if (!map->robot->rightRobot->isMove&&!map->robot->leftRobot->isMove) 
 		{
 			gameState = GAMESTATE::MOVE_STOP;
 			playerLife--;
 		}
-		if (*isGoal)gameState = GAMESTATE::CLEAR;
 		break;
 	case MOVE_STOP:
 		//プレイヤーが歩くのを止めた時
 		if (stopAnimation())
 		{
-			dispLife(playerLife,maxLife);
+			dispLife(playerLife, maxLife);
+			map->robot->rightRobot->messageSp->setVisible(false);
+			map->robot->leftRobot->messageSp->setVisible(false);
 			if (playerLife == 0)
 				gameState = GAMESTATE::MISS;
-			else
+			else {
+				map->robot->rightRobot->setState(STATUS::STAND);
+				map->robot->leftRobot->setState(STATUS::STAND);
 				gameState = GAMESTATE::PLAY;
+			}
 		}
 		break;
 	case CLEAR:
@@ -186,6 +196,17 @@ void GameManager::dispGoal()
 		user->savePlayerColor(stageColor);
 
 		//map->goal->stopAnimation();
+
+
+		//ライフを自然に消す
+		for (int i = 0; i < lifeSps.size(); i++) {
+			MoveBy* mMove = MoveBy::create(1.0f, Vec2(0, 200));
+			FadeOut* mFade = FadeOut::create(1.0f);
+			Spawn* mFech = Spawn::createWithTwoActions(mMove, mFade);
+			lifeSps.at(i)->runAction(mFech);
+		}
+
+		//ゴールのアニメーション
 		CallFunc* goSelect = CallFunc::create([&]()
 		{
 			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
@@ -255,9 +276,13 @@ bool GameManager::stopAnimation()
 {
 	if (timer == 0)
 	{
-		ScaleTo* sZoomIn = ScaleTo::create(1, 2);
-		FadeOut* out = FadeOut::create(0.5f);
-		lifeSps.at(playerLife)->runAction(Sequence::create(sZoomIn, out, nullptr));
+		DelayTime* delay = DelayTime::create(1.0f);
+		ScaleTo* sZoomOne = ScaleTo::create(0.4f, 1.3f);
+		FadeIn* outOne = FadeIn::create(0.4f);
+		Spawn* sOne = Spawn::createWithTwoActions(sZoomOne, outOne);
+		ScaleTo* sZoomTwo = ScaleTo::create(0.5f, 1);
+		FadeOut* outTwo = FadeOut::create(0.1f);
+		lifeSps.at(playerLife)->runAction(Sequence::create(delay,sOne,sZoomTwo,outTwo, nullptr));
 	}
 	if (timer > 2.5f) {
 		timer = 0;

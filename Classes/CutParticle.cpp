@@ -65,10 +65,10 @@ void CutSingle::update(float delta)
 	}
 };
 
-CutParticle* CutParticle::create(float scaleMax, Color4F baseColor)
+CutParticle* CutParticle::create(int num,float scaleMax, Color4F baseColor)
 {
 	CutParticle *pRet = new CutParticle();
-	if (pRet && pRet->init(scaleMax,baseColor))
+	if (pRet && pRet->init(num,scaleMax,baseColor))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -81,7 +81,7 @@ CutParticle* CutParticle::create(float scaleMax, Color4F baseColor)
 	};
 };
 
-bool CutParticle::init(float scale, Color4F baseColor)
+bool CutParticle::init(int num,float scale, Color4F baseColor)
 {
 	if (!Node::init())return false;
 
@@ -89,6 +89,7 @@ bool CutParticle::init(float scale, Color4F baseColor)
 	toPosition = Vec2(0, 0);
 
 	scaleMax = scale;
+	absoluteNumber = num;
 
 	scheduleUpdate();
 
@@ -106,28 +107,31 @@ void CutParticle::update(float delta)
 			cuts.erase(i);
 		}
 	}
-	if (isRoop) 
+	if (isRoop)
 	{
-		CutSingle* b = CutSingle::create(scaleMax);
-		addChild(b);
-		b->setPosition(getRandoLine(random<float>(1,100)/100));
-		cuts.pushBack(b);
+		if (cuts.size() < absoluteNumber)
+		{
+			CutSingle* b = CutSingle::create(scaleMax);
+			addChild(b);
+			b->setPosition(getRandoLine(random<float>(1, 100) / 100));
+			cuts.pushBack(b);
+		}
 	}
 };
 
 //ìôä‘äuÇ…ê∂ê¨
-void CutParticle::createParticle(int num,float scale)
+void CutParticle::createParticle()
 {
 	cuts.clear();
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < absoluteNumber; i++)
 	{
-		CutSingle* b = CutSingle::create(scale);
+		CutSingle* b = CutSingle::create(scaleMax);
 		addChild(b);
-		b->setPosition(getRandoLine((float)i/(float)num));
+		b->setPosition(getRandoLine((float)i/(float)absoluteNumber));
 		cuts.pushBack(b);
-		CutSingle* a = CutSingle::create(scale);
+		CutSingle* a = CutSingle::create(scaleMax);
 		addChild(a);
-		a->setPosition(getRandoLine((float)(num-i)/(float)num));
+		a->setPosition(getRandoLine((float)(absoluteNumber-i)/(float)absoluteNumber));
 		cuts.pushBack(a);
 	}
 };

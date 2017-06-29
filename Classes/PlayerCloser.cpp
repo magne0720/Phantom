@@ -65,22 +65,20 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 
 void PlayerCloser::update(float delta)
 {
+
+	if (delayTimer != 0)isRobotMoving = false;
+
 	infraredLine->clear();
 	//infraredLine->drawSegment(Vec2(rightRobot->myPosition.x, rightRobot->myPosition.y+80),Vec2(leftRobot->myPosition.x,leftRobot->myPosition.y+80), 4, Color4F::RED);
 
-	if (rightRobot->isNext||leftRobot->isNext)
-	{
-		effectTimer += 5.0f;
+	effectTimer += 5.0f;
 		infraredEffect->clear();
 		infraredEffect->drawSegment(rightRobot->myPosition, leftRobot->myPosition, effectTimer / 255.0f * 8, Color4F(myColor.r, myColor.g, myColor.b, 255.0f - effectTimer / 225.0f));
 		if (effectTimer >= 225.0f)
 		{
 			effectTimer = 0;
-			rightRobot->isNext = false;
-			leftRobot->isNext = false;
 		}
-	}
-
+	
 	if (rightRobot->myState == STATUS::FIND&&leftRobot->myState == STATUS::FIND)
 	{
 		isGoal = true;
@@ -98,7 +96,6 @@ void PlayerCloser::update(float delta)
 
 	delayTimer += 1.0f / 60.0f;
 	//		log("del=%f", delayTimer);
-	if (delayTimer != 0)isRobotMoving = false;
 };
 
 //右のロボットが進む軌道の表示
@@ -147,14 +144,14 @@ void PlayerCloser::startRobot()
 {
 		rightRobot->moveTimer = 0;
 		leftRobot->moveTimer = 0;
-		rightRobot->nextPosition();
-		leftRobot->nextPosition();
 		rightRobot->isStandby = false;
 		leftRobot->isStandby = false;
 		rightRobot->isStart = true;
 		leftRobot->isStart = true;
 		moveLineRight->clear();
 		moveLineLeft->clear();
+		rightRobot->moveStartPosition();
+		leftRobot->moveStartPosition();
 };
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
@@ -180,7 +177,7 @@ void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event)
 	}
 	if (delayTimer >= 2.0f)
 	{
-		if (rightRobot->isStart&&leftRobot->isStart)
+		if (rightRobot->isMove&&leftRobot->isMove)
 		{
 			isRobotMoving = true;
 			delayTimer = 0;

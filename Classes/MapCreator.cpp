@@ -31,7 +31,7 @@ bool MapCreator::init(int num,Color4F col)
 
 	walls.pushBack(aroundWall);
 
-	openMapFile("text",num);
+	openMapFile("stage",num);
 
 	return true;
 };

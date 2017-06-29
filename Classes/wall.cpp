@@ -40,7 +40,7 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/walldust.mp3");
 
-	particle = CutParticle::create(1);
+	particle = CutParticle::create(20,1);
 	addChild(particle,60);
 
 	Sprite* sp = Sprite::create();
@@ -89,7 +89,7 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	if (!Node::init())return false;
 
 
-	particle = CutParticle::create(1);
+	particle = CutParticle::create(20,1);
 	addChild(particle, 60);
 
 	Sprite* sp = Sprite::create();
@@ -360,9 +360,10 @@ void Wall::checkCutArea(Vec2* points)
 	sumRight = sumArea(points, right);
 	sumLeft = sumArea(points, left);
 
-	if (abs((sumRight/100)-(sumLeft/100))<=1.0f)
+	if (abs((sumRight/100)-(sumLeft/100))<=0.8f)
 	{
-		//大きさがほぼ一緒
+		//大きさがほぼ一緒(クリティカル) 
+
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, left);
 		rebuildingDust(dustPoints, leftcount);
@@ -372,6 +373,18 @@ void Wall::checkCutArea(Vec2* points)
 		rebuildingDust(dustPoints, rightcount);
 
 		rebuildingArea(points, 1);
+
+		Sprite* sp = Sprite::create("WallCritical.png");
+		sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.7f));
+		sp->setColor(Color3B(cutedColor.r*255.0f,cutedColor.g*255.0f,cutedColor.b*255.0f));
+		sp->setScale(0);
+		addChild(sp);
+		ScaleTo* scaleUp = ScaleTo::create(0.5f, 1.0f);
+		ScaleTo* scaleDown = ScaleTo::create(0.5f, 0.5);
+		FadeOut* fade = FadeOut::create(1.0f);
+		Spawn* spawn = Spawn::createWithTwoActions(scaleDown, fade);
+		RemoveSelf* self = RemoveSelf::create();
+		sp->runAction(Sequence::create(scaleUp,spawn,self,nullptr));
 	}
 	else if(sumRight> sumLeft)
 	{
@@ -393,6 +406,7 @@ void Wall::checkCutArea(Vec2* points)
 		//構築
 		rebuildingArea(points, leftcount);
 	}
+
 };
 
 //切り取った後に面積を再構築する
@@ -434,7 +448,7 @@ void Wall::rebuildingDust(Vec2 points[], int corner)
 void Wall::cutEffect()
 {
 	SimpleAudioEngine::getInstance()->playEffect("Sounds/walldust.mp3");
-	particle->createParticle(25,particle->scaleMax);
+	particle->createParticle();
 };
 
 

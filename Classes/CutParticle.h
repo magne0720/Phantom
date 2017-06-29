@@ -34,10 +34,10 @@ public:
 class CutParticle :public Node
 {
 public:
-	static CutParticle* create(float scale, Color4F baseColor = Color4F::WHITE);
-	bool init(float scale, Color4F baseColor = Color4F::WHITE);
+	static CutParticle* create(int num,float scale, Color4F baseColor = Color4F::WHITE);
+	bool init(int num,float scale, Color4F baseColor = Color4F::WHITE);
 	void update(float delta);
-	void createParticle(int num,float scale);
+	void createParticle();
 	void startParticle();
 	void stopParticle();
 	void setLine(Vec2 from, Vec2 to);

@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Character.h"
+#include "CutParticle.h"
 
 #define MODE 0
 
@@ -20,10 +21,20 @@ public:
 
 	//角度の保存
 	void setAngle(Vec2 from, Vec2 to);
+	//歩き始める
+	void moveStartPosition();
 	//つぎに行くべきところの設定
 	void nextPosition();
 	//次に行く場所がなくなった時に配列の中を削除し、動きを止める
 	void stopPosition();
+	//ゴールした時
+	void findPosition();
+
+	//止まった時のアニメーション
+	void stopAnimation();
+	//ゴールした時のアニメーション
+	void findAnimation();
+
 
 	//プレイヤーの操作が異なるので仮想化
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
@@ -35,14 +46,19 @@ public:
 	Vec2 startPosition;
 	//一定区間超えた位置
 	Vec2 endPosition;
+	//移動準備しているか
 	bool isStandby;
-	bool isPut;
+	//動き始めたか
 	bool isStart;
-	bool isNext;
+	//動いているか
+	bool isMove;
+
 	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
 	int angleNum;
 	std::vector<float> angles;
+	Sprite* messageSp;
+	CutParticle* goalPa;
 
 };
 #endif // !__PLAYER_ROBOT_H__

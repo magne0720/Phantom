@@ -8,6 +8,8 @@
 
 USING_NS_CC;
 
+#define MAX_LIFE 6
+
 class GameManager :public Node 
 {
 public:
