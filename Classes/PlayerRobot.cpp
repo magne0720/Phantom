@@ -35,7 +35,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	setDoubtDgree(150.0f);
 	checkTime = 120.0f;
 
-	initWithFileCenter("Character/GameAnim.png", Size(200, 200));
+	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(200, 200));
 	
 	messageSp = Sprite::create("Game/Player/Stop.png");
 	messageSp->setPosition(Vec2(0, myPosition.y + 50));
