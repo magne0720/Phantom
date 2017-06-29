@@ -18,6 +18,7 @@ public:
 	const char* TIME_ZONE_KEY = "time";//時間帯
 	const char* STAR_APPEAR_KEY = "star";//星が出ていいか
 	const char* START_UP_NUM_KEY = "startnum";//起動回数
+	const char* LOOKED_SKY = "changeSky";// 空の色が変わった後にタイトルを見たかどうか。
 	UserDefault* user;
 
 	static SaveData* create();
@@ -29,6 +30,7 @@ public:
 	void savePlayerColor(Color4F col);
 	void saveTimeZone(TIME_ZONE time);
 	void saveStarAppear(bool is);
+	void saveLookedSky(bool is);
 	
 	int loadClear();
 	int loadLastClear();
@@ -37,6 +39,7 @@ public:
 	TIME_ZONE loadTimeZone();
 	bool loadStarAppear();
 	void startUpNum();
+	bool loadLookedSky();
 
 	void AllResset();
 };

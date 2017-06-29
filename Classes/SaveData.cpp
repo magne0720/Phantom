@@ -81,6 +81,14 @@ void SaveData::saveStarAppear(bool is)
 {
 	user->setBoolForKey(STAR_APPEAR_KEY, is);
 }
+
+// 空の色が変わった後にタイトルを見たかどうか。
+void SaveData::saveLookedSky(bool is)
+{
+	user->setBoolForKey(LOOKED_SKY, is);
+}
+
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //ロード
 
@@ -137,3 +145,9 @@ void SaveData::AllResset()
 	saveTimeZone(TIME_ZONE::ZEROTIME);
 	saveStarAppear(false);
 };
+
+// 空の色が変わった後にタイトルを見たかどうか。
+bool SaveData::loadLookedSky()
+{
+	return user->getBoolForKey(LOOKED_SKY);
+}

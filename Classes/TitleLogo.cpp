@@ -3,31 +3,32 @@
 
 using namespace cocos2d;
 
-bool TitleLogo::init()
+bool TitleLogo::init(Color3B color)
 {
 	if (!Node::init()) return false;
 
-	_logoSp = Sprite::create("HelloWorld.png");
+	_logoSp = Sprite::create("Title/Logos0.png");
 	_logoSp->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*1.2f);
+	_logoSp->setColor(color);
 	auto move = MoveTo::create(3, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.7f));
 	_logoSp->runAction(move);
 	this->addChild(_logoSp);
 
-	_shadowSp = Sprite::create("HelloWorld.png");
+	_shadowSp = Sprite::createWithSpriteFrame(_logoSp->getSpriteFrame());
 	_shadowSp->setColor(Color3B::BLACK);
 	_shadowSp->setOpacity(70);
-	_shadowSp->setScale(1.02f);
-	_shadowSp->setScaleX(1.1f);
+	_shadowSp->setScaleY(1.01f);
+	_shadowSp->setScaleX(1.04f);
 	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.45f);
 	_logoSp->addChild(_shadowSp, -1);
 
 	return true;
 }
 
-TitleLogo* TitleLogo::create()
+TitleLogo* TitleLogo::create(Color3B color)
 {
 	TitleLogo* pRet = new TitleLogo();
-	if (pRet && pRet->init())
+	if (pRet && pRet->init(color))
 	{
 		pRet->autorelease();
 		return pRet;

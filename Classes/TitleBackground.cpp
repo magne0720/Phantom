@@ -17,6 +17,15 @@ bool TitleBackground::init(int clearedStage)
 	auto fly = TitleBatterfly::create(clearedStage);
 	this->addChild(fly);
 
+	Sprite* ground = Sprite::create("Title/Ground/Brown.png");
+	ground->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	this->addChild(ground);
+	if (clearedStage >= static_cast<int>(eColor::BROWN)) ground->setColor(getColorCode(eColor::BROWN));
+	Sprite* green = Sprite::create("Title/Ground/Green.png");
+	green->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	this->addChild(green);
+	if (clearedStage >= static_cast<int>(eColor::GREEN)) green->setColor(getColorCode(eColor::GREEN));
+
 	this->setContentSize(designResolutionSize * 2.0f);
 
 	return true;
