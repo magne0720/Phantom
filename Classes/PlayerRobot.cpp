@@ -36,7 +36,6 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	checkTime = 120.0f;
 
 	initWithFileCenter("Character/GameAnim.png", Size(200, 200));
-	initWithFileCenterB("Character/GameAnim.png", Size(200, 200));
 	
 	messageSp = Sprite::create("Game/Player/Stop.png");
 	messageSp->setPosition(Vec2(0, myPosition.y + 50));
@@ -57,49 +56,46 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 
-	//キャラクターの色変化
-	myBlendSprite->getSp()->setColor(Color3B(col.r*255.0f,col.g*255.0f,col.b*255.0f));
-
 	return true;
 };
 
 void PlayerRobot::plusAction()
 {
-	log("type=%d", (int)myState);
-		moveTimer+=1.0*gameSpeed;
-		switch (myState)
-		{
-		case STATUS::STAND:
-			if (moveTimer > checkTime / 2)
-			{
-				moveTimer = 0;
-				if (isMove) {
-					if (angles.size() > angleNum)
-					{
-						nextPosition();
-					}
-					else
-					{
-						stopPosition();
-					}
-				}
-			}
-			break;
-		case STATUS::MOVE:
-			//一コマ分移動したら
-			if (onCollision(targets.at(0)->myPosition, moveRange))
-			{
-				findPosition();
-			}
-			break;
-		case STATUS::STOP:
-			break;
-		case STATUS::FIND:
-			break;
-		default:
-			break;
-		}
-		//mySprite->setScale((moveTimer/checkTime)+0.5f);
+	//log("type=%d", (int)myState);
+	//	moveTimer+=1.0*gameSpeed;
+	//	switch (myState)
+	//	{
+	//	case STATUS::STAND:
+	//		if (moveTimer > checkTime / 2)
+	//		{
+	//			moveTimer = 0;
+	//			if (isMove) {
+	//				if (angles.size() > angleNum)
+	//				{
+	//					nextPosition();
+	//				}
+	//				else
+	//				{
+	//					stopPosition();
+	//				}
+	//			}
+	//		}
+	//		break;
+	//	case STATUS::MOVE:
+	//		//一コマ分移動したら
+	//		if (onCollision(targets.at(0)->myPosition, moveRange))
+	//		{
+	//			findPosition();
+	//		}
+	//		break;
+	//	case STATUS::STOP:
+	//		break;
+	//	case STATUS::FIND:
+	//		break;
+	//	default:
+	//		break;
+	//	}
+	//	//mySprite->setScale((moveTimer/checkTime)+0.5f);
 
 };
 

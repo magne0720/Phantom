@@ -32,9 +32,9 @@ bool GameManager::init(int num)
 	user = SaveData::create();
 	addChild(user);
 	//log("%d", user->loadClear());
-
-	map = MapCreator::create(num,user->loadPlayerColor());
-	addChild(map);
+	
+		map = MapCreator::create(num,user->loadPlayerColor());
+		addChild(map);
 
 	isGoal = &map->robot->isGoal;
 	stageColor = map->goal->getStageColor();
@@ -44,7 +44,7 @@ bool GameManager::init(int num)
 	isGoalAnimation = false;
 	gameState = GAMESTATE::SANDBY;
 
-	messageSp = Sprite::create("Game/Message/MessageBox_0.png");
+	messageSp = Sprite::create("Game/Message/MessageBox_1.png");
 	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->setOpacity(230);
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);

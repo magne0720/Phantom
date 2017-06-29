@@ -24,7 +24,6 @@ bool Character::init(Vec2 spawnPos, DIR_DEGREE dir)
 	}
 	initialize(spawnPos,dir);
 
-	initWithFileCenter("CloseNormal.png");
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする
 	listener->onTouchBegan = CC_CALLBACK_2(Character::onTouchBegan, this);
@@ -63,7 +62,6 @@ void Character::initialize(Vec2 pos,DIR_DEGREE dir)
 void Character::action() 
 {
 	allCollision();
-
 	//	^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	// <次ここ！！基本ステート完成させる！！>
 	//	YvYvYvYvYvYYvYvYvYvYvYYvYvY
@@ -119,7 +117,6 @@ void Character::move(float plusSpeed)
 
 	myPosition += aPos*moveSpeed*plusSpeed;
 	mySprite->changeAnimation(aPos);
-	myBlendSprite->changeAnimation(aPos);
 
 	setPosition(myPosition);
 };

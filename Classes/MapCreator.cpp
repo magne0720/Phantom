@@ -31,7 +31,7 @@ bool MapCreator::init(int num,Color4F col)
 
 	walls.pushBack(aroundWall);
 
-	openMapFile("stage",num);
+openMapFile("stage",num);
 
 	return true;
 };
@@ -73,7 +73,7 @@ void MapCreator::loadMap(string mapText)
 			break;
 		case 'F'://Floor
 			log("floorStart");
-			analyzeFloor(getAnalyzeData(mapText.substr(i + 1, mapText.size()-i),D_L_FLOOR));
+			//analyzeFloor(getAnalyzeData(mapText.substr(i + 1, mapText.size()-i),D_L_FLOOR));
 			i += D_L_FLOOR;
 			log("floorend\n--------------------------------------");
 			break;
