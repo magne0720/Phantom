@@ -11,6 +11,7 @@ public:
 	static TitleCharacter* create();
 	cocos2d::Animation* anim;
 	void update(float delta);
+	void setColor(cocos2d::Color3B color);
 private:
 	float _timer = 0.0f;
 	CharacterAnimation* _charAnim;
@@ -22,6 +23,7 @@ private:
 	};
 	eSTATE _state;
 	void changeState();
+	float _walkTime = 0.3f;
 };
 
 #endif // !_TitleCharacter_h_

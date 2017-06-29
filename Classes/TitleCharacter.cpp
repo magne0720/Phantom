@@ -7,7 +7,7 @@ bool TitleCharacter::init()
 {
 	if (!Sprite::init()) return false;
 
-	_charAnim = CharacterAnimation::create("Character/TitleAnim.png", Size(250, 250), 0.3f);
+	_charAnim = CharacterAnimation::create("Character/TitleAnim_MI.png", "Character/TitleAnim_PO.png", Size(250, 250), _walkTime);
 	this->addChild(_charAnim);
 	_charAnim->changeAnimation(DIR::RIGHT);
 	_state = eSTATE::MOVE;
@@ -52,24 +52,28 @@ void TitleCharacter::update(float delta)
 		{
 			_state = eSTATE::JUMP;
 			_timer = 0.0f;
-			_charAnim->stopAction();
+			_charAnim->setDelay(0.5f);
+			_charAnim->startAnimation(DIR::FRONT);
 			auto rotateR = RotateTo::create(0.5f,15);
 			auto rotateL = RotateTo::create(0.5f, -15);
-			auto rotateC = RotateTo::create(0.5f, 0);
+			auto rotateC = RotateTo::create(0.5f, 3);
 			auto jump = JumpBy::create(0.5f, Vec2(0, 0), 20.0f, 1);
 			auto flip = FlipX::create(true);
 			auto flipF = FlipX::create(false);
-			auto spo0 = Spawn::create(jump, rotateR, flip, NULL);
-			auto spo1 = Spawn::create(jump, rotateL, flipF, NULL);
-			auto spo2 = Spawn::create(jump, rotateC, flipF, NULL);
-			auto seq = Sequence::create(spo0, spo1, spo0, spo2, NULL);
-			_charAnim->getSp()->runAction(seq);
+			auto spo0 = Spawn::create(jump, rotateR, NULL);
+			auto spo1 = Spawn::create(jump, rotateL, NULL);
+			auto spo2 = Spawn::create(jump, rotateC, NULL);
+			auto call = CallFunc::create([&]() {_charAnim->stopAction(); });
+			auto seq = Sequence::create(spo0, spo1, spo0, spo2, call, NULL);
+			_charAnim->runAction(seq);
 		}
 		break;
 	case TitleCharacter::JUMP:
 		if (_timer > 3.0f)
 		{
 			_state = eSTATE::MOVE;
+			_charAnim->setRotation(0);
+			_charAnim->setDelay(_walkTime);
 			_timer = 0.0f;
 			_charAnim->startAnimation(DIR::RIGHT);
 			((TitleLayer*)this->getParent())->setDefaultSpeed();
@@ -86,4 +90,9 @@ void TitleCharacter::changeState()
 {
 	auto jump = JumpBy::create(0.5f, Vec2(0, 0), 5.0f, 1);
 	_charAnim->runAction(jump);
+}
+
+void TitleCharacter::setColor(Color3B color)
+{
+	_charAnim->getPon()->setColor(color);
 }

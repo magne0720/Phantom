@@ -28,10 +28,10 @@ public:
 		LEFT,
 		RIGHT
 	};
-	bool init(std::string fileName, cocos2d::Size chipSize, float delay, bool move);
-	static CharacterAnimation* create(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
-	static CharacterAnimation* createInStop(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
-	static CharacterAnimation* createInMove(std::string fileName, cocos2d::Size chipSize, float delay = 0.5f);
+	bool init(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay, bool move);
+	static CharacterAnimation* create(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
+	static CharacterAnimation* createInStop(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
+	static CharacterAnimation* createInMove(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
 	
 	void changeAnimation(eDIR dirName);			// アニメーション切り替え
 	void changeAnimation(cocos2d::Vec2 dir);	// アニメーションの向きから画像切り替え
@@ -44,6 +44,7 @@ public:
 
 	void stopAction();					// アニメーション自体を停止
 	cocos2d::Sprite* getSp();			// クラス内のスプライトを取得(オススメしない)
+	cocos2d::Sprite* getPon();
 
 	void setDelay(float delayTime);		// スプライトの切り替わる早さを指定
 	float getDelay();					// スプライトの切り替わる早さを取得
@@ -52,6 +53,7 @@ public:
 
 private:
 	cocos2d::Sprite* _mySprite;
+	cocos2d::Sprite* _ponSprite;
 	eDIR _dir;
 	bool _movedAnim;
 
