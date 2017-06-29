@@ -7,7 +7,7 @@ bool TitleCharacter::init()
 {
 	if (!Sprite::init()) return false;
 
-	_charAnim = CharacterAnimation::create("Character/TitleAnim_MI.png", "Character/TitleAnim_PO.png", Size(250, 250), _walkTime);
+	_charAnim = CharacterAnimation::create("Character/TitleAnim_Body.png", "Character/TitleAnim_Head.png", Size(250, 250), _walkTime);
 	this->addChild(_charAnim);
 	_charAnim->changeAnimation(DIR::RIGHT);
 	_state = eSTATE::MOVE;
