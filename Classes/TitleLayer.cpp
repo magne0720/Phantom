@@ -69,10 +69,14 @@ bool TitleLayer::init(SaveData* saveData)
 
 	TitleCharacter* titleCharacter = TitleCharacter::create();
 	titleCharacter->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.18f);
+	if (_saveData->loadClear() >= 0) titleCharacter->setColor(getColorCode(_saveData->loadLastClear()));
 	this->addChild(titleCharacter);
 
-	TitleLogo* titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
+	TitleLogo* titleLogo;
+	if (_saveData->loadClear() >= 0) titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
+	else titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
+	
 
 	return true;
 }

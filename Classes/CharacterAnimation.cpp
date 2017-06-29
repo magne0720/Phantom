@@ -4,14 +4,18 @@
 using namespace cocos2d;
 using namespace std;
 
-bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool move)
+bool CharacterAnimation::init(string fileName, string ponFileName, Size chipSize, float delay, bool move)
 {
 	if (!Node::init()) return false;
 
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
+	vector<SpriteFrame*> ponSp;		// 切り取ったチップをポンに格納
 	Sprite* sp = Sprite::create(fileName);	// 画像読み込み
+	Sprite* pn = Sprite::create(ponFileName);	// ポン読み込み
 	_mySprite = Sprite::create();			// キャラクタースプライト作成
+	_ponSprite = Sprite::create();		// ポンスプライト作成
 	this->addChild(_mySprite);
+	this->addChild(_ponSprite);
 	_animationChache = AnimationCache::sharedAnimationCache();		// アニメーションキャッシュに溜めることで読み込み減らす
 
 	int i = 0;
@@ -22,6 +26,7 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 		{
 			Rect rect(x*chipSize.width, y*chipSize.height, chipSize.width, chipSize.height);
 			charSp.push_back(SpriteFrame::createWithTexture(sp->getTexture(), rect));
+			ponSp.push_back(SpriteFrame::createWithTexture(pn->getTexture(), rect));
 		}
 	}
 
@@ -34,6 +39,11 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 	Animation* _animLeft = Animation::create();
 	Animation* _animRight = Animation::create();
 
+	Animation* _ponFront = Animation::create();
+	Animation* _ponBack = Animation::create();
+	Animation* _ponLeft = Animation::create();
+	Animation* _ponRight = Animation::create();
+
 	// チップを振り分け
 	for (int i = 1; i < width; i++)
 	{
@@ -41,6 +51,11 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 		_animBack->addSpriteFrame(charSp[width + i]);
 		_animLeft->addSpriteFrame(charSp[2 * width + i]);
 		_animRight->addSpriteFrame(charSp[3 * width + i]);
+
+		_ponFront->addSpriteFrame(ponSp[i]);
+		_ponBack->addSpriteFrame(ponSp[width + i]);
+		_ponLeft->addSpriteFrame(ponSp[2 * width + i]);
+		_ponRight->addSpriteFrame(ponSp[3 * width + i]);
 	}
 
 	// ディレイ設定
@@ -49,11 +64,21 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 	_animLeft->setDelayPerUnit(delay);
 	_animRight->setDelayPerUnit(delay);
 
+	_ponFront->setDelayPerUnit(delay);
+	_ponBack->setDelayPerUnit(delay);
+	_ponLeft->setDelayPerUnit(delay);
+	_ponRight->setDelayPerUnit(delay);
+
 	// キャッシュに溜める
 	_animationChache->addAnimation(_animFront, "FRONT");
 	_animationChache->addAnimation(_animBack, "BACK");
 	_animationChache->addAnimation(_animLeft, "LEFT");
 	_animationChache->addAnimation(_animRight, "RIGHT");
+
+	_animationChache->addAnimation(_ponFront, "P_FRONT");
+	_animationChache->addAnimation(_ponBack, "P_BACK");
+	_animationChache->addAnimation(_ponLeft, "P_LEFT");
+	_animationChache->addAnimation(_ponRight, "P_RIGHT");
 
 	//-----------------------------------------------------------------------------------------
 	// ストップ用アニメーション
@@ -64,11 +89,21 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 	Animation* _stopLeft = Animation::create();
 	Animation* _stopRight = Animation::create();
 
+	Animation* _ponStopFront = Animation::create();
+	Animation* _ponStopBack = Animation::create();
+	Animation* _ponStopLeft = Animation::create();
+	Animation* _ponStopRight = Animation::create();
+
 	// チップ振り分け
 	_stopFront->addSpriteFrame(charSp[0]);
 	_stopBack->addSpriteFrame(charSp[width]);
 	_stopLeft->addSpriteFrame(charSp[width*2]);
 	_stopRight->addSpriteFrame(charSp[width*3]);
+
+	_ponStopFront->addSpriteFrame(ponSp[0]);
+	_ponStopBack->addSpriteFrame(ponSp[width]);
+	_ponStopLeft->addSpriteFrame(ponSp[width * 2]);
+	_ponStopRight->addSpriteFrame(ponSp[width * 3]);
 
 	// ディレイ設定
 	_stopFront->setDelayPerUnit(delay);
@@ -76,11 +111,21 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 	_stopLeft->setDelayPerUnit(delay);
 	_stopRight->setDelayPerUnit(delay);
 
+	_ponStopFront->setDelayPerUnit(delay);
+	_ponStopBack->setDelayPerUnit(delay);
+	_ponStopLeft->setDelayPerUnit(delay);
+	_ponStopRight->setDelayPerUnit(delay);
+
 	// キャッシュに溜める
 	_animationChache->addAnimation(_stopFront, "STOP_F");
 	_animationChache->addAnimation(_stopBack, "STOP_B");
 	_animationChache->addAnimation(_stopLeft, "STOP_L");
 	_animationChache->addAnimation(_stopRight, "STOP_R");
+
+	_animationChache->addAnimation(_ponStopFront, "P_STOP_F");
+	_animationChache->addAnimation(_ponStopBack, "P_STOP_B");
+	_animationChache->addAnimation(_ponStopLeft, "P_STOP_L");
+	_animationChache->addAnimation(_ponStopRight, "P_STOP_R");
 
 	_dir = eDIR::FRONT;
 	_movedAnim = move;
@@ -91,10 +136,10 @@ bool CharacterAnimation::init(string fileName, Size chipSize, float delay, bool 
 	return true;
 }
 
-CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize, float delay)
+CharacterAnimation* CharacterAnimation::create(string fileName, string ponFileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay, true))
+	if (pRet && pRet->init(fileName, ponFileName, chipSize, delay, true))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = true;
@@ -108,10 +153,10 @@ CharacterAnimation* CharacterAnimation::create(string fileName, Size chipSize, f
 	}
 }
 
-CharacterAnimation* CharacterAnimation::createInStop(string fileName, Size chipSize, float delay)
+CharacterAnimation* CharacterAnimation::createInStop(string fileName, string ponFileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay, false))
+	if (pRet && pRet->init(fileName, ponFileName, chipSize, delay, false))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = false;
@@ -125,10 +170,10 @@ CharacterAnimation* CharacterAnimation::createInStop(string fileName, Size chipS
 	}
 }
 
-CharacterAnimation* CharacterAnimation::createInMove(string fileName, Size chipSize, float delay)
+CharacterAnimation* CharacterAnimation::createInMove(string fileName, string ponFileName, Size chipSize, float delay)
 {
 	CharacterAnimation* pRet = new CharacterAnimation();
-	if (pRet && pRet->init(fileName, chipSize, delay, true))
+	if (pRet && pRet->init(fileName, ponFileName, chipSize, delay, true))
 	{
 		pRet->autorelease();
 		pRet->_movedAnim = true;
@@ -188,28 +233,36 @@ void CharacterAnimation::stopAnimation(eDIR dirName)
 {
 	if (_movedAnim == false && _dir == dirName) return;
 	_mySprite->stopAllActions();
+	_ponSprite->stopAllActions();
 	_dir = dirName;
 	_movedAnim = false;
 	Animation* anim;
+	Animation* ponA;
 	switch (dirName)
 	{
 	case eDIR::FRONT:
 		anim = _animationChache->animationByName("STOP_F");
+		ponA = _animationChache->animationByName("P_STOP_F");
 		break;
 	case eDIR::BACK:
 		anim = _animationChache->animationByName("STOP_B");
+		ponA = _animationChache->animationByName("P_STOP_B");
 		break;
 	case eDIR::LEFT:
 		anim = _animationChache->animationByName("STOP_L");
+		ponA = _animationChache->animationByName("P_STOP_L");
 		break;
 	case eDIR::RIGHT:
 		anim = _animationChache->animationByName("STOP_R");
+		ponA = _animationChache->animationByName("P_STOP_R");
 		break;
 	default:
 		break;
 	}
 	auto action = RepeatForever::create(Animate::create(anim));
+	auto pAction = RepeatForever::create(Animate::create(ponA));
 	_mySprite->runAction(action);
+	_ponSprite->runAction(pAction);
 }
 
 void CharacterAnimation::stopAnimation()
@@ -222,28 +275,36 @@ void CharacterAnimation::startAnimation(eDIR dirName)
 {
 	if (_movedAnim && _dir == dirName) return;
 	_mySprite->stopAllActions();
+	_ponSprite->stopAllActions();
 	_dir = dirName;
 	_movedAnim = true;
 	Animation* anim;
+	Animation* ponA;
 	switch (dirName)
 	{
 	case eDIR::FRONT:
 		anim = _animationChache->animationByName("FRONT");
+		ponA = _animationChache->animationByName("P_FRONT");
 		break;
 	case eDIR::BACK:
 		anim = _animationChache->animationByName("BACK");
+		ponA = _animationChache->animationByName("P_BACK");
 		break;
 	case eDIR::LEFT:
 		anim = _animationChache->animationByName("LEFT");
+		ponA = _animationChache->animationByName("P_LEFT");
 		break;
 	case eDIR::RIGHT:
 		anim = _animationChache->animationByName("RIGHT");
+		ponA = _animationChache->animationByName("P_RIGHT");
 		break;
 	default:
 		break;
 	}
 	auto action = RepeatForever::create(Animate::create(anim));
+	auto pAction = RepeatForever::create(Animate::create(ponA));
 	_mySprite->runAction(action);
+	_ponSprite->runAction(pAction);
 }
 
 void CharacterAnimation::startAnimation()
@@ -255,6 +316,7 @@ void CharacterAnimation::startAnimation()
 void CharacterAnimation::stopAction()
 {
 	_mySprite->stopAllActions();
+	_ponSprite->stopAllActions();
 }
 
 Sprite* CharacterAnimation::getSp()
@@ -272,6 +334,15 @@ void CharacterAnimation::setDelay(float delayTime)
 	_animationChache->animationByName("STOP_B")->setDelayPerUnit(delayTime);
 	_animationChache->animationByName("STOP_R")->setDelayPerUnit(delayTime);
 	_animationChache->animationByName("STOP_L")->setDelayPerUnit(delayTime);
+
+	_animationChache->animationByName("P_FRONT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_BACK")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_RIGHT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_LEFT")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_STOP_F")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_STOP_B")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_STOP_R")->setDelayPerUnit(delayTime);
+	_animationChache->animationByName("P_STOP_L")->setDelayPerUnit(delayTime);
 }
 
 float CharacterAnimation::getDelay()
@@ -282,4 +353,9 @@ float CharacterAnimation::getDelay()
 void CharacterAnimation::setDir(Vec2 dir)
 {
 	changeAnimation(dir);
+}
+
+Sprite* CharacterAnimation::getPon()
+{
+	return _ponSprite;
 }
