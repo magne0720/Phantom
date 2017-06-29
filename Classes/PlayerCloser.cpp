@@ -144,10 +144,6 @@ void PlayerCloser::startRobot()
 {
 		rightRobot->moveTimer = 0;
 		leftRobot->moveTimer = 0;
-		rightRobot->isStandby = false;
-		leftRobot->isStandby = false;
-		rightRobot->isStart = true;
-		leftRobot->isStart = true;
 		moveLineRight->clear();
 		moveLineLeft->clear();
 		rightRobot->moveStartPosition();
@@ -177,7 +173,7 @@ void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event)
 	}
 	if (delayTimer >= 2.0f)
 	{
-		if (rightRobot->isMove&&leftRobot->isMove)
+		if (rightRobot->isMove||leftRobot->isMove)
 		{
 			isRobotMoving = true;
 			delayTimer = 0;

@@ -83,12 +83,6 @@ void GameManager::update(float delta)
 		break;
 	case PLAY:
 		//ƒvƒŒƒCƒ„[‚Ì‹O“¹‚ðŒˆ‚ß‚Ä‚¢‚éŽž
-		//if (map->robot->rightRobot->isMoveWait || map->robot->leftRobot->isMoveWait)
-		//{
-		//	StayCloseMessage();
-		//	timer = 0;
-		//	break;
-		//}
 		timer += 1.0f / 60.0f;
 		{
 			if (timer > 8.0f)
@@ -248,7 +242,7 @@ bool GameManager::startAnimation()
 {
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("Game/Player/StartLogo.png");
+		Sprite* sp = Sprite::create("Game/Message/Start.png");
 		sp->setPosition(designResolutionSize*0.5f);
 		addChild(sp);
 		RotateBy* rTo = RotateBy::create(1, 360);

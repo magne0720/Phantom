@@ -1,10 +1,10 @@
 #include "CutParticle.h"
 
 
-CutSingle* CutSingle::create(String* name,float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
+CutSingle* CutSingle::create(string name,float scaletimer, float decaytimer, float emissionrotate)
 {
 	CutSingle *pRet = new CutSingle();
-	if (pRet && pRet->init(name, scaletimer, decaytimer, emissionrotate, isSprite))
+	if (pRet && pRet->init(name, scaletimer, decaytimer, emissionrotate))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -17,7 +17,7 @@ CutSingle* CutSingle::create(String* name,float scaletimer, float decaytimer, fl
 	};
 };
 
-bool CutSingle::init(String* name,float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
+bool CutSingle::init(string name,float scaletimer, float decaytimer, float emissionrotate)
 {
 	if (!Node::init())return false;
 
@@ -27,11 +27,7 @@ bool CutSingle::init(String* name,float scaletimer, float decaytimer, float emis
 
 	//emissionRotate = rand() % 360;
 
-	if (isSprite)
-	{
-
-	}
-	mySprite = Sprite::create("slash.png");
+	mySprite = Sprite::create(name);
 	addChild(mySprite);
 
 	isEnd = false;
@@ -65,7 +61,7 @@ void CutSingle::update(float delta)
 	}
 };
 
-CutParticle* CutParticle::create(String* name,int num,float scaleMax, Color4F baseColor)
+CutParticle* CutParticle::create(string name,int num,float scaleMax, Color4F baseColor)
 {
 	CutParticle *pRet = new CutParticle();
 	if (pRet && pRet->init(name,num,scaleMax,baseColor))
@@ -81,7 +77,7 @@ CutParticle* CutParticle::create(String* name,int num,float scaleMax, Color4F ba
 	};
 };
 
-bool CutParticle::init(String* name,int num,float scale, Color4F baseColor)
+bool CutParticle::init(string name,int num,float scale, Color4F baseColor)
 {
 	if (!Node::init())return false;
 

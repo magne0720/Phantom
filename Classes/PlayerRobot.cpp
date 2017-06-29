@@ -35,8 +35,8 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	setDoubtDgree(150.0f);
 	checkTime = 120.0f;
 
-	initWithFileCenter("Character/TitleAnim.png", Size(250, 250));
-	initWithFileCenterB("Character/TitleAnim_Normal.png", Size(250, 250));
+	initWithFileCenter("Character/GameAnim.png", Size(200, 200));
+	initWithFileCenterB("Character/GameAnim.png", Size(200, 200));
 	
 	messageSp = Sprite::create("Game/Player/Stop.png");
 	messageSp->setPosition(Vec2(0, myPosition.y + 50));
@@ -51,9 +51,9 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	isStandby = false;
 	setState(STATUS::STAND);
 
-	goalPa = CutParticle::create(String::create("Game/Player/Goal.png"),20,1, col);
+	goalPa = CutParticle::create("Game/Player/Goal.png",20,1, col);
 	//goalPa->set
-	addChild(goalPa);
+	addChild(goalPa,10);
 
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GREEN);
 
@@ -65,6 +65,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
+	log("type=%d", (int)myState);
 		moveTimer+=1.0*gameSpeed;
 		switch (myState)
 		{
@@ -138,6 +139,7 @@ void PlayerRobot::stopPosition()
 	angles.clear();
 	
 	isMove = false;
+	isStandby= false;
 	targetPosition = myPosition;
 	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::BLACK);
 	angleNum = 0;

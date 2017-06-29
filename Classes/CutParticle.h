@@ -6,12 +6,13 @@
 
 USING_NS_CC;
 
+using namespace std;
 
 class CutSingle :public Node 
 {
 public:
-	static CutSingle* create(String* name,float scaletimer, float decaytimer=1.0f, float emissionrotate=0, bool isSprite = false);
-	bool init(String* name,float scaletimer, float decaytimer, float emissionrotate,bool isSprite);
+	static CutSingle* create(string name,float scaletimer, float decaytimer=1.0f, float emissionrotate=0);
+	bool init(string name,float scaletimer, float decaytimer, float emissionrotate);
 	void update(float delta);
 	//各パラメータ
 	//---------------------------------------------------------------------------
@@ -34,8 +35,8 @@ public:
 class CutParticle :public Node
 {
 public:
-	static CutParticle* create(String* name,int num,float scale, Color4F baseColor = Color4F::WHITE);
-	bool init(String* name,int num,float scale, Color4F baseColor = Color4F::WHITE);
+	static CutParticle* create(string name,int num,float scale, Color4F baseColor = Color4F::WHITE);
+	bool init(string name,int num,float scale, Color4F baseColor = Color4F::WHITE);
 	void update(float delta);
 	void createParticle();
 	void startParticle();
@@ -46,7 +47,7 @@ public:
 	Vec2 fromPosition;
 	Vec2 toPosition;
 	//パーティクルの画像の名前
-	String* spriteName;
+	string spriteName;
 	//パーティクルの生成数
 	int absoluteNumber;
 	//大きさ
