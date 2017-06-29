@@ -44,7 +44,7 @@ bool GameManager::init(int num)
 	isGoalAnimation = false;
 	gameState = GAMESTATE::SANDBY;
 
-	messageSp = Sprite::create("MessageBox_0.png");
+	messageSp = Sprite::create("Game/Message/MessageBox_0.png");
 	messageSp->setPosition(Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
 	messageSp->setOpacity(230);
 	messageSp->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
@@ -57,7 +57,7 @@ bool GameManager::init(int num)
 	Color4F col = Color4F(user->loadPlayerColor());
 	for (int i = 0; i < playerLife; i++) 
 	{
-		Sprite* sp = Sprite::create("life.png");
+		Sprite* sp = Sprite::create("Game/Message/Life.png");
 		sp->setColor(Color3B(col.r, col.g, col.b));
 		sp->setOpacity(127);
 		addChild(sp);
@@ -91,7 +91,7 @@ void GameManager::update(float delta)
 		//}
 		timer += 1.0f / 60.0f;
 		{
-			if (timer > 6.0f)
+			if (timer > 8.0f)
 			{
 				if (messageSp->getTag() == 0)
 				{
@@ -173,10 +173,6 @@ void GameManager::dispLife(int life,int max)
 	for (int i = 0; i < max; i++) 
 	{
 		lifeSps.at(i)->setPosition(Vec2(designResolutionSize.width*0.1f*i+100, designResolutionSize.height*0.9f));
-		if (i >= life) 
-		{
-			lifeSps.at(i)->setTexture("life_no.png");
-		}
 	}
 };
 
@@ -228,7 +224,7 @@ bool GameManager::standbyAnimation()
 {
 	if (timer == 0) 
 	{
-		Sprite* sp = Sprite::create("StartLogo.png");
+		Sprite* sp = Sprite::create("Game/Message/Start.png");
 		sp->setPosition(designResolutionSize*0.5f);
 		addChild(sp);
 		RotateBy* rTo = RotateBy::create(1, 360);
@@ -252,7 +248,7 @@ bool GameManager::startAnimation()
 {
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("StartLogo.png");
+		Sprite* sp = Sprite::create("Game/Player/StartLogo.png");
 		sp->setPosition(designResolutionSize*0.5f);
 		addChild(sp);
 		RotateBy* rTo = RotateBy::create(1, 360);
@@ -296,7 +292,7 @@ bool GameManager::missAnimation()
 {
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("MissLogo.png");
+		Sprite* sp = Sprite::create("Game/Message/MissLogo.png");
 		sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*1.2f));
 		addChild(sp);
 
@@ -318,7 +314,7 @@ void GameManager::StayShowMessage(int num)
 {
 	if (messageSp->getTag() != 0) 
 	{
-		String* name = String::createWithFormat("MessageBox_%d.png", num);
+		String* name = String::createWithFormat("Game/Message/MessageBox_%d.png", num);
 		messageSp->setTexture(name->getCString());
 		messageSp->stopAllActions();
 		MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*0.1f));

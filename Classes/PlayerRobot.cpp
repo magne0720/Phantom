@@ -38,7 +38,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	initWithFileCenter("Character/TitleAnim.png", Size(250, 250));
 	initWithFileCenterB("Character/TitleAnim_Normal.png", Size(250, 250));
 	
-	messageSp = Sprite::create("PlayerStop.png");
+	messageSp = Sprite::create("Game/Player/Stop.png");
 	messageSp->setPosition(Vec2(0, myPosition.y + 50));
 	messageSp->setVisible(false);
 	addChild(messageSp,25);
@@ -51,7 +51,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	isStandby = false;
 	setState(STATUS::STAND);
 
-	goalPa = CutParticle::create(20,1, col);
+	goalPa = CutParticle::create(String::create("Game/Player/Goal.png"),20,1, col);
 	//goalPa->set
 	addChild(goalPa);
 
@@ -69,39 +69,33 @@ void PlayerRobot::plusAction()
 		switch (myState)
 		{
 		case STATUS::STAND:
-			log("stand");
 			if (moveTimer > checkTime / 2)
 			{
 				moveTimer = 0;
 				if (isMove) {
-					log("next");
 					if (angles.size() > angleNum)
 					{
 						nextPosition();
 					}
-					else 
+					else
 					{
 						stopPosition();
 					}
 				}
+			}
 			break;
 		case STATUS::MOVE:
 			//一コマ分移動したら
-			log("move");
-			}
 			if (onCollision(targets.at(0)->myPosition, moveRange))
 			{
 				findPosition();
 			}
 			break;
 		case STATUS::STOP:
-			log("stop");
 			break;
 		case STATUS::FIND:
-			log("find");
 			break;
 		default:
-			log("default");
 			break;
 		}
 		//mySprite->setScale((moveTimer/checkTime)+0.5f);
@@ -114,7 +108,6 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 	//cosθの値
 	float seta = acos(dot(from,to)/(length(from)*length(to)));
 	seta = ragToDeg(seta);
-	////log("seta=%f", seta);
 	//右か左か
 	if (cross(from, to) < 0) {
 	seta = -seta;
@@ -182,21 +175,8 @@ void PlayerRobot::stopAnimation()
 
 void PlayerRobot::findAnimation() 
 {
-	/*messageSp->setVisible(true);
-	messageSp->setTexture("PlayerGoal.png");
-*/
-
 	goalPa->setLine(Vec2(-50, 0), Vec2(50, 0));
 	goalPa->startParticle();
-
-	/*ScaleTo* scaleIn = ScaleTo::create(0.5f, 2);
-	RotateTo* rotateIn = RotateTo::create(0.5f, 15);
-	Spawn* spawnIn = Spawn::createWithTwoActions(scaleIn, rotateIn);
-	ScaleTo* scaleOut = ScaleTo::create(0.5f, 1);
-	RotateTo* rotateOut = RotateTo::create(0.5f, 0);
-	Spawn* spawnOut = Spawn::createWithTwoActions(scaleOut, rotateOut);
-
-	messageSp->runAction(Sequence::create(spawnIn, spawnOut, nullptr));*/
 };
 
 //プレイヤーの操作が異なるので仮想化

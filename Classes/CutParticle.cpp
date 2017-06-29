@@ -1,10 +1,10 @@
 #include "CutParticle.h"
 
 
-CutSingle* CutSingle::create(float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
+CutSingle* CutSingle::create(String* name,float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
 {
 	CutSingle *pRet = new CutSingle();
-	if (pRet && pRet->init( scaletimer, decaytimer, emissionrotate, isSprite))
+	if (pRet && pRet->init(name, scaletimer, decaytimer, emissionrotate, isSprite))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -17,7 +17,7 @@ CutSingle* CutSingle::create(float scaletimer, float decaytimer, float emissionr
 	};
 };
 
-bool CutSingle::init(float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
+bool CutSingle::init(String* name,float scaletimer, float decaytimer, float emissionrotate, bool isSprite)
 {
 	if (!Node::init())return false;
 
@@ -65,10 +65,10 @@ void CutSingle::update(float delta)
 	}
 };
 
-CutParticle* CutParticle::create(int num,float scaleMax, Color4F baseColor)
+CutParticle* CutParticle::create(String* name,int num,float scaleMax, Color4F baseColor)
 {
 	CutParticle *pRet = new CutParticle();
-	if (pRet && pRet->init(num,scaleMax,baseColor))
+	if (pRet && pRet->init(name,num,scaleMax,baseColor))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -81,12 +81,14 @@ CutParticle* CutParticle::create(int num,float scaleMax, Color4F baseColor)
 	};
 };
 
-bool CutParticle::init(int num,float scale, Color4F baseColor)
+bool CutParticle::init(String* name,int num,float scale, Color4F baseColor)
 {
 	if (!Node::init())return false;
 
 	fromPosition = Vec2(0, 0);
 	toPosition = Vec2(0, 0);
+
+	spriteName = name;
 
 	scaleMax = scale;
 	absoluteNumber = num;
@@ -111,7 +113,7 @@ void CutParticle::update(float delta)
 	{
 		if (cuts.size() < absoluteNumber)
 		{
-			CutSingle* b = CutSingle::create(scaleMax);
+			CutSingle* b = CutSingle::create(spriteName,scaleMax);
 			addChild(b);
 			b->setPosition(getRandoLine(random<float>(1, 100) / 100));
 			cuts.pushBack(b);
@@ -125,11 +127,11 @@ void CutParticle::createParticle()
 	cuts.clear();
 	for (int i = 0; i < absoluteNumber; i++)
 	{
-		CutSingle* b = CutSingle::create(scaleMax);
+		CutSingle* b = CutSingle::create(spriteName,scaleMax);
 		addChild(b);
 		b->setPosition(getRandoLine((float)i/(float)absoluteNumber));
 		cuts.pushBack(b);
-		CutSingle* a = CutSingle::create(scaleMax);
+		CutSingle* a = CutSingle::create(spriteName,scaleMax);
 		addChild(a);
 		a->setPosition(getRandoLine((float)(absoluteNumber-i)/(float)absoluteNumber));
 		cuts.pushBack(a);

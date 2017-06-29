@@ -40,7 +40,7 @@ bool Wall::init(Rect rect, Color4F fillColor, Color4F segmentColor)
 
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/walldust.mp3");
 
-	particle = CutParticle::create(20,1);
+	particle = CutParticle::create(String::create("Game/Wall/slash.png"),20,1);
 	addChild(particle,60);
 
 	Sprite* sp = Sprite::create();
@@ -89,7 +89,7 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	if (!Node::init())return false;
 
 
-	particle = CutParticle::create(20,1);
+	particle = CutParticle::create(String::create("Game/Wall/Slash.png"),20,1);
 	addChild(particle, 60);
 
 	Sprite* sp = Sprite::create();
@@ -374,7 +374,7 @@ void Wall::checkCutArea(Vec2* points)
 
 		rebuildingArea(points, 1);
 
-		Sprite* sp = Sprite::create("WallCritical.png");
+		Sprite* sp = Sprite::create("Game/Wall/Critical.png");
 		sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.7f));
 		sp->setColor(Color3B(cutedColor.r*255.0f,cutedColor.g*255.0f,cutedColor.b*255.0f));
 		sp->setScale(0);
@@ -421,7 +421,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	myWall->drawPolygon(&vecs[0], corner, Color4F::RED, 4, Color4F::WHITE);
 
 	clipp->setStencil(myWall);
-	log("segment=%d", segmentCount);
+	//log("segment=%d", segmentCount);
 	segmentCount = corner;
 };
 
