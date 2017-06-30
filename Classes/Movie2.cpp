@@ -1,6 +1,8 @@
 #include "Movie2.h"
 #include "AllTags.h"
 #include "ColorEnum.h"
+#include "Movie3.h"
+#include "SaveData.h"
 
 using namespace cocos2d;
 
@@ -8,18 +10,33 @@ bool Movie2::init()
 {
 	if (!Layer::init()) return false;
 
+	SaveData* save = SaveData::create();
+	save->AllResset();
+
 	auto entrance = Sprite::create("Movie/Entrance.png");
 	entrance->setPosition(designResolutionSize*0.5f);
 	this->addChild(entrance);
 
 	_charAnim = CharacterAnimation::create("Character/TitleAnim_Body.png", "Character/TitleAnim_Head.png", Size(250, 250));
-	_charAnim->startAnimation(DIR::BACK);
+	_charAnim->stopAnimation(DIR::BACK);
 	_charAnim->setScale(3.0f);
 	_charAnim->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.18f);
 	this->addChild(_charAnim);
 
-	auto scale = ScaleTo::create(5.0f, 0.0f);
-	_charAnim->runAction(scale);
+	auto delay = DelayTime::create(5.0f);
+	auto call = CallFunc::create([&]() {
+		_charAnim->startAnimation(DIR::BACK);
+	});
+	auto scale = ScaleTo::create(5.0f, 1.0f);
+	auto move1 = MoveTo::create(5.0f, Vec2(designResolutionSize.width * 0.5f, designResolutionSize.height * 0.05f));
+	auto spa = Spawn::create(scale, move1, NULL);
+	auto call0 = CallFunc::create([&]() {
+		auto scene = Movie3::createScene();
+		auto transition = TransitionFade::create(2.0f, scene);
+		Director::getInstance()->replaceScene(transition);
+	});
+	auto seq = Sequence::create(delay, call, spa, call0, NULL);
+	_charAnim->runAction(seq);
 
 	return true;
 }
