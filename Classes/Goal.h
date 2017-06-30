@@ -14,6 +14,8 @@ private:
 	DrawNode* draw;
 	Color4F myColor;
 	bool* isGoal;
+	Sprite* mySprite;
+	Sprite* mask;
 public:
 	static Goal* create(Vec2 spawnPos,Color4F color);
 	virtual bool init(Vec2 spawnPos,Color4F color);

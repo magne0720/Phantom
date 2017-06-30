@@ -11,7 +11,7 @@ using namespace CocosDenshion;
 #define PLAYER_AI 0
 #define PLAYER_HANSOME 1
 #define MASS_SIZE 50
-#define MOVE_MAX 15
+#define MOVE_MAX 12
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1200);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);

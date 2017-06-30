@@ -83,14 +83,7 @@ void PlayerCloser::update(float delta)
 	{
 		isGoal = true;
 	}
-	if (rightRobot->angles.size() == 0)
-	{
-		moveLineRight->clear();
-	}
-	if (leftRobot->angles.size() == 0)
-	{
-		moveLineLeft->clear();
-	}
+
 	drawMoveLineRight();
 	drawMoveLineLeft();
 
@@ -103,6 +96,7 @@ void PlayerCloser::drawMoveLineRight()
 {
 	Vec2 start=rightRobot->startPosition, end;
 	moveLineRight->clear();
+	if (rightRobot->isStart)return;
 	for (int i =0; i < rightRobot->angles.size(); i++) 
 	{
 		end = getDirectionDegree(Vec2(1,0), rightRobot->angles.at(i),rightRobot->doubtDegree)+start;
@@ -110,7 +104,10 @@ void PlayerCloser::drawMoveLineRight()
 		if (i >= rightRobot->angleNum) 
 		{
 			//タッチした位置から前回の位置
-			moveLineRight->drawSegment(end, start, 5, Color4F::BLACK);
+		//	moveLineRight->drawSegment(end, start, 6, Color4F::WHITE);
+			moveLineRight->drawSegment(end, start, 5, 
+				Color4F((float)i / (float)rightRobot->angles.size(), (float)i / (float)rightRobot->angles.size(), (float)i / (float)rightRobot->angles.size(), 1));
+
 			//前回の位置から前々回の位置
 			//moveLineRight->drawSegment(rightRobot->endPosition, rightRobot->startPosition, 3, Color4F::BLACK);
 		}
@@ -124,6 +121,7 @@ void PlayerCloser::drawMoveLineLeft()
 {
 	Vec2 start = leftRobot->startPosition, end = Vec2(1, 0);
 	moveLineLeft->clear();
+	if (leftRobot->isStart)return;
 	for (int i = 0; i < leftRobot->angles.size(); i++)
 	{
 		end = getDirectionDegree(Vec2(1, 0), leftRobot->angles.at(i), leftRobot->doubtDegree) + start;
@@ -131,7 +129,9 @@ void PlayerCloser::drawMoveLineLeft()
 		if (i >= leftRobot->angleNum)
 		{
 			//タッチした位置から前回の位置
-			moveLineLeft->drawSegment(end, start, 5, Color4F::BLACK);
+		//	moveLineLeft->drawSegment(end, start, 6, Color4F::WHITE);
+			moveLineLeft->drawSegment(end, start, 5,
+				Color4F((float)i / (float)leftRobot->angles.size(), (float)i / (float)leftRobot->angles.size(), (float)i / (float)leftRobot->angles.size(),1));
 			//前回の位置から前々回の位置
 			//moveLineLeft->drawSegment(leftRobot->endPosition, leftRobot->startPosition, 3, Color4F::BLACK);
 		}

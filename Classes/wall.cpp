@@ -105,9 +105,8 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	addChild(debug, 51);
 
 	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
-	myWall->drawSegment(points[0], points[2], 5, Color4F::WHITE);
-	myWall->drawSegment(points[1], points[3], 5, Color4F::WHITE); 
-
+	//myWall->drawSegment(points[0], points[2], 5, Color4F::WHITE);
+	//myWall->drawSegment(points[1], points[3], 5, Color4F::WHITE); 
 
 
 	myWall->setPosition(-getPosition());
@@ -147,7 +146,7 @@ void Wall::update(float delta)
 			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
 		}
 		else {
-			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, 255, 255, 1));
+			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
 		}
 	}
 };
@@ -416,7 +415,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 		vecs.push_back(points[i]);
 	}
 	myWall->clear();
-	myWall->drawPolygon(&vecs[0], corner, Color4F::RED, 4, Color4F::WHITE);
+	myWall->drawPolygon(&vecs[0], corner, Color4F::BLACK, 4, Color4F::WHITE);
 
 	clipp->setStencil(myWall);
 	//log("segment=%d", segmentCount);
