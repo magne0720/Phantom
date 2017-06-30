@@ -298,7 +298,7 @@ void GameManager::checkGoalSprite()
 	case eColor::GREEN://‘‘S”Ê
 	{
 		spSrc = Sprite::create("Game/Clear/Green.png");
-		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spSrc->setScaleY(0);
 		addChild(spSrc);
@@ -306,7 +306,7 @@ void GameManager::checkGoalSprite()
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
 				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
 		spMask = Sprite::create("Game/Clear/Green_mask.png");
-		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
 		spMask->setScaleY(0);
@@ -329,7 +329,7 @@ void GameManager::checkGoalSprite()
 	case eColor::BROWN://–Ø‚ÌŠ²
 	{
 		spSrc = Sprite::create("Game/Clear/Brown.png");
-		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spSrc->setScaleY(0);
 		addChild(spSrc);
@@ -337,7 +337,7 @@ void GameManager::checkGoalSprite()
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
 				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
 		spMask = Sprite::create("Game/Clear/Brown_mask.png");
-		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
 		spMask->setScaleY(0);
