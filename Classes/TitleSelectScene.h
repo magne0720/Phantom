@@ -6,6 +6,7 @@
 #include "TitleLayer.h"
 #include "AllTags.h"
 #include "SaveData.h"
+#include "SoundSystem.h"
 
 class TitleSelectScene : public cocos2d::Scene
 {
@@ -21,11 +22,12 @@ public:
 	bool _replaceLayer;
 	cocos2d::Sprite* _fadeSp;
 	SaveData* _saveData;
+	SoundSystem* _soundSystem;
+	bool _isTitleBGM = false;
 
 private:
 	cocos2d::Sprite* createFadeRect(cocos2d::Sprite*);
 	void replace(bool toTitle, cocos2d::Color4F color = cocos2d::Color4F::WHITE);
-	bool starReset(TIME_ZONE timeZone);
 
 	cocos2d::Node* _layer;	
 

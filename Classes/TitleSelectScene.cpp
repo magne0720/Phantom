@@ -1,5 +1,4 @@
 #include "TitleSelectScene.h"
-#include "SoundSystem.h"
 #include "ColorEnum.h"
 
 using namespace cocos2d;
@@ -10,9 +9,9 @@ bool TitleSelectScene::init()
 
 	_replaceLayer = false;
 
-	auto soundSystem = SoundSystem::create();
-	this->addChild(soundSystem);
-	soundSystem->playBGM("Sounds/TitleBGM.mp3");
+	_soundSystem = SoundSystem::create();
+	this->addChild(_soundSystem);
+	_soundSystem->preloadBGM("Sounds/TitleBGM.mp3");
 
 	_saveData = SaveData::create();
 	this->addChild(_saveData);
@@ -51,6 +50,8 @@ bool TitleSelectScene::init()
 TitleSelectScene* TitleSelectScene::createTitleScene()
 {
 	TitleSelectScene* scene = TitleSelectScene::create();
+	scene->_soundSystem->playBGM("Sounds/TitleBGM.mp3");
+	scene->_isTitleBGM = true;
 	auto layer = TitleLayer::create(scene->_saveData);
 	scene->addChild(layer);
 	return scene;
@@ -112,6 +113,12 @@ void TitleSelectScene::replace(bool toTitle, Color4F color)
 		callFunc = CallFunc::create([&]() {
 			this->removeChild(_layer, true);
 			auto scene = TitleLayer::create(_saveData);
+			if (!_isTitleBGM)
+			{
+				_soundSystem->playBGM("Sounds/TitleBGM.mp3");
+				_isTitleBGM = true;
+			}		
+			
 			this->addChild(scene);
 		});
 	}
