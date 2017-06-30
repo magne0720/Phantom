@@ -95,11 +95,9 @@ bool PictureManager::init(SaveData* saveData)
 
 		basePos.y = designResolutionSize.height*0.5f;
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
-		int j;
-		if (_clearedStage < _MAX_STAGE - 1) j = _clearedStage + 1;
-		else if (_clearedStage == _MAX_STAGE - 1) j = _clearedStage;
+		if (_clearedStage == _MAX_STAGE - 1) pictureNum = _clearedStage + 1;
 		
-		for (int i = _LINE_MAX; i <= j; i++)
+		for (int i = _LINE_MAX; i < pictureNum; i++)
 		{
 			if (i > _clearedStage) _pictures[i] = Picture::create(i, false);
 			else _pictures[i] = Picture::create(i, true);
