@@ -16,9 +16,9 @@ public:
 	float _timer = 0.0f;
 	int _dir = 1;
 
-	float _SWITCH_TIME = 0.6f;
+	float _SWITCH_TIME = 0.5f;
 	float _MIN_SCALE = 1.0f;
-	float _MAX_SCALE = 1.2f;
+	float _MAX_SCALE = 1.5f;
 
 	cocos2d::Sprite* _shadow;
 };

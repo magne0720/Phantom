@@ -11,8 +11,8 @@ public:
 	int _stageID;
 	cocos2d::Color3B _defaultColor;
 
-	bool init(int id);
-	static Picture* create(int id);
+	bool init(int id, bool cleared);
+	static Picture* create(int id, bool cleared);
 
 	void setPos(cocos2d::Vec2 pos);
 	cocos2d::Vec2 getPos();

@@ -28,7 +28,8 @@ bool SelectBackground::init(Color4F color)
 	ParticleSystemQuad* p = ParticleSystemQuad::create("Select/SelectBack.plist");
 	p->setPosition(designResolutionSize*0.5f);
 	p->setPosVar(designResolutionSize*0.5f);
-	p->setStartColor(color);
+	p->setStartColor(Color4F(color.r,color.g,color.b,1));
+	p->setEndColor(Color4F(color.r, color.g, color.b, 0.5f));
 	p->setStartSpin(0.0f);
 	p->setStartSpinVar(0.0f);
 	p->setEmissionRate(0.00010417 * (designResolutionSize.width*designResolutionSize.height));

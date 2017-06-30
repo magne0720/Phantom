@@ -52,10 +52,16 @@ bool SelectLayer::init(SaveData* saveData)
 	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+	Sprite* back = Sprite::create("Select/SelectBackground.png");
+	back->setGlobalZOrder(-2);
+	back->setPosition(designResolutionSize*0.5f);
+	this->addChild(back);
+
 	PictureManager* pictureManager = PictureManager::create(saveData);
 	this->addChild(pictureManager);
 
 	_saveData = saveData;
+
 	SelectBackground* selectBackground = SelectBackground::create(Color4F(getColorCode(_saveData->loadLastClear())));
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
@@ -80,10 +86,16 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	listener->onTouchEnded = CC_CALLBACK_2(SelectLayer::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
+	Sprite* back = Sprite::create("Select/SelectBackground.png");
+	back->setGlobalZOrder(-2);
+	back->setPosition(designResolutionSize*0.5f);
+	this->addChild(back);
+
 	PictureManager* pictureManager = PictureManager::create(saveData);
 	this->addChild(pictureManager);
 
 	_saveData = saveData;
+
 	SelectBackground* selectBackground = SelectBackground::create(color);
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);

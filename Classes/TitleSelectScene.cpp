@@ -35,9 +35,11 @@ bool TitleSelectScene::init()
 		_saveData->saveLookedSky(false);
 		break;
 	case static_cast<int>(eColor::YELLOW) :
-		if(_saveData->loadTimeZone()==TIME_ZONE::EVENING || _saveData->loadTimeZone()==TIME_ZONE::NIGHT)
+		if (_saveData->loadTimeZone() == TIME_ZONE::EVENING || _saveData->loadTimeZone() == TIME_ZONE::NIGHT)
+		{
 			_saveData->saveStarAppear(true);
-		_saveData->saveLookedSky(false);
+			_saveData->saveLookedSky(false);
+		}			
 		break;
 	default:
 		break;
