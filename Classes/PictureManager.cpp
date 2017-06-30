@@ -61,7 +61,7 @@ bool PictureManager::init(SaveData* saveData)
 	DrawNode *node = DrawNode::create();
 	node->setGlobalZOrder(-1);
 	
-	int pictureNum = _clearedStage + 2;	// ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
+	int pictureNum = _clearedStage + 2;	// 表示したい枚数　ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
 	if (pictureNum <= _LINE_MAX)
 	{
 		basePos.y = designResolutionSize.height*0.75f;
@@ -104,7 +104,7 @@ bool PictureManager::init(SaveData* saveData)
 			if (i > _clearedStage) _pictures[i] = Picture::create(i, false);
 			else _pictures[i] = Picture::create(i, true);
 
-			float p = 1.0f / (pictureNum - _LINE_MAX);
+			float p = 1.0f / (pictureNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);

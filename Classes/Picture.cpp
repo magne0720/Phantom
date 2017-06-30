@@ -13,7 +13,7 @@ bool Picture::init(int id, bool cleared)
 
 	String* str;
 	if(cleared) str = String::createWithFormat("Select/Cleared.png");
-	else str = String::createWithFormat("Select/NotCleared.png");
+	else str = String::createWithFormat("Select/NotClear.png");
 
 	//String* str = String::createWithFormat("Stage%f.png", id);
 	
