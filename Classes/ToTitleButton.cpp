@@ -11,7 +11,7 @@ bool ToTitleButton::init(Color3B color, bool lookedSky)
 	if (!lookedSky)
 	{
 		_shadow = Sprite::create("Select/ToTitleShadow.png");
-		_shadow->setColor(Color3B::WHITE);
+		_shadow->setColor(color);
 		_shadow->setScale(1.2f);
 		_shadow->setZOrder(-1);
 		_shadow->setPosition(this->getContentSize()*0.5f);

@@ -60,25 +60,21 @@ bool PictureManager::init(SaveData* saveData)
 	Vec2 basePos = Vec2(0,0);
 	DrawNode *node = DrawNode::create();
 	node->setGlobalZOrder(-1);
-	Color3B notClearColor = Color3B::GRAY;
 	
-	int pictureNum = _clearedStage + 2;	// ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
+	int pictureNum = _clearedStage + 2;	// 表示したい枚数　ステージ番号は0から始まっているので、+1。次のステージも表示したいので、さらに+1。
 	if (pictureNum <= _LINE_MAX)
 	{
 		basePos.y = designResolutionSize.height*0.75f;
 		drawBezier(node, 50, basePos+_bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = 0; i <= _clearedStage + 1; i++)
 		{
-			_pictures[i] = Picture::create(i);
+			if (i > _clearedStage) _pictures[i] = Picture::create(i, false);
+			else _pictures[i] = Picture::create(i, true);
+
 			float p = 1.0f / (pictureNum + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage)
-			{
-				_pictures[i]->setColor(notClearColor);
-				_pictures[i]->_defaultColor = notClearColor;
-			}
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -88,7 +84,8 @@ bool PictureManager::init(SaveData* saveData)
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = 0; i < _LINE_MAX; i++)
 		{
-			_pictures[i] = Picture::create(i);
+			if(i > _clearedStage) _pictures[i] = Picture::create(i, false);
+			else _pictures[i] = Picture::create(i, true);
 			float p = 1.0f / (_LINE_MAX + 1);
 			Vec2 b = bezier(p*(i + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
@@ -104,16 +101,13 @@ bool PictureManager::init(SaveData* saveData)
 		
 		for (int i = _LINE_MAX; i <= j; i++)
 		{
-			_pictures[i] = Picture::create(i);
-			float p = 1.0f / (pictureNum - _LINE_MAX);
+			if (i > _clearedStage) _pictures[i] = Picture::create(i, false);
+			else _pictures[i] = Picture::create(i, true);
+
+			float p = 1.0f / (pictureNum - _LINE_MAX + 1);
 			Vec2 b = bezier(p*(i - _LINE_MAX + 1), basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 			_pictures[i]->setPosition(b);
 			_pictures[i]->setPos(b);
-			if (i > _clearedStage)
-			{
-				_pictures[i]->setColor(notClearColor);
-				_pictures[i]->_defaultColor = notClearColor;
-			}
 			this->addChild(_pictures[i]);
 		}
 	}
@@ -301,7 +295,7 @@ void PictureManager::drawBezier(DrawNode* dn, int seg, Vec2 pos0, Vec2 pos1, Vec
 		vec0 = bezier(per, pos0, pos1, pos2);
 		per = f*i;
 		vec1 = bezier(per, pos0, pos1, pos2);
-		dn->drawSegment(vec0, vec1, 1, Color4F::WHITE);
+		dn->drawSegment(vec0, vec1, 5, _bazierColor);
 	}
 }
 

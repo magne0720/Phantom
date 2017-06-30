@@ -4,18 +4,24 @@
 
 using namespace cocos2d;
 
-bool Picture::init(int id)
+bool Picture::init(int id, bool cleared)
 {
 	if (!Sprite::init())
 	{
 		return false;
 	}
 
-	String* str = String::createWithFormat("Select/Frame.png");
+	String* str;
+	if(cleared) str = String::createWithFormat("Select/Cleared.png");
+	else str = String::createWithFormat("Select/NotClear.png");
+
 	//String* str = String::createWithFormat("Stage%f.png", id);
 	
 	this->initWithFile(str->getCString());
-	_defaultColor = getColorCode(id);
+
+	if(cleared) _defaultColor = getColorCode(id);
+	else _defaultColor = Color3B::GRAY;
+
 	this->setColor(_defaultColor);
 	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
@@ -37,10 +43,10 @@ bool Picture::init(int id)
 	return true;
 }
 
-Picture* Picture::create(int id)
+Picture* Picture::create(int id, bool cleared)
 {
 	Picture *pRet = new Picture();
-	if (pRet && pRet->init(id))
+	if (pRet && pRet->init(id, cleared))
 	{
 		pRet->autorelease();
 		pRet->_stageID = id;

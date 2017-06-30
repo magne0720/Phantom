@@ -11,7 +11,6 @@ public:
 	bool init(int clearedStage);
 	static TitleBackground* create(int clearedStage);
 	std::vector<cocos2d::Sprite*> _bgSprites;
-	ScrollSprite* _scSp;
 };
 
 #endif

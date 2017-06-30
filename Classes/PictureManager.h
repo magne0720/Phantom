@@ -33,6 +33,7 @@ private:
 	int _selectedStage = 0;	// 現在選択されているステージ
 	bool _areResizing;	// リサイズ中であるか
 	int _touchID;		// 現在判定しているタッチのID
+	cocos2d::Color4F _bazierColor = cocos2d::Color4F::BLACK;
 
 	cocos2d::EventListenerTouchAllAtOnce* listener;
 
