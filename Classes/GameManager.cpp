@@ -41,7 +41,6 @@ bool GameManager::init(int num)
 
 	playerCount = 5;
 	timer = 0;
-	isGoalAnimation = false;
 	gameState = GAMESTATE::SANDBY;
 
 	messageSp = Sprite::create("Game/Message/MessageBox_1.png");
@@ -65,6 +64,15 @@ bool GameManager::init(int num)
 	}
 	dispLife(playerLife,maxLife);
 
+	map->robot->rightRobot->goalPa->setParticleColor(stageColor);
+	map->robot->leftRobot->goalPa->setParticleColor(stageColor);
+
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameClear.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameStart.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/PlayerLife.mp3");
+	SimpleAudioEngine::getInstance()->playEffect("Sounds/GameStart.mp3");
+
+
 	scheduleUpdate();
 
 	return true;
@@ -72,7 +80,6 @@ bool GameManager::init(int num)
 
 void GameManager::update(float delta)
 {
-
 	if (*isGoal)gameState = GAMESTATE::CLEAR;
 	switch (gameState)
 	{
@@ -110,6 +117,8 @@ void GameManager::update(float delta)
 			{
 				StayCloseMessage();
 				timer = 0;
+				map->robot->rightRobot->isStart = true;
+				map->robot->leftRobot->isStart = true;
 				gameState = GAMESTATE::MOVE_START;
 			}
 		}
@@ -151,10 +160,7 @@ void GameManager::update(float delta)
 		break;
 	case MISS:
 		//すべての行動回数をなくしてしまった時
-		if (missAnimation()) 
-		{
-			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene());
-		}
+		missAnimation();
 		break;
 	default:
 		break;
@@ -179,6 +185,7 @@ void GameManager::dispGoal()
 		addChild(circle);
 		circle->drawDot(Vec2(0,0), map->goal->getAnimationScale()+50, map->goal->getStageColor());
 	*/
+		map->goal->setZOrder(7);
 
 		//データの保存
 		user->saveClear(map->getLevel());
@@ -201,18 +208,211 @@ void GameManager::dispGoal()
 		{
 			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
 		});
+		//音の再生
+		CallFunc* goSound = CallFunc::create([&]()
+		{
+			SimpleAudioEngine::getInstance()->playEffect("Sounds/GameClear.mp3");
+		});
+		//ステージに応じた演出
+		CallFunc* goSprite = CallFunc::create([&]()
+		{
+			checkGoalSprite();
+		});
+
+
 		DelayTime* delay = DelayTime::create(1.0f);
 		MoveTo* move = MoveTo::create(1, Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
 		ScaleTo*scale = ScaleTo::create(2, 70);
-		DelayTime* labelDelay = DelayTime::create(1.0f);
+		DelayTime* labelDelay = DelayTime::create(5.0f);
+		//クリアした色に応じたアイテム
 
-		map->goal->runAction(Sequence::create(delay, move, scale,labelDelay, goSelect, nullptr));
+
+		map->goal->runAction(Sequence::create(delay, goSound, move, scale,goSprite,labelDelay, goSelect, nullptr));
 		/*
 			RotateBy* rotate = RotateBy::create(2, 360);
 			clipp->runAction(RepeatForever::create(rotate));
 		*/
 	}
 };
+
+void GameManager::checkGoalSprite() 
+{
+	Sprite* spSrc;
+	Sprite* spMask;
+	BlendFunc negativeBlend = { GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA };
+	
+	switch ((eColor)map->getLevel())
+	{
+	case eColor::RED://花の色
+	{
+		spSrc = Sprite::create("Game/Clear/Red.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Red_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+	break;
+	case eColor::SKY://空が変化
+	{
+		spSrc = Sprite::create("Game/Clear/Sky.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.0f, designResolutionSize.height*0.5f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(MoveTo::create(2.0f,Vec2(designResolutionSize.width*2.0f,designResolutionSize.height*0.5f)), nullptr));
+	}
+		break;
+	case eColor::PURPLE://ちょうちょ
+	{
+		spSrc = Sprite::create("Game/Clear/Purple.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Purple_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+		break;
+	case eColor::GREEN://草全般
+	{
+		spSrc = Sprite::create("Game/Clear/Green.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Green_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+		break;
+	case eColor::ORANGE://空が変化
+	{
+		spSrc = Sprite::create("Game/Clear/Sky.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.0f, designResolutionSize.height*0.5f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(MoveTo::create(2.0f, Vec2(designResolutionSize.width*2.0f, designResolutionSize.height*0.5f)), nullptr));
+	}
+		break;
+	case eColor::BROWN://木の幹
+	{
+		spSrc = Sprite::create("Game/Clear/Brown.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Brown_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.2f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+		break;
+	case eColor::BLUE://ちょうちょ
+	{
+		spSrc = Sprite::create("Game/Clear/Purple.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Purple_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+		break;
+	case eColor::PINK://花の色
+	{
+		spSrc = Sprite::create("Game/Clear/Pink.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spSrc->setScaleY(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), DelayTime::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+		spMask = Sprite::create("Game/Clear/Pink_mask.png");
+		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
+		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+		spMask->setScaleY(0);
+		spMask->setScaleY(0);
+		addChild(spMask);
+		spMask->runAction(
+			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
+				Spawn::createWithTwoActions(MoveBy::create(1.0f, Vec2(0, 100)), FadeOut::create(1.0f)), nullptr));
+	}
+	break;
+	case eColor::INDIGO://空が変化
+	{
+		spSrc = Sprite::create("Game/Clear/Sky.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.0f, designResolutionSize.height*0.5f));
+		spSrc->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(MoveTo::create(2.0f, Vec2(designResolutionSize.width*2.0f, designResolutionSize.height*0.5f)), nullptr));
+	}
+		break;
+	case eColor::YELLOW://星
+	{
+		spSrc = Sprite::create("Game/Clear/Star.png");
+		spSrc->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.5f));
+		spSrc->setOpacity(0);
+		addChild(spSrc);
+		spSrc->runAction(
+			Sequence::create(FadeIn::create(2.0f),DelayTime::create(1.0f),FadeOut::create(1.0f), nullptr));
+	}
+		break;
+	default:
+		break;
+	}
+}
 
 bool GameManager::standbyAnimation() 
 {
@@ -272,7 +472,13 @@ bool GameManager::stopAnimation()
 		Spawn* sOne = Spawn::createWithTwoActions(sZoomOne, outOne);
 		ScaleTo* sZoomTwo = ScaleTo::create(0.5f, 1);
 		FadeOut* outTwo = FadeOut::create(0.1f);
-		lifeSps.at(playerLife)->runAction(Sequence::create(delay,sOne,sZoomTwo,outTwo, nullptr));
+		CallFunc* goSound = CallFunc::create([&]()
+		{
+			SimpleAudioEngine::getInstance()->playEffect("Sounds/PlayerLife.mp3");
+		}); 
+		lifeSps.at(playerLife)->runAction(Sequence::create(delay,sOne,goSound,sZoomTwo,outTwo, nullptr));
+
+	
 	}
 	if (timer > 2.5f) {
 		timer = 0;
@@ -286,22 +492,50 @@ bool GameManager::missAnimation()
 {
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("Game/Message/MissLogo.png");
+		Sprite* gray = Sprite::create();
+		gray->setColor(Color3B::GRAY);
+		gray->setTextureRect(Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+		gray->setPosition(designResolutionSize*0.5f);
+		addChild(gray);
+		BlendFunc screenBlend = { GL_ONE_MINUS_DST_COLOR, GL_ONE };
+		gray->setBlendFunc(screenBlend);
+		
+		FadeIn* fade = FadeIn::create(1.0f);
+		gray->runAction(fade);
+
+		Sprite* sp = Sprite::create("Game/Message/Miss.png");
 		sp->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*1.2f));
 		addChild(sp);
 
 		MoveTo* up = MoveTo::create(1.0f, designResolutionSize*0.5f);
 		RotateBy* ro = RotateBy::create(0.5f, -15);
 
-
 		sp->runAction(Sequence::create(up,ro, nullptr));
+
+		Button* retry = Button::create(0);
+		retry->setPosition(Vec2(designResolutionSize.width*0.3f, designResolutionSize.height*0.3f));
+		retry->stagenum = map->getLevel();
+		retry->color = Color3B(stageColor.r*255.0f,stageColor.g*255.0f,stageColor.b*255.0f);
+		retry->setOpacity(0);
+		addChild(retry);
+
+		retry->runAction(FadeIn::create(1.0f));
+
+		Button* out = Button::create(1);
+		out->setPosition(Vec2(designResolutionSize.width*0.7f, designResolutionSize.height*0.3f));
+		out->setOpacity(0);
+		addChild(out);
+
+		out->runAction(FadeIn::create(1.0f));
+
+
 	}
-	if (timer > 5.0f) {
-		timer = 0;
+	if (timer < 5.0f) {
+		timer += 1.0 / 60.0f;
+		return false;
+	}else{
 		return true;
 	}
-	timer += 1.0 / 60.0f;
-	return false;
 };
 
 void GameManager::StayShowMessage(int num)

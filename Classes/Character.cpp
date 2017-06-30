@@ -83,7 +83,6 @@ void Character::action()
 	case STOP:
 		break;
 	case FIND:
-		isMoveWait = true;
 		break;
 	case CHASE:
 		move(2.0f);
@@ -113,8 +112,7 @@ void Character::move(float plusSpeed)
 	Vec2 aPos = normalize(targetPosition - myPosition);
 
 	moveRangeSp->clear();
-	moveRangeSp->drawSegment(Vec2(0,0),targetPosition-myPosition,5,Color4F::GREEN);
-
+	
 	myPosition += aPos*moveSpeed*plusSpeed;
 	mySprite->changeAnimation(aPos);
 

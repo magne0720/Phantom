@@ -30,7 +30,8 @@ bool MainGameScene::init(int num)
 	gameLayer = gm->map->printMap();
 	addChild(gameLayer,1);
 
-
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("Sounds/GameBGM.mp3");
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("Sounds/GameBGM.mp3");
 
 	return true;
 };

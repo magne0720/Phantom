@@ -11,8 +11,8 @@ using namespace std;
 class CutSingle :public Node 
 {
 public:
-	static CutSingle* create(string name,float scaletimer, float decaytimer=1.0f, float emissionrotate=0);
-	bool init(string name,float scaletimer, float decaytimer, float emissionrotate);
+	static CutSingle* create(string name,Color4F color,float scaletimer, float decaytimer=1.0f, float emissionrotate=0);
+	bool init(string name,Color4F color,float scaletimer, float decaytimer, float emissionrotate);
 	void update(float delta);
 	//各パラメータ
 	//---------------------------------------------------------------------------
@@ -42,6 +42,7 @@ public:
 	void startParticle();
 	void stopParticle();
 	void setLine(Vec2 from, Vec2 to);
+	void setParticleColor(Color4F color);
 	Vec2 getRandoLine(float alpha);
 	//---------------------------------------------------------------------------
 	Vec2 fromPosition;
@@ -54,6 +55,8 @@ public:
 	float scaleMax;
 	//ループさせるか
 	bool isRoop;
+	//パーティクルの色
+	Color4F particleColor;
 	//---------------------------------------------------------------------------
 	Vector<CutSingle*> cuts;
 

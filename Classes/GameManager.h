@@ -5,6 +5,8 @@
 #include "MapCreator.h"
 #include "TitleSelectScene.h"
 #include "SaveData.h"
+#include "Button.h"
+#include "ColorEnum.h"
 
 USING_NS_CC;
 
@@ -29,13 +31,12 @@ public:
 
 	void dispLife(int life,int max);
 	void dispGoal();
-
+	void checkGoalSprite();
 
 
 	SaveData* user;
 	MapCreator* map;
 	bool* isGoal;
-	bool isGoalAnimation; 
 	bool isTouched;
 	Color4F stageColor;
 	GAMESTATE gameState;
