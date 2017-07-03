@@ -21,7 +21,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	if (!Node::init())return false;
 
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/move_4.mp3");
-	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/	PlayerGoal.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/PlayerGoal.mp3");
 
 	EventListenerTouchOneByOne *listener = EventListenerTouchOneByOne::create();
 	// 対象のイベントが実行された後、下位のイベントは発動されなくする

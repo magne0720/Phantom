@@ -25,11 +25,11 @@ bool Goal::init(Vec2 spawnPos,Color4F color)
 	myColor = color;
 
 
-	mySprite = Sprite::create("Game/jewel.png");
+	mySprite = Sprite::create("Game/Jewel.png");
 	mySprite->setColor(Color3B(color.r*255.0f,color.g*255.0f,color.b*255.0f));
 	addChild(mySprite);
 
-	mask = Sprite::create("Game/jewel_mask.png");
+	mask = Sprite::create("Game/Jewel_mask.png");
 	//BlendFunc addBlend = { GL_ONE_MINUS_DST_COLOR, GL_ONE };
 	mask->setColor(Color3B(color.r*255.0f,color.g*255.0f,color.b*255.0f));
 	//mask->setBlendFunc(addBlend);
