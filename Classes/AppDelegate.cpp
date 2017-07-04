@@ -79,6 +79,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	SaveData* save = SaveData::create();
 	save->startUpNum();
+	save->AllResset();
 
 	auto scene = TitleSelectScene::createTitleScene();
 	//auto scene = Movie::createScene();
