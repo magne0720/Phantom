@@ -141,6 +141,7 @@ void SaveData::AllResset()
 {
 	saveClear(-1);
 	saveGrade(-1);
+	saveLastClear(-1);
 	savePlayerColor(Color4F::WHITE);
 	saveTimeZone(TIME_ZONE::ZEROTIME);
 	saveStarAppear(false);

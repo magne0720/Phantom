@@ -3,7 +3,6 @@
 #include "HelloWorldScene.h"
 #include "TitleSelectScene.h"
 #include "SaveData.h"
-#include "Movie.h"
 
 USING_NS_CC;
 
@@ -81,7 +80,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	save->startUpNum();
 
 	auto scene = TitleSelectScene::createTitleScene();
-	//auto scene = Movie::createScene();
 
 	// run
 	director->runWithScene(scene);
