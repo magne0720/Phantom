@@ -26,6 +26,7 @@ bool WallDust::init(Vec2* vects, int segment, Color4F color)
 
 	//’¸“_À•Wİ’è
 	for (int i = 0; i < segment; i++) {
+		//log("minus-[%0.0f,%0.0f]", vects[i].x, vects[i].y);
 		myVects.push_back(vects[i]);
 	}
 	dDust= DrawNode::create();

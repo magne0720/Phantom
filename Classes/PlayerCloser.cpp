@@ -66,6 +66,7 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 void PlayerCloser::update(float delta)
 {
 
+	delayTimer += 1.0f / 60.0f;
 	if (delayTimer != 0)isRobotMoving = false;
 
 	infraredLine->clear();

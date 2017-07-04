@@ -138,16 +138,12 @@ void Wall::update(float delta)
 	if (cutTimer >= 1.0f)//ループさせる
 	{
 		cutTimer = -1.0f;
+		isCuted = false;
 	}
 	debug->clear();
 	for (int i = 0; i < segmentCount; i++)
 	{
-		if (!isCuted) {
 			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
-		}
-		else {
-			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
-		}
 	}
 };
 
@@ -206,7 +202,6 @@ void Wall::callCollision()
 		for (int i = 0; i < segmentCount+2; i++){
 			points[i] = temp[i];
 		}
-		isCuted = true;
 		checkCutArea(points);
 	}
 };
@@ -298,7 +293,11 @@ float Wall::sumArea(Vec2 points[],int point[])
 	float area = 0;
 	for (int i = 0; point[i+2] != -1; i++) 
 	{
-		area += (length(points[point[i]] - points[point[i+1]])+ length(points[point[i+1]] - points[point[i+2]])+ length(points[point[i+2]] - points[point[i]]))/2;
+		area += (
+			length(points[point[i]] - points[point[i+1]])+
+			length(points[point[i+1]] - points[point[i+2]])+ 
+			length(points[point[i+2]] - points[point[i]]))
+			/2;
 	}
 	return area;
 };
@@ -341,6 +340,9 @@ void Wall::checkCutArea(Vec2* points)
 				leftcount++;
 			}
 	}
+	//二度切ろうとするのを防止
+	if (rightcount == 0 || leftcount == 0)return;
+
 	//分割線を追加
 	right[rightcount++] = addPointNum[0];
 	right[rightcount++] = addPointNum[1];
@@ -355,10 +357,13 @@ void Wall::checkCutArea(Vec2* points)
 
 	//面積比を見る
 	sumRight = sumArea(points, right);
+	log("sumRight=%0.0f", sumArea(points, right));
 	sumLeft = sumArea(points, left);
+	log("sumLeft=%0.0f", sumArea(points, left));
 
-	if (abs((sumRight/100)-(sumLeft/100))<=0.8f)
+	if (abs((sumRight-sumLeft))/(sumRight+sumLeft)<=0.05f)
 	{
+		//log("allCut");
 		//大きさがほぼ一緒(クリティカル) 
 
 		copyPoints(points, dustPoints, segmentCount + 2);
@@ -385,6 +390,7 @@ void Wall::checkCutArea(Vec2* points)
 	}
 	else if(sumRight> sumLeft)
 	{
+		//log("right");
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, left);
 		
@@ -395,6 +401,7 @@ void Wall::checkCutArea(Vec2* points)
 	}
 	else
 	{
+		//log("left");
 		copyPoints(points, dustPoints, segmentCount + 2);
 		sortPoints(dustPoints, right);
 	
@@ -413,18 +420,21 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	std::vector<Vec2>vecs;
 	for (int i = 0; i < corner; i++) {
 		vecs.push_back(points[i]);
+		//log("plus-[%0.0f,%0.0f]", points[i].x, points[i].y);
 	}
 	myWall->clear();
 	myWall->drawPolygon(&vecs[0], corner, Color4F::BLACK, 4, Color4F::WHITE);
 
 	clipp->setStencil(myWall);
-	//log("segment=%d", segmentCount);
 	segmentCount = corner;
+	log("segment=%d", segmentCount);
 };
 
 //切り取った後に面積を再構築する
 void Wall::rebuildingDust(Vec2 points[], int corner)
 {
+	log("dustCorner=%d", corner);
+
 	WallDust* dust = WallDust::create(points, corner, cutedColor);
 	addChild(dust);
 	//	//頂点座標設定

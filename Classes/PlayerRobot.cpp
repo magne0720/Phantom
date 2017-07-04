@@ -214,9 +214,10 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 	Vec2 touchPosition = touch->getLocation();
 	Vec2 stepPosition = myPosition;
 
-	if (myState != STATUS::FIND)
-	//画面外に出たときの処理
+	if (myState == STATUS::FIND)return;
+
 		touchPosition = touch->getLocation();
+	//画面外に出たときの処理
 	if (touch->getLocation().x > designResolutionSize.width)
 		touchPosition.x = designResolutionSize.width;
 	if (touch->getLocation().x < 0)
@@ -242,7 +243,6 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 				//軌道の保存
 				setAngle(a, b);
 				//音
-
 			}
 		}
 	}
