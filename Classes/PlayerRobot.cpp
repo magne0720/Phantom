@@ -36,7 +36,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	setDoubtDgree(150.0f);
 	checkTime = 120.0f;
 
-	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(200, 200));
+	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210));
 	mySprite->getPon()->setColor(Color3B(col.r*255.0f, col.g*255.0f, col.b*255.0f));
 
 	messageSp = Sprite::create("Game/Player/Stop.png");
@@ -117,6 +117,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 void PlayerRobot::moveStartPosition() 
 {
 	if (myState == STATUS::FIND)return;
+	if (angles.size() <= 0)return;
 	isMove = true;
 	nextPosition();
 };
