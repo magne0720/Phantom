@@ -21,6 +21,8 @@ public:
 	bool onTouchBeganP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 	void onTouchCancelledP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 	void onTouchEndedP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+
+	cocos2d::Vec2 getPicturePos(int i);
 	
 private:
 	Picture* _pictures[10];

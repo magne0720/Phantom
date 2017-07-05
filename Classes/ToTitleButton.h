@@ -11,6 +11,7 @@ public:
 	void update(float delta);
 	float adjustRange(float f);
 	float adjustOpacity(float f);
+	void startToShine();
 
 	float _volume = 0.0f;
 	float _timer = 0.0f;

@@ -343,6 +343,13 @@ void PictureManager::changeVoid(void (PictureManager::*method)(const std::vector
 	}
 }
 
+// defaultPositionŽæ“¾
+Vec2 PictureManager::getPicturePos(int i)
+{
+	if(i >= 10) return Vec2(0, 0);
+	return _pictures[i]->getPos();
+}
+
 // swap
 void PictureManager::swap(float &a, float &b)
 {

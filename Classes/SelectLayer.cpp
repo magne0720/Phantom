@@ -46,6 +46,8 @@ bool SelectLayer::init(SaveData* saveData)
 		return false;
 	}
 
+	// ƒ^ƒCƒgƒ‹‚©‚ç‚Ì‘JˆÚ—p
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(SelectLayer::onTouchBegan, this);
@@ -66,6 +68,7 @@ bool SelectLayer::init(SaveData* saveData)
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
+	
 	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
 	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
 	this->addChild(_toTitleButton);
@@ -79,6 +82,8 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	{
 		return false;
 	}
+
+	// ƒQ[ƒ€‚©‚ç‚Ì‘JˆÚ—p
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
@@ -100,9 +105,24 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 	
+	Vec2 btnPos = Vec2(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
 	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
-	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
+	_toTitleButton->setPosition(btnPos);
 	this->addChild(_toTitleButton);
+
+	if (_saveData->loadLookedSky() == false)
+	{
+		auto particle = ParticleSystemQuad::create("Select/SkyLight.plist");
+		particle->setStartColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
+		particle->setPosition(pictureManager->getPicturePos(static_cast<int>(_saveData->loadTimeZone())));
+		this->addChild(particle);
+		auto move = MoveTo::create(3.0f, btnPos);
+		auto call = CallFunc::create([&]() {
+			_toTitleButton->startToShine();
+		});
+		auto seq = Sequence::create(move, call, NULL);
+		particle->runAction(seq);
+	}
 
 	// “h‚è‚Â‚Ô‚µ‚½‰~i‘å‚«‚È“_j
 	_dot = DrawNode::create();
@@ -110,7 +130,7 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	_dot->setPosition(designResolutionSize*0.5f);
 	this->addChild(_dot);
 
-	auto scale = ScaleTo::create(1.5f, 0.0f);
+	auto scale = ScaleTo::create(1.0f, 0.0f);
 	auto easeIn = EaseSineIn::create(scale);
 	auto call = CallFunc::create([&]() {
 		_dot->removeFromParentAndCleanup(true);
