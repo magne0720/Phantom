@@ -117,6 +117,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 void PlayerRobot::moveStartPosition() 
 {
 	if (myState == STATUS::FIND)return;
+	if (angles.size() <= 0)return;
 	isMove = true;
 	nextPosition();
 };

@@ -333,7 +333,7 @@ Layer* MapCreator::printMap()
 	log("printStart\n--------------------------------------");
 	Layer* layer = Layer::create();
 	log("Character\n--------------------------------------");
-	layer->addChild(robot, 5);
+	layer->addChild(robot, 4);
 	log("Goal");
 	robot->rightRobot->setTarget(goal);
 	robot->leftRobot->setTarget(goal);
