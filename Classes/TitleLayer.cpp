@@ -12,6 +12,9 @@ bool TitleLayer::init(SaveData* saveData)
 
 	_replacedScene = false;
 
+	// DEBUG
+	//saveData->user->setIntegerForKey("clear", 6);
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);

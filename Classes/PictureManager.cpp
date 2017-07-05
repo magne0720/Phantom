@@ -80,7 +80,7 @@ bool PictureManager::init(SaveData* saveData)
 	}
 	else
 	{
-		basePos.y = designResolutionSize.height;
+		basePos.y = designResolutionSize.height * 0.9;
 		drawBezier(node, 50, basePos + _bezierPos[0], basePos + _bezierPos[1], basePos + _bezierPos[2]);
 		for (int i = 0; i < _LINE_MAX; i++)
 		{
@@ -348,6 +348,12 @@ Vec2 PictureManager::getPicturePos(int i)
 {
 	if(i >= 10) return Vec2(0, 0);
 	return _pictures[i]->getPos();
+}
+
+// picture‚ÌƒTƒCƒYŽæ“¾
+Size PictureManager::getPictureSize()
+{
+	return _pictures[0]->getContentSize();
 }
 
 // swap

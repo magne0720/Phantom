@@ -23,10 +23,10 @@ SelectLayer* SelectLayer::create(SaveData* saveData)
 	}
 }
 
-SelectLayer* SelectLayer::create(cocos2d::Color4F color, SaveData* saveData)
+SelectLayer* SelectLayer::create(SaveData* saveData, cocos2d::Color4F color)
 {
 	SelectLayer *pRet = new SelectLayer();
-	if (pRet && pRet->init(color, saveData))
+	if (pRet && pRet->init(saveData, color))
 	{
 		pRet->autorelease();
 		return pRet;
@@ -68,6 +68,9 @@ bool SelectLayer::init(SaveData* saveData)
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
 
+	auto tapPlease = Sprite::create("Select/TapPlease.png");
+	tapPlease->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.9f);
+	this->addChild(tapPlease);
 	
 	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
 	_toTitleButton->setPosition(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
@@ -76,7 +79,7 @@ bool SelectLayer::init(SaveData* saveData)
 	return true;
 }
 
-bool SelectLayer::init(Color4F color, SaveData* saveData)
+bool SelectLayer::init(SaveData* saveData, Color4F color)
 {
 	if (!Layer::init())
 	{
@@ -104,6 +107,10 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 	SelectBackground* selectBackground = SelectBackground::create(color);
 	selectBackground->setZOrder(-1);
 	this->addChild(selectBackground);
+
+	auto tapPlease = Sprite::create("Select/TapPlease.png");
+	tapPlease->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.9f);
+	this->addChild(tapPlease);
 	
 	Vec2 btnPos = Vec2(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
 	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
@@ -112,16 +119,21 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 
 	if (_saveData->loadLookedSky() == false)
 	{
+		float delayTime = 1.0f;
+		float moveTime = 2.0f;
 		auto particle = ParticleSystemQuad::create("Select/SkyLight.plist");
 		particle->setStartColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
+		particle->setEndColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
 		particle->setPosition(pictureManager->getPicturePos(static_cast<int>(_saveData->loadTimeZone())));
+		particle->setPositionY(particle->getPosition().y - pictureManager->getPictureSize().height*0.5f);
+		particle->setDuration(delayTime+moveTime);
 		this->addChild(particle);
-		auto move = MoveTo::create(3.0f, btnPos);
+		auto delay = DelayTime::create(delayTime);
+		auto move = MoveTo::create(moveTime, btnPos);
 		auto call = CallFunc::create([&]() {
 			_toTitleButton->startToShine();
-			removeFromParentAndCleanup(true);
 		});
-		auto seq = Sequence::create(move, call, NULL);
+		auto seq = Sequence::create(delay, move, call, NULL);
 		particle->runAction(seq);
 	}
 
