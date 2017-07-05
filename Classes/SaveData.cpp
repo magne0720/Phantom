@@ -144,6 +144,7 @@ void SaveData::AllResset()
 	saveLastClear(-1);
 	savePlayerColor(Color4F::WHITE);
 	saveTimeZone(TIME_ZONE::ZEROTIME);
+	saveLookedSky(false);
 	saveStarAppear(false);
 };
 

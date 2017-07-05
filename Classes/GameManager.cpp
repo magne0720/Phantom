@@ -540,6 +540,7 @@ bool GameManager::missAnimation()
 
 void GameManager::StayShowMessage(int num)
 {
+	return;
 	if (messageSp->getTag() != 0) 
 	{
 		String* name = String::createWithFormat("Game/Message/MessageBox_%d.png", num);
@@ -553,6 +554,7 @@ void GameManager::StayShowMessage(int num)
 
 void GameManager::StayCloseMessage() 
 {
+	return;
 	if (messageSp->getTag() != 1) {
 		messageSp->stopAllActions();
 		MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));
