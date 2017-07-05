@@ -112,7 +112,7 @@ bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 
 	if (_replacedScene && ((TitleSelectScene*)this->getParent())->_replaceLayer) return false;
 	_replacedScene = true;
-	((TitleSelectScene*)this->getParent())->replaceSelect(Color4F(1.0f, 0.9490f, 0.4f, 1.0f));
+	((TitleSelectScene*)this->getParent())->replaceSelect();
 	return true;
 }
 
