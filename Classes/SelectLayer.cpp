@@ -119,6 +119,7 @@ bool SelectLayer::init(Color4F color, SaveData* saveData)
 		auto move = MoveTo::create(3.0f, btnPos);
 		auto call = CallFunc::create([&]() {
 			_toTitleButton->startToShine();
+			removeFromParentAndCleanup(true);
 		});
 		auto seq = Sequence::create(move, call, NULL);
 		particle->runAction(seq);
