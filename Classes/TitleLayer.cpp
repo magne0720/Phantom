@@ -79,6 +79,12 @@ bool TitleLayer::init(SaveData* saveData)
 	if (_saveData->loadClear() >= 0) titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
 	else titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
+	
+
+	/*label = Label::create("", "fonts/arial.ttf",120);
+	label->setTextColor(Color4B::BLACK);
+	label->setPosition(designResolutionSize*0.5f);
+	this->addChild(label);*/
 
 	return true;
 }
@@ -102,8 +108,12 @@ TitleLayer* TitleLayer::create(SaveData* saveData)
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
 	float base = 50.0f;
-	// リセット機能	
-	if (touch->getLocation().x < base && touch->getLocation().y < base)
+	// リセット機能
+	
+	/*auto str = String::createWithFormat("%f, %f", touch->getLocation().x, touch->getLocation().y);
+	label->setString(str->getCString());*/
+	
+	if (touch->getLocation().x < base && touch->getLocation().y > designResolutionSize.height - base)
 	{
 		_saveData->AllResset();
 		auto scene = TitleSelectScene::createTitleScene();
