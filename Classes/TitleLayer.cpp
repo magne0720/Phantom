@@ -79,7 +79,6 @@ bool TitleLayer::init(SaveData* saveData)
 	if (_saveData->loadClear() >= 0) titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
 	else titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
-	
 
 	return true;
 }
@@ -102,8 +101,10 @@ TitleLayer* TitleLayer::create(SaveData* saveData)
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
-	// リセット機能
-	if (touch->getLocation() < Vec2(50, 50)) {
+	float base = 50.0f;
+	// リセット機能	
+	if (touch->getLocation().x < base && touch->getLocation().y < base)
+	{
 		_saveData->AllResset();
 		auto scene = TitleSelectScene::createTitleScene();
 		auto transition = TransitionPageTurn::create(0.5f, scene, 1);
