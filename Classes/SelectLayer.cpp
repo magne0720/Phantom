@@ -57,18 +57,33 @@ bool SelectLayer::init(SaveData* saveData, Color4F color)
 	this->addChild(tapPlease);
 	
 	Vec2 btnPos = Vec2(designResolutionSize.width*0.07f, designResolutionSize.height*0.9f);
-	_toTitleButton = ToTitleButton::create(getColorCode(static_cast<int>(_saveData->loadTimeZone())), _saveData->loadLookedSky());
+	Color3B btnColor;
+	if (!_saveData->loadStarAppear())
+		btnColor = getColorCode(static_cast<int>(_saveData->loadTimeZone()));
+	else btnColor = getColorCode(eColor::YELLOW);
+	_toTitleButton = ToTitleButton::create(btnColor, _saveData->loadLookedSky());
 	_toTitleButton->setPosition(btnPos);
 	this->addChild(_toTitleButton);
 
 	if (_saveData->loadLookedSky() == false)
 	{
 		float delayTime = 1.0f;
-		float moveTime = 2.0f;
+		float moveTime = 1.5f;
 		auto particle = ParticleSystemQuad::create("Select/SkyLight.plist");
-		particle->setStartColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
-		particle->setEndColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
-		particle->setPosition(pictureManager->getPicturePos(static_cast<int>(_saveData->loadTimeZone())));
+		if (!_saveData->loadStarAppear())
+		{
+			particle->setEmissionRate(10.0f);
+			particle->setStartColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
+			particle->setEndColor(Color4F(getColorCode(static_cast<int>(_saveData->loadTimeZone()))));
+			particle->setPosition(pictureManager->getPicturePos(static_cast<int>(_saveData->loadTimeZone())));
+		}
+		else
+		{
+			particle->setEmissionRate(10.0f);
+			particle->setStartColor(Color4F(getColorCode(eColor::YELLOW)));
+			particle->setEndColor(Color4F(getColorCode(eColor::YELLOW)));
+			particle->setPosition(pictureManager->getPicturePos(static_cast<int>(eColor::YELLOW)));
+		}
 		particle->setPositionY(particle->getPosition().y - pictureManager->getPictureSize().height*0.5f);
 		particle->setDuration(delayTime+moveTime);
 		this->addChild(particle);

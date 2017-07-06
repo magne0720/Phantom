@@ -13,7 +13,7 @@ bool TitleLayer::init(SaveData* saveData)
 	_replacedScene = false;
 
 	// DEBUG
-	//saveData->user->setIntegerForKey("clear", 6);
+	//saveData->user->setIntegerForKey("clear", 8);
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
