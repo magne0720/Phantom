@@ -65,8 +65,31 @@ bool SelectLayer::init(SaveData* saveData, Color4F color)
 	_toTitleButton->setPosition(btnPos);
 	this->addChild(_toTitleButton);
 
+	if (color != Color4F::WHITE)
+	{
+		// “h‚è‚Â‚Ô‚µ‚½‰~i‘å‚«‚È“_j
+		_dot = DrawNode::create();
+		_dot->setZOrder(1);
+		_dot->drawDot(Vec2::ZERO, designResolutionSize.width * 0.7f, color);
+		_dot->setPosition(designResolutionSize*0.5f);
+		this->addChild(_dot);
+
+		auto scale = ScaleTo::create(1.0f, 0.0f);
+		auto easeIn = EaseSineIn::create(scale);
+		auto call = CallFunc::create([&]() {
+			_dot->removeFromParentAndCleanup(true);
+		});
+		auto seq = Sequence::create(easeIn, call, NULL);
+		_dot->runAction(seq);
+	}
+
 	if (_saveData->loadLookedSky() == false)
 	{
+		if (static_cast<int>(_saveData->loadTimeZone()) != _saveData->loadLastClear())
+		{
+			_toTitleButton->startToShine();
+			return true;
+		}
 		float delayTime = 1.0f;
 		float moveTime = 1.5f;
 		auto particle = ParticleSystemQuad::create("Select/SkyLight.plist");
@@ -86,6 +109,7 @@ bool SelectLayer::init(SaveData* saveData, Color4F color)
 		}
 		particle->setPositionY(particle->getPosition().y - pictureManager->getPictureSize().height*0.5f);
 		particle->setDuration(delayTime+moveTime);
+		particle->setZOrder(0);
 		this->addChild(particle);
 		auto delay = DelayTime::create(delayTime);
 		auto move = MoveTo::create(moveTime, btnPos);
@@ -95,24 +119,6 @@ bool SelectLayer::init(SaveData* saveData, Color4F color)
 		auto seq = Sequence::create(delay, move, call, NULL);
 		particle->runAction(seq);
 	}
-
-	if (color != Color4F::WHITE)
-	{
-		// “h‚è‚Â‚Ô‚µ‚½‰~i‘å‚«‚È“_j
-		_dot = DrawNode::create();
-		_dot->drawDot(Vec2::ZERO, designResolutionSize.width * 0.7f, color);
-		_dot->setPosition(designResolutionSize*0.5f);
-		this->addChild(_dot);
-
-		auto scale = ScaleTo::create(1.0f, 0.0f);
-		auto easeIn = EaseSineIn::create(scale);
-		auto call = CallFunc::create([&]() {
-			_dot->removeFromParentAndCleanup(true);
-		});
-		auto seq = Sequence::create(easeIn, call, NULL);
-		_dot->runAction(seq);
-	}	
-
 	return true;
 }
 

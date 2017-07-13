@@ -355,6 +355,11 @@ void CharacterAnimation::setDir(Vec2 dir)
 	changeAnimation(dir);
 }
 
+void CharacterAnimation::setDir(eDIR dirName)
+{
+	changeAnimation(dirName);
+}
+
 Sprite* CharacterAnimation::getPon()
 {
 	return _ponSprite;

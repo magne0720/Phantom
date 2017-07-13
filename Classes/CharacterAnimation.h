@@ -50,6 +50,7 @@ public:
 	float getDelay();					// スプライトの切り替わる早さを取得
 
 	void setDir(cocos2d::Vec2 dir);	// アニメーションの向きを変更
+	void setDir(eDIR dirName);		// アニメーションの向きを変更(enum型)
 
 private:
 	cocos2d::Sprite* _mySprite;
