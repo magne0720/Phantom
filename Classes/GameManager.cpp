@@ -66,7 +66,9 @@ bool GameManager::init(int num)
 
 	map->robot->rightRobot->goalPa->setParticleColor(stageColor);
 	map->robot->leftRobot->goalPa->setParticleColor(stageColor);
-
+/*
+	map->robot->rightRobot->myPosition = map->goal->getPosition();
+*/
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameClear.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameStart.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/PlayerLife.mp3");

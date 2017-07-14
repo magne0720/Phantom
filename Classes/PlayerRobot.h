@@ -55,6 +55,8 @@ public:
 
 	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
+	//一区切りにどれだけ移動したか
+	float separation;
 	int angleNum;
 	std::vector<float> angles;
 	Sprite* messageSp;

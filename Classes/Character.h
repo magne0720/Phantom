@@ -33,8 +33,6 @@ public:
 
 	//判定処理
 	//-----------------------------------------
-	//今lastTargetPositionにいるか
-	bool onLastTargetPosition(Vec2 pos);
 
 	//目の前が壁かどうか
 	bool onWall(SEGMENT movement, SEGMENT wall);
@@ -81,7 +79,7 @@ public:
 	//360度の向き変更
 	void setDirection(DIR_DEGREE degree);
 	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める
-	void setEvasionWall(Vec2 wall, Vec2 target,float reflec=1.0f);
+	Vec2 setEvasionWall(Vec2 wall,  Vec2 myPos, Vec2 target,float reflec=1.0f);
 	//-----------------------------------------
 
 	//画像処理
@@ -90,13 +88,17 @@ public:
 
 	//-----------------------------------------
 
-
 	//移動待機状態かどうか
 	bool isMoveWait;
 	
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
-
+	//1コマ分の最終地点
+	Vec2 lastTargetPosition;
+	//方向ベクトル
+	Vec2 movePosition;
+	//線形補間に使う移動の場所
+	float moveTimer;
 	//自身の向き
 	float myDirection;
 	//移動速度
@@ -107,21 +109,16 @@ public:
 	float moveRange;
 	//視認範囲
 	float doubtDegree;
-
 	//壁
 	Vector<Wall*> walls;
 	//自身の状態
 	STATUS myState;
 	//衝突判定の処理間隔をあけるタイマー
 	float colTimer;
-
-
-
 	//プレイヤーの操作が異なるので仮想化
 	virtual bool onTouchBegan(const Touch * touch, Event *unused_event);
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
 	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
-
 };
 
 #endif // !__CHARACTER_H__

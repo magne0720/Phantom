@@ -7,6 +7,9 @@
 
 USING_NS_CC;
 
+//オブジェクトすべてにある機能
+//歩いて移動する機能は持たない
+//お互いの衝突判定はある予定
 class ObjectBase :public Node 
 {
 public:	
@@ -33,8 +36,6 @@ public:
 	DrawNode* moveRangeSp;
 	//自身の画像
 	CharacterAnimation* mySprite;
-	BlendFunc* blender;
-
 	//自身の場所
 	Vec2 myPosition;
 

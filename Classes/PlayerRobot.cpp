@@ -32,11 +32,13 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 	setSpeed(12.0f);
 	setGameSpeed(1.0f);
-	setMoveRange(100.0f);
+	setMoveRange(80.0f);
 	setDoubtDgree(150.0f);
 	checkTime = 120.0f;
 
 	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210));
+	mySprite->getSp()->setAnchorPoint(Vec2(0.5f, 0.34f));
+	mySprite->getPon()->setAnchorPoint(Vec2(0.5f, 0.34f));
 	mySprite->getPon()->setColor(Color3B(col.r*255.0f, col.g*255.0f, col.b*255.0f));
 
 	messageSp = Sprite::create("Game/Player/Stop.png");
@@ -47,6 +49,8 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	startPosition = pos;
 	endPosition = pos + Vec2(1, 0);
 	initialize(pos, DIR_DEGREE::DIR_RIGHT);
+
+	lastTargetPosition = targetPosition;
 
 	angleNum = 0;
 	isStandby = false;
@@ -62,31 +66,33 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
+	if (moveTimer > checkTime / 2)
+	{
+		moveTimer = 0;
+		if (isMove) {
+			if (angles.size() > angleNum)
+			{
+				nextPosition();
+			}
+			else
+			{
+				stopPosition();
+			}
+		}
+	}
 	//log("type=%d", (int)myState);
 		moveTimer+=1.0*gameSpeed;
 		switch (myState)
 		{
 		case STATUS::STAND:
-			if (moveTimer > checkTime / 2)
-			{
-				moveTimer = 0;
-				if (isMove) {
-					if (angles.size() > angleNum)
-					{
-						nextPosition();
-					}
-					else
-					{
-						stopPosition();
-					}
-				}
-			}
+		
 			break;
 		case STATUS::MOVE:
 			//ˆêƒRƒ}•ªˆÚ“®‚µ‚½‚ç
 			if (onCollision(targets.at(0)->myPosition, moveRange))
 			{
 				findPosition();
+				break;
 			}
 			break;
 		case STATUS::STOP:
@@ -97,7 +103,6 @@ void PlayerRobot::plusAction()
 			break;
 		}
 		//mySprite->setScale((moveTimer/checkTime)+0.5f);
-
 };
 
 //Šp“x‚Ì•Û‘¶
@@ -126,7 +131,8 @@ void PlayerRobot::moveStartPosition()
 void PlayerRobot::nextPosition()
 {
 	SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
-	targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+	lastTargetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+	targetPosition = lastTargetPosition;
 	angleNum++;
 };
 
@@ -152,6 +158,7 @@ void PlayerRobot::findPosition()
 	moveRangeSp->clear();
 	angles.clear();
 
+	isStandby = true;
 	isMove = false;
 	angleNum = 0;
 	findAnimation();
