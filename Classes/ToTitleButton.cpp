@@ -12,12 +12,11 @@ bool ToTitleButton::init(Color3B color, bool lookedSky)
 	{
 		_shadow = Sprite::create("Select/ToTitleShadow.png");
 		_shadow->setColor(color);
-		_shadow->setScale(1.2f);
 		_shadow->setZOrder(-1);
 		_shadow->setPosition(this->getContentSize()*0.5f);
 		this->addChild(_shadow);
 
-		this->scheduleUpdate();
+		//this->scheduleUpdate();
 	}
 
 	return true;
@@ -65,4 +64,9 @@ float ToTitleButton::adjustRange(float f)
 float ToTitleButton::adjustOpacity(float f)
 {
 	return f * 255;
+}
+
+void ToTitleButton::startToShine()
+{
+	this->scheduleUpdate();
 }

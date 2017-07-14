@@ -21,6 +21,9 @@ public:
 	bool onTouchBeganP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 	void onTouchCancelledP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
 	void onTouchEndedP(const std::vector<cocos2d::Touch *> &touches, cocos2d::Event *unused_event);
+
+	cocos2d::Vec2 getPicturePos(int i);
+	cocos2d::Size getPictureSize();
 	
 private:
 	Picture* _pictures[10];
@@ -73,8 +76,6 @@ private:
 	void swap(float &a, float &b);
 	void swap(int &a, int &b);
 	void swap(cocos2d::Vec2 &a, cocos2d::Vec2 &b);
-
-	cocos2d::Label* label;
 };
 
 #endif

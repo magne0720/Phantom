@@ -12,6 +12,9 @@ bool TitleLayer::init(SaveData* saveData)
 
 	_replacedScene = false;
 
+	// DEBUG
+	//saveData->user->setIntegerForKey("clear", 8);
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(true);
 	listener->onTouchBegan = CC_CALLBACK_2(TitleLayer::onTouchBegan, this);
@@ -78,6 +81,11 @@ bool TitleLayer::init(SaveData* saveData)
 	this->addChild(titleLogo);
 	
 
+	/*label = Label::create("", "fonts/arial.ttf",120);
+	label->setTextColor(Color4B::BLACK);
+	label->setPosition(designResolutionSize*0.5f);
+	this->addChild(label);*/
+
 	return true;
 }
 
@@ -99,8 +107,14 @@ TitleLayer* TitleLayer::create(SaveData* saveData)
 
 bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 {
+	float base = 50.0f;
 	// リセット機能
-	if (touch->getLocation() < Vec2(100, 100)) {
+	
+	/*auto str = String::createWithFormat("%f, %f", touch->getLocation().x, touch->getLocation().y);
+	label->setString(str->getCString());*/
+	
+	if (touch->getLocation().x < base && touch->getLocation().y > designResolutionSize.height - base)
+	{
 		_saveData->AllResset();
 		auto scene = TitleSelectScene::createTitleScene();
 		auto transition = TransitionPageTurn::create(0.5f, scene, 1);
@@ -109,7 +123,7 @@ bool TitleLayer::onTouchBegan(Touch* touch, Event* event)
 
 	if (_replacedScene && ((TitleSelectScene*)this->getParent())->_replaceLayer) return false;
 	_replacedScene = true;
-	((TitleSelectScene*)this->getParent())->replaceSelect(Color4F(1.0f, 0.9490f, 0.4f, 1.0f));
+	((TitleSelectScene*)this->getParent())->replaceSelect();
 	return true;
 }
 

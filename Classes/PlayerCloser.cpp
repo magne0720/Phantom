@@ -154,8 +154,8 @@ bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	if (rightRobot->isStart || leftRobot->isStart) 
 	{
-		rightRobot->setGameSpeed(0.5f);
-		leftRobot->setGameSpeed(0.5f);
+		rightRobot->setGameSpeed(1.5f);
+		leftRobot->setGameSpeed(1.5f);
 	}
 	return true;
 };

@@ -68,7 +68,7 @@ TitleSelectScene* TitleSelectScene::createSelectScene()
 TitleSelectScene* TitleSelectScene::createSelectScene(Color4F color)
 {
 	TitleSelectScene* scene = TitleSelectScene::create();
-	auto layer = SelectLayer::create(color, scene->_saveData);
+	auto layer = SelectLayer::create(scene->_saveData, color);
 	scene->addChild(layer);
 	return scene;
 }
@@ -86,20 +86,20 @@ void TitleSelectScene::replaceTitle()
 	}
 }
 
-void TitleSelectScene::replaceSelect(Color4F color)
+void TitleSelectScene::replaceSelect()
 {
 	for (auto c : getChildren())
 	{
 		if (typeid(*c) == typeid(TitleLayer) && !_replaceLayer)
 		{
 			_layer = c;
-			replace(false, color);
+			replace(false);
 			break;
 		}
 	}	
 }
 
-void TitleSelectScene::replace(bool toTitle, Color4F color)
+void TitleSelectScene::replace(bool toTitle)
 {
 	if (_replaceLayer) return;
 	_fadeSp = Sprite::create();

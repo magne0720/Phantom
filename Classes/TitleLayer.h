@@ -25,6 +25,8 @@ public:
 	void setDefaultSpeed();
 	
 	bool onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent);
+
+	//cocos2d::Label* label;
 };
 
 #endif

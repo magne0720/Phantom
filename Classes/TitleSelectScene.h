@@ -17,7 +17,7 @@ public:
 	bool init();
 	CREATE_FUNC(TitleSelectScene);
 	void replaceTitle();
-	void replaceSelect(cocos2d::Color4F color = cocos2d::Color4F::WHITE);
+	void replaceSelect();
 
 	bool _replaceLayer;
 	cocos2d::Sprite* _fadeSp;
@@ -27,7 +27,7 @@ public:
 
 private:
 	cocos2d::Sprite* createFadeRect(cocos2d::Sprite*);
-	void replace(bool toTitle, cocos2d::Color4F color = cocos2d::Color4F::WHITE);
+	void replace(bool toTitle);
 
 	cocos2d::Node* _layer;	
 
