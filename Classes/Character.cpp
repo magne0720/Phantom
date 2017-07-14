@@ -122,7 +122,7 @@ bool Character::onWall(SEGMENT mover, SEGMENT wall)
 {
 	////内側から衝突判定の線が来ているか
 		if (cross(wall.to, wall.from - myPosition) < 0) 
-			//return false;
+			return false;
 
 	//X軸方向のベクトルが0かどうか
 	if (mover.to.x == 0.0f || wall.to.x == 0.0f) {
@@ -217,11 +217,7 @@ bool Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 			}
 			return false;
 		}
-		////左側にいるなら衝突しない
-		//if (cross(wall.to, wall.from-myPosition) < 0)
-		//{
-		//return false;
-		//}		
+
 		//log("circleHit");
 		//押し出しをする
 		//log("%0.2f-%0.2f=%0.2f",range,d, range - d);
@@ -282,8 +278,7 @@ void Character::allCollision()
 {
 	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(lastTargetPosition - myPosition)*moveRange + myPosition));
 	Vec2 movement = normalize(lastTargetPosition - myPosition)*moveRange;
-	//1フレームに当たった壁
-	SEGMENT hits[10];
+
 
 	int count = 0;
 
@@ -295,14 +290,12 @@ void Character::allCollision()
 			//円の衝突判定
 			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, moveRange))
 			{
-				hits[count] = SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1));
- 				//targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
+				//targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
 				//log("circle_hit,%d", count++);
 			
 			//方向と壁の線の衝突判定
 				if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1))))
 				{
-					hits[count] = SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1));
 					targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
 					//log("line_hit,%d", count++);
 				}

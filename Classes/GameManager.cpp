@@ -573,7 +573,12 @@ bool GameManager::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void GameManager::onTouchMoved(const Touch * touch, Event *unused_event)
 {
-
+	if (touch->getLocation().x<designResolutionSize.width*0.05f&&
+		touch->getLocation().y>designResolutionSize.height*0.95f) 
+	{
+		timer = 0;
+		gameState = GAMESTATE::MISS;
+	}
 };
 
 void GameManager::onTouchEnded(const Touch * touch, Event *unused_event)
