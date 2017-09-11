@@ -95,7 +95,7 @@ void PlayerCloser::update(float delta)
 //右のロボットが進む軌道の表示
 void PlayerCloser::drawMoveLineRight()
 {
-	Vec2 start=rightRobot->startPosition, end;
+	Vec2 start=rightRobot->myPosition, end= Vec2(1, 0);;
 	moveLineRight->clear();
 	if (rightRobot->isStart)return;
 	for (int i =0; i < rightRobot->angles.size(); i++) 
@@ -120,7 +120,7 @@ void PlayerCloser::drawMoveLineRight()
 //左のロボットが進む軌道を表示
 void PlayerCloser::drawMoveLineLeft()
 {
-	Vec2 start = leftRobot->startPosition, end = Vec2(1, 0);
+	Vec2 start = leftRobot->myPosition, end = Vec2(1, 0);
 	moveLineLeft->clear();
 	if (leftRobot->isStart)return;
 	for (int i = 0; i < leftRobot->angles.size(); i++)

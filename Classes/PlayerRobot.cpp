@@ -30,7 +30,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(12.0f);
+	setSpeed(5.0f);
 	setGameSpeed(1.0f);
 	setMoveRange(80.0f);
 	setDoubtDgree(150.0f);
@@ -66,34 +66,17 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
-	if (moveTimer > checkTime / 2)
-	{
-		moveTimer = 0;
-		if (isMove) {
-			if (angles.size() > angleNum)
-			{
-				nextPosition();
-			}
-			else
-			{
-				stopPosition();
-			}
-		}
-	}
+
 	//log("type=%d", (int)myState);
-		moveTimer+=1.0*gameSpeed;
 		switch (myState)
 		{
 		case STATUS::STAND:
-		
+			if (isNext)
+			{
+				nextPosition();
+			}
 			break;
 		case STATUS::MOVE:
-			//ˆêƒRƒ}•ªˆÚ“®‚µ‚½‚ç
-			if (onCollision(targets.at(0)->myPosition, moveRange))
-			{
-				findPosition();
-				break;
-			}
 			break;
 		case STATUS::STOP:
 			break;
@@ -130,10 +113,19 @@ void PlayerRobot::moveStartPosition()
 //s‚­‚×‚«‚Æ‚±‚ë‚Ìİ’è
 void PlayerRobot::nextPosition()
 {
-	SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
-	lastTargetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
-	targetPosition = lastTargetPosition;
-	angleNum++;
+	if (angleNum< angles.size())
+	{
+		SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
+		lastTargetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+		targetPosition = lastTargetPosition;
+		moveTimer = 0;
+		angleNum++;
+	}
+	else
+	{
+		//Ÿ‚ÉŒü‚©‚¤êŠ‚ª‚È‚¢ê‡
+		stopPosition();
+	}
 };
 
 //—§‚¿~‚Ü‚Á‚½
@@ -145,10 +137,7 @@ void PlayerRobot::stopPosition()
 	isMove = false;
 	isStandby= false;
 	isStart = false;
-	targetPosition = myPosition;
 	angleNum = 0;
-	startPosition = myPosition;
-	setState(STATUS::STOP);
 	stopAnimation();
 };
 

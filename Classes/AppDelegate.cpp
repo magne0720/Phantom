@@ -80,8 +80,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	SaveData* save = SaveData::create();
 	save->startUpNum();
 
-	//auto scene = TitleSelectScene::createTitleScene();
-	auto scene = EndingScene::createLayer();
+	auto scene = TitleSelectScene::createTitleScene();
+	//auto scene = EndingScene::createLayer();
 
 	// run
 	director->runWithScene(scene);

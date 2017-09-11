@@ -150,8 +150,6 @@ void GameManager::update(float delta)
 			if (playerLife == 0)
 				gameState = GAMESTATE::MISS;
 			else {
-				map->robot->rightRobot->setState(STATUS::STAND);
-				map->robot->leftRobot->setState(STATUS::STAND);
 				gameState = GAMESTATE::PLAY;
 			}
 		}

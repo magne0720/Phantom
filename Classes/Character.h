@@ -31,13 +31,19 @@ public:
 	virtual void move(float plusSpeed=1.0f);
 	//-----------------------------------------
 
+	//制御処理
+	//起動
+	void moveStart();
+	//停止
+	void moveStop();
+
 	//判定処理
 	//-----------------------------------------
 
 	//目の前が壁かどうか
 	bool onWall(SEGMENT movement, SEGMENT wall);
-	//円の範囲
-	bool onWall(SEGMENT movement, SEGMENT wall,Vec2 pos, float range);
+	//円の範囲(戻り値は二つの円の範囲)
+	float onWall(SEGMENT movement, SEGMENT wall,Vec2 pos, float range);
 	//移動可能判定
 	bool onMoveRange(Point target);
 	//右側にあるか
@@ -72,13 +78,13 @@ public:
 	void setMoveRange(float range);
 	//視認範囲設定
 	void setDoubtDgree(float range);
-	//移動場所設定
+	//移動場所設定(設定しただけで移動する)
 	void setTargetPosition(Vec2 pos);
 	//360度の向き変更
 	void setDirection(float degree);
 	//360度の向き変更
 	void setDirection(DIR_DEGREE degree);
-	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める
+	//向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める(壁刷り)
 	Vec2 setEvasionWall(Vec2 wall,  Vec2 myPos, Vec2 target,float reflec=1.0f);
 	//-----------------------------------------
 
@@ -91,6 +97,8 @@ public:
 	//移動待機状態かどうか
 	bool isMoveWait;
 	
+	//移動前にいた場所。
+	Vec2 startPosition;
 	//次に向かう場所。これに向かうために移動を行う。
 	Vec2 targetPosition;
 	//1コマ分の最終地点
@@ -109,7 +117,7 @@ public:
 	float moveRange;
 	//視認範囲
 	float doubtDegree;
-	//壁
+	//壁(衝突判定用)
 	Vector<Wall*> walls;
 	//自身の状態
 	STATUS myState;

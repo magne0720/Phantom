@@ -10,7 +10,7 @@
 USING_NS_CC;
 
 //なぞった方向に移動をする
-//
+//キャラクターが移動する軌道を一度に設定しておくことができるクラス
 class PlayerRobot :public Character 
 {
 public:
@@ -41,10 +41,7 @@ public:
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
 	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
 
-	//
-	//設定時のスタート位置
-	Vec2 startPosition;
-	//一定区間超えた位置
+	//一定区間超えた位置(起動設定に必要)
 	Vec2 endPosition;
 	//移動準備しているか
 	bool isStandby;
@@ -53,11 +50,10 @@ public:
 	//動いているか
 	bool isMove;
 
-	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
-	//一区切りにどれだけ移動したか
-	float separation;
+	//現在移動している区間番号
 	int angleNum;
+	//区間の軌道角度
 	std::vector<float> angles;
 	Sprite* messageSp;
 	CutParticle* goalPa;
