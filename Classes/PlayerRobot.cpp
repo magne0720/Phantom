@@ -30,7 +30,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(5.0f);
+	setSpeed(1.0f);
 	setGameSpeed(1.0f);
 	setMoveRange(80.0f);
 	setDoubtDgree(150.0f);
@@ -54,6 +54,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 	angleNum = 0;
 	isStandby = false;
+	isNext = false;
 	setState(STATUS::STAND);
 
 	goalPa = CutParticle::create("Game/Player/Goal.png",1,2, col);
@@ -66,19 +67,20 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 
 void PlayerRobot::plusAction()
 {
-
 	//log("type=%d", (int)myState);
 		switch (myState)
 		{
 		case STATUS::STAND:
 			if (isNext)
 			{
+				log("next");
 				nextPosition();
 			}
 			break;
 		case STATUS::MOVE:
 			break;
 		case STATUS::STOP:
+			isNext = true;
 			break;
 		case STATUS::FIND:
 			break;
@@ -102,23 +104,24 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 };
 
 //•à‚«Žn‚ß‚é
-void PlayerRobot::moveStartPosition() 
+void PlayerRobot::moveStart() 
 {
 	if (myState == STATUS::FIND)return;
 	if (angles.size() <= 0)return;
-	isMove = true;
 	nextPosition();
 };
 
 //s‚­‚×‚«‚Æ‚±‚ë‚ÌÝ’è
 void PlayerRobot::nextPosition()
 {
+	log("x.%0.2f", myPosition.x);
+	log("y.%0.2f", myPosition.y);
+	isNext = false;
 	if (angleNum< angles.size())
 	{
 		SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
 		lastTargetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
 		targetPosition = lastTargetPosition;
-		moveTimer = 0;
 		angleNum++;
 	}
 	else
@@ -136,7 +139,6 @@ void PlayerRobot::stopPosition()
 	
 	isMove = false;
 	isStandby= false;
-	isStart = false;
 	angleNum = 0;
 	stopAnimation();
 };
@@ -180,11 +182,6 @@ void PlayerRobot::findAnimation()
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	endPosition = myPosition + Vec2(1, 0);
-	if (isStart) 
-	{
-		isMoveWait = false;
-		return false;
-	}
 	if (myState == STATUS::STAND) {
 		if (onMoveRange(touch->getLocation()))
 		{
@@ -208,6 +205,8 @@ bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
+	if (isMove)return;
+
 	Vec2 touchPosition = touch->getLocation();
 	Vec2 stepPosition = myPosition;
 

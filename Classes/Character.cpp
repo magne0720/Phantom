@@ -65,7 +65,7 @@ void Character::action()
 	moveTimer += (gameSpeed*moveSpeed / 60.0f);
 	//moveTimer += 1.0f;
 	movePosition = normalize(targetPosition - myPosition);
-
+	
 	switch (myState)
 	{
 	case STAND:
@@ -77,10 +77,18 @@ void Character::action()
 		move();
 		if (length(targetPosition - myPosition) < moveSpeed) {
 			moveStop();
-		}
 			break;
+		}
+		if (moveTimer > 1.0f) 
+		{
+			moveStop();
+		}
+		//‰Ÿ‚µo‚µ
+		allCollision();
 		break;
 	case STOP:
+		//plusAction‚ðˆê“x’Ê‚Á‚½Œã‚É’Ê‚é
+		setState(STATUS::STAND);
 		break;
 	case FIND:
 		break;
@@ -93,8 +101,6 @@ void Character::action()
 	default:
 		break;
 	}
-	//‰Ÿ‚µo‚µ
-	allCollision();
 
 
 	//	log("myPosition=[%f,%f]", myPosition.x, myPosition.y);
@@ -112,7 +118,7 @@ void Character::plusAction()
 void Character::move(float plusSpeed) 
 {
 	//myPosition += movePosition*moveSpeed*plusSpeed;
-	myPosition = (1 - moveTimer)*startPosition + moveTimer*targetPosition;
+	myPosition = (1 - moveTimer) * startPosition + moveTimer*targetPosition;
 	setPosition(myPosition);
 
 	//•`‰æ•ÏX
@@ -128,14 +134,12 @@ void Character::moveStart()
 	startPosition = myPosition;
 };
 
-//’âŽ~
-void Character::moveStop() 
+void Character::moveStop()
 {
-	setState(STATUS::STAND);
+	setState(STATUS::STOP);
 	lastTargetPosition = myPosition;
 	targetPosition = myPosition;
 };
-
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //”»’èˆ—
@@ -234,7 +238,7 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 				//log("range-d=%0.2f", range - d);
 				targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
 				if (cross(wall.to, mover.to - pos) > 0) {
-					targetPosition = myPosition;
+					//targetPosition = myPosition;
 				}
 				//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
 				//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
@@ -242,13 +246,12 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 			}
 			return 0;
 		}
-
 		//log("circleHit");
 		//‰Ÿ‚µo‚µ‚ð‚·‚é
 		//log("%0.2f-%0.2f=%0.2f",range,d, range - d);
 		targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
 		if (cross(wall.to, mover.to - pos) > 0) {
-			targetPosition = myPosition;
+			//targetPosition = myPosition;
 		}
 		//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
 		//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
@@ -304,10 +307,9 @@ void Character::allCollision()
 	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(lastTargetPosition - myPosition)*moveRange + myPosition));
 	Vec2 movement = normalize(lastTargetPosition - myPosition)*moveRange;
 
-
 	int count = 0;
 
-	targetPosition = lastTargetPosition;
+	//targetPosition = lastTargetPosition;
 
 	for (int i = 0; i < walls.size(); i++)
 		for (int j = 0; j < walls.at(i)->segmentCount; j++)
@@ -315,12 +317,12 @@ void Character::allCollision()
 			//‰~‚ÌÕ“Ë”»’è
 			float s = onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, moveRange);
 			//targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
-			//targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
 			myPosition = normalize(myPosition - targetPosition)*s + myPosition;
-			//•ûŒü‚Æ•Ç‚Ìü‚ÌÕ“Ë”»’è
+			////•ûŒü‚Æ•Ç‚Ìü‚ÌÕ“Ë”»’è
 			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1))))
 			{
-				myPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement, 2);
+				targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
+				//myPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement, 2)+myPosition;
 				//log("line_hit,%d", count++);
 			}
 		}

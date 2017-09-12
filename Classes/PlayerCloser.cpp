@@ -56,7 +56,6 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 	delayTimer = 2.0f;
 	isRobotMoving = false;
 	isGoal = false;
-	isStart = false;
 
 	//scheduleUpdate();
 
@@ -97,7 +96,6 @@ void PlayerCloser::drawMoveLineRight()
 {
 	Vec2 start=rightRobot->myPosition, end= Vec2(1, 0);;
 	moveLineRight->clear();
-	if (rightRobot->isStart)return;
 	for (int i =0; i < rightRobot->angles.size(); i++) 
 	{
 		end = getDirectionDegree(Vec2(1,0), rightRobot->angles.at(i),rightRobot->doubtDegree)+start;
@@ -122,7 +120,6 @@ void PlayerCloser::drawMoveLineLeft()
 {
 	Vec2 start = leftRobot->myPosition, end = Vec2(1, 0);
 	moveLineLeft->clear();
-	if (leftRobot->isStart)return;
 	for (int i = 0; i < leftRobot->angles.size(); i++)
 	{
 		end = getDirectionDegree(Vec2(1, 0), leftRobot->angles.at(i), leftRobot->doubtDegree) + start;
@@ -147,16 +144,11 @@ void PlayerCloser::startRobot()
 		leftRobot->moveTimer = 0;
 		moveLineRight->clear();
 		moveLineLeft->clear();
-		rightRobot->moveStartPosition();
-		leftRobot->moveStartPosition();
+		rightRobot->moveStart();
+		leftRobot->moveStart();
 };
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
-	if (rightRobot->isStart || leftRobot->isStart) 
-	{
-		rightRobot->setGameSpeed(1.5f);
-		leftRobot->setGameSpeed(1.5f);
-	}
 	return true;
 };
 
@@ -167,11 +159,6 @@ void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
 {
-	if (rightRobot->isStart || leftRobot->isStart)
-	{
-		rightRobot->setGameSpeed(1.0f);
-		leftRobot->setGameSpeed(1.0f);
-	}
 	if (delayTimer >= 2.0f)
 	{
 		if (rightRobot->isMove||leftRobot->isMove)

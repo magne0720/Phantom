@@ -21,7 +21,6 @@ public:
 	float delayTimer;
 	//ƒƒ{ƒbƒg‚ª“®‚¢‚Ä‚¢‚é‚©
 	bool isRobotMoving;
-	bool isStart;
 	bool isGoal;
 
 	DrawNode* infraredEffect;

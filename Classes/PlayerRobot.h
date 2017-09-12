@@ -22,7 +22,7 @@ public:
 	//角度の保存
 	void setAngle(Vec2 from, Vec2 to);
 	//歩き始める
-	void moveStartPosition();
+	void moveStart();
 	//つぎに行くべきところの設定
 	void nextPosition();
 	//次に行く場所がなくなった時に配列の中を削除し、動きを止める
@@ -43,10 +43,10 @@ public:
 
 	//一定区間超えた位置(起動設定に必要)
 	Vec2 endPosition;
-	//移動準備しているか
+	//移動準備完了しているか
 	bool isStandby;
-	//動き始めたか
-	bool isStart;
+	//次回の移動を決められたか
+	bool isNext;
 	//動いているか
 	bool isMove;
 

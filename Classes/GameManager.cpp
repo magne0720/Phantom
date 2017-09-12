@@ -119,8 +119,6 @@ void GameManager::update(float delta)
 			{
 				StayCloseMessage();
 				timer = 0;
-				map->robot->rightRobot->isStart = true;
-				map->robot->leftRobot->isStart = true;
 				gameState = GAMESTATE::MOVE_START;
 			}
 		}
@@ -131,10 +129,12 @@ void GameManager::update(float delta)
 		{
 			map->robot->startRobot();
 			gameState = GAMESTATE::MOVING;
+			map->robot->rightRobot->isNext = true;
+			map->robot->leftRobot->isNext = true;
 		}
 		break;
 	case MOVING:
-		if (!map->robot->rightRobot->isMove&&!map->robot->leftRobot->isMove) 
+		if (!map->robot->rightRobot->isStandby&&!map->robot->leftRobot->isStandby) 
 		{
 			gameState = GAMESTATE::MOVE_STOP;
 			playerLife--;
