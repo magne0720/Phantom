@@ -33,6 +33,7 @@ bool Character::init(Vec2 spawnPos, DIR_DEGREE dir)
 
 	//scheduleUpdate();
 
+
 	return true;
 };
 
@@ -63,6 +64,7 @@ void Character::action()
 	//allCollision();
 
 	moveTimer += (gameSpeed*moveSpeed / 60.0f);
+	if (moveTimer > 1.0f)moveTimer = 1.0f;
 	//moveTimer += 1.0f;
 	movePosition = normalize(targetPosition - myPosition);
 	
@@ -75,16 +77,17 @@ void Character::action()
 		break;
 	case MOVE:
 		move();
+		//押し出し
+		allCollision();
 		if (length(targetPosition - myPosition) < moveSpeed) {
 			moveStop();
 			break;
 		}
-		if (moveTimer > 1.0f) 
+		if (moveTimer >= 1.0f) 
 		{
 			moveStop();
+			break;
 		}
-		//押し出し
-		allCollision();
 		break;
 	case STOP:
 		//plusActionを一度通った後に通る
@@ -236,7 +239,7 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 
 			//	log("circleHit");			//押し出しをする
 				//log("range-d=%0.2f", range - d);
-				targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
+				//targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
 				if (cross(wall.to, mover.to - pos) > 0) {
 					//targetPosition = myPosition;
 				}
@@ -249,7 +252,7 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 		//log("circleHit");
 		//押し出しをする
 		//log("%0.2f-%0.2f=%0.2f",range,d, range - d);
-		targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
+		//targetPosition = setEvasionWall(wall.to, pos, mover.to, 1.0f);
 		if (cross(wall.to, mover.to - pos) > 0) {
 			//targetPosition = myPosition;
 		}
@@ -304,26 +307,20 @@ bool Character::onDirectionLeft(const Vec2 target)
 //衝突判定まとめ
 void Character::allCollision()
 {
-	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(lastTargetPosition - myPosition)*moveRange + myPosition));
-	Vec2 movement = normalize(lastTargetPosition - myPosition)*moveRange;
+	if (length(targetPosition - myPosition) < moveSpeed)return;
 
-	int count = 0;
-
-	//targetPosition = lastTargetPosition;
+	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(lastTargetPosition - myPosition)*objectRange + myPosition));
+	Vec2 movement = normalize(lastTargetPosition - myPosition)*objectRange;
 
 	for (int i = 0; i < walls.size(); i++)
 		for (int j = 0; j < walls.at(i)->segmentCount; j++)
 		{
 			//円の衝突判定
-			float s = onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, moveRange);
-			//targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
-			myPosition = normalize(myPosition - targetPosition)*s + myPosition;
-			////方向と壁の線の衝突判定
-			if (onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1))))
+			float s = onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, objectRange);
+			if (s != 0.0f)
 			{
+				myPosition = normalize(startPosition - targetPosition)*s + myPosition;
 				targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
-				//myPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement, 2)+myPosition;
-				//log("line_hit,%d", count++);
 			}
 		}
 };
@@ -404,12 +401,12 @@ void Character::setDirection(DIR_DEGREE degree)
 
 //向きによってもらうベクトルと進む方向でどちらの方向に回転するかを決める(壁ずり)
 //refrec=２で反射、１で壁刷り(defalut)
+// out : 正規化壁ずりベクトル（戻り値）
+// front : 進行ベクトル
+// normal: 衝突点での法線ベクトル
+//(front - Dot(&front, &normal_n) * normal_n)
 Vec2 Character::setEvasionWall(Vec2 wall, Vec2 myPos,Vec2 target,float reflec)
 {
-	// out : 正規化壁ずりベクトル（戻り値）
-	// front : 進行ベクトル
-	// normal: 衝突点での法線ベクトル
-	//(front - Dot(&front, &normal_n) * normal_n)
 
 	//壁の法線
 	//右回転の箱に対し反時計回りに90度回転

@@ -6,6 +6,7 @@
 #include "CutParticle.h"
 
 #define MODE 0
+#define MOVE_MAX 128 
 
 USING_NS_CC;
 
@@ -57,6 +58,6 @@ public:
 	std::vector<float> angles;
 	Sprite* messageSp;
 	CutParticle* goalPa;
-
+	ObjectBase* goal;
 };
 #endif // !__PLAYER_ROBOT_H__

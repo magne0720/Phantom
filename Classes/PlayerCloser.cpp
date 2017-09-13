@@ -83,10 +83,11 @@ void PlayerCloser::update(float delta)
 	{
 		isGoal = true;
 	}
-
-	drawMoveLineRight();
-	drawMoveLineLeft();
-
+	if (!rightRobot->isMove&&!leftRobot->isMove)
+	{
+		drawMoveLineRight();
+		drawMoveLineLeft();
+	}
 	delayTimer += 1.0f / 60.0f;
 	//		log("del=%f", delayTimer);
 };

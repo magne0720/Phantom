@@ -30,10 +30,11 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(1.0f);
+	setSpeed(8.0f);
 	setGameSpeed(1.0f);
-	setMoveRange(80.0f);
+	setMoveRange(70.0f);
 	setDoubtDgree(150.0f);
+	setObjectRange(70.0f);
 	checkTime = 120.0f;
 
 	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210));
@@ -55,12 +56,16 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	angleNum = 0;
 	isStandby = false;
 	isNext = false;
+	isMove = false;
 	setState(STATUS::STAND);
 
 	goalPa = CutParticle::create("Game/Player/Goal.png",1,2, col);
 	//goalPa->set
 	addChild(goalPa,5);
 
+	moveRangeSp = DrawNode::create();
+	addChild(moveRangeSp);
+	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GRAY);
 
 	return true;
 };
@@ -78,6 +83,7 @@ void PlayerRobot::plusAction()
 			}
 			break;
 		case STATUS::MOVE:
+			if (onCollision(goal))findPosition();
 			break;
 		case STATUS::STOP:
 			isNext = true;
@@ -108,6 +114,7 @@ void PlayerRobot::moveStart()
 {
 	if (myState == STATUS::FIND)return;
 	if (angles.size() <= 0)return;
+	isMove = true;
 	nextPosition();
 };
 
@@ -181,19 +188,16 @@ void PlayerRobot::findAnimation()
 //プレイヤーの操作が異なるので仮想化
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-	endPosition = myPosition + Vec2(1, 0);
+	if (isMove)return false;
+
 	if (myState == STATUS::STAND) {
+		endPosition = myPosition + Vec2(1, 0);
 		if (onMoveRange(touch->getLocation()))
 		{
 			isMoveWait = true;
-			if (!isMove)
-			{
-				if (isStandby)
-				{
-					angles.clear();
-					endPosition = myPosition + Vec2(1, 0);
-				}
-			}
+			isStandby = false;
+			angles.clear();
+			endPosition = myPosition + Vec2(1, 0);
 		}
 		else
 		{
@@ -248,9 +252,8 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 	//歩いているなら無効にする
-	if (isMove)return;
+	if(isMove)return;
 
-	angleNum = 0;
 	//歩数の確定
 	if (angles.size() > 0)
 	{
