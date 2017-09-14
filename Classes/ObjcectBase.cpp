@@ -17,9 +17,7 @@ void ObjectBase::initWithFileCenter(std::string body, std::string head, Size chi
 //キャラクターpとの範囲円が重なっているか
 bool ObjectBase::onCollision(ObjectBase* p)
 {
-
-
-	return false;
+	return onCollisionCircle(this->myPosition, this->objectRange, p->myPosition, p->objectRange);
 };
 
 //posから半径range内にいるか

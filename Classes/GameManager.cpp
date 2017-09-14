@@ -95,36 +95,36 @@ void GameManager::update(float delta)
 		break;
 	case PLAY:
 		//プレイヤーの軌道を決めている時
-		timer += 1.0f / 60.0f;
-		{
-			if (timer > 8.0f)
-			{
-				if (messageSp->getTag() == 0)
-				{
-					StayCloseMessage();
-					timer = 0;
-					break;
-				}
-				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
-				{
-					StayShowMessage(2);
-					timer = 0;
-					break;
-				}
-				else
-				{
-					StayShowMessage(1);
-					timer = 0;
-					break;
-				}
-			}
+		//timer += 1.0f / 60.0f;
+		//{
+		//	if (timer > 8.0f)
+		//	{
+		//		if (messageSp->getTag() == 0)
+		//		{
+		//			StayCloseMessage();
+		//			timer = 0;
+		//			break;
+		//		}
+		//		if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
+		//		{
+		//			StayShowMessage(2);
+		//			timer = 0;
+		//			break;
+		//		}
+		//		else
+		//		{
+		//			StayShowMessage(1);
+		//			timer = 0;
+		//			break;
+		//		}
+		//	}
 			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby) 
 			{
 				StayCloseMessage();
 				timer = 0;
 				gameState = GAMESTATE::MOVE_START;
 			}
-		}
+		//}
 		break;
 	case MOVE_START:
 			//カウントダウン中に行動をキャンセルしたときに戻る
@@ -145,7 +145,7 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVING:
-		if (!map->robot->rightRobot->isStandby&&!map->robot->leftRobot->isStandby) 
+		if (!map->robot->rightRobot->isMove&&!map->robot->leftRobot->isMove) 
 		{
 			gameState = GAMESTATE::MOVE_STOP;
 			playerLife--;
@@ -214,7 +214,7 @@ void GameManager::dispGoal()
 			lifeSps.at(i)->runAction(mFech);
 		}
 
-		//ゴールのアニメーション
+		//セレクトに戻る
 		CallFunc* goSelect = CallFunc::create([&]()
 		{
 			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
@@ -504,7 +504,7 @@ bool GameManager::startAnimation()
 			break;
 		}
 
-		sp->setColor(Color3B::Color3B(map->robot->myColor));
+		sp->setColor(Color3B(map->robot->myColor));
 	}
 	if (timer > 1.0f) {
 		if (animationCount == 0) {

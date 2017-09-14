@@ -78,7 +78,6 @@ void PlayerRobot::plusAction()
 		case STATUS::STAND:
 			if (isNext)
 			{
-				log("next");
 				nextPosition();
 			}
 			break;
@@ -121,8 +120,6 @@ void PlayerRobot::moveStart()
 //行くべきところの設定
 void PlayerRobot::nextPosition()
 {
-	log("x.%0.2f", myPosition.x);
-	log("y.%0.2f", myPosition.y);
 	isNext = false;
 	if (angleNum< angles.size())
 	{
@@ -156,8 +153,8 @@ void PlayerRobot::findPosition()
 	moveRangeSp->clear();
 	angles.clear();
 
-	isStandby = true;
 	isMove = false;
+	isStandby = true;
 	angleNum = 0;
 	findAnimation();
 	SimpleAudioEngine::getInstance()->playEffect("Sounds/PlayerGoal.mp3");
@@ -189,6 +186,7 @@ void PlayerRobot::findAnimation()
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
 	if (isMove)return false;
+	if (myState == STATUS::FIND)return false;
 
 	if (myState == STATUS::STAND) {
 		endPosition = myPosition + Vec2(1, 0);
@@ -210,13 +208,12 @@ bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
 	if (isMove)return;
+	if (myState == STATUS::FIND)return;
 
 	Vec2 touchPosition = touch->getLocation();
 	Vec2 stepPosition = myPosition;
 
-	if (myState == STATUS::FIND)return;
-
-		touchPosition = touch->getLocation();
+	touchPosition = touch->getLocation();
 	//画面外に出たときの処理
 	if (touch->getLocation().x > designResolutionSize.width)
 		touchPosition.x = designResolutionSize.width;
@@ -246,13 +243,13 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			}
 		}
 	}
-	//ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 };
 
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 	//歩いているなら無効にする
 	if(isMove)return;
+	if (myState == STATUS::FIND)return;
 
 	//歩数の確定
 	if (angles.size() > 0)
