@@ -217,7 +217,15 @@ void GameManager::dispGoal()
 		//ƒZƒŒƒNƒg‚É–ß‚é
 		CallFunc* goSelect = CallFunc::create([&]()
 		{
-			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
+			if (this->map->getLevel() != GAME_CLEAR_NUM) 
+			{
+				Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
+			}
+			else
+			{
+				auto transition = TransitionFade::create(1.0f, EndingScene::createLayer(eLAYER::OPEN), getColorCode(eColor::YELLOW));
+				Director::getInstance()->replaceScene(transition);
+			}
 		});
 		//‰¹‚ÌÄ¶
 		CallFunc* goSound = CallFunc::create([&]()

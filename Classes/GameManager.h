@@ -7,6 +7,7 @@
 #include "SaveData.h"
 #include "Button.h"
 #include "ColorEnum.h"
+#include "EndingScene.h"
 
 USING_NS_CC;
 
