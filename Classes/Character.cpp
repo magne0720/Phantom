@@ -245,7 +245,7 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 				}
 				//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
 				//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
-				return range-d;
+				return (range-d)/range;
 			}
 			return 0;
 		}
@@ -258,7 +258,7 @@ float Character::onWall(SEGMENT mover, SEGMENT wall,Vec2 pos, float range)
 		}
 		//moveRangeSp->drawSegment(wall.from - pos, wall.from + wall.to - pos, 12, Color4F::GREEN);
 		//moveRangeSp->drawSegment(wall.from - pos, Vec2(0, 0), 4, Color4F::GREEN);
-		return range-d;
+		return (range-d)/range;
 	}
 	return 0;
 };
@@ -319,7 +319,7 @@ void Character::allCollision()
 			float s = onWall(mySeg, SEGMENT(walls.at(i)->points[j], walls.at(i)->getOverPoint(walls.at(i)->points, walls.at(i)->segmentCount, j + 1)), myPosition, objectRange);
 			if (s != 0.0f)
 			{
-				myPosition = normalize(startPosition - targetPosition)*s + myPosition;
+				myPosition = (startPosition - targetPosition)*s + myPosition;
 				targetPosition = setEvasionWall(walls.at(i)->getSegment(j), myPosition, movement);
 			}
 		}

@@ -30,7 +30,7 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(8.0f);
+	setSpeed(10.0f);
 	setGameSpeed(1.0f);
 	setMoveRange(70.0f);
 	setDoubtDgree(150.0f);

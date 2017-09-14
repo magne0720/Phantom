@@ -95,36 +95,36 @@ void GameManager::update(float delta)
 		break;
 	case PLAY:
 		//プレイヤーの軌道を決めている時
-		//timer += 1.0f / 60.0f;
-		//{
-		//	if (timer > 8.0f)
-		//	{
-		//		if (messageSp->getTag() == 0)
-		//		{
-		//			StayCloseMessage();
-		//			timer = 0;
-		//			break;
-		//		}
-		//		if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
-		//		{
-		//			StayShowMessage(2);
-		//			timer = 0;
-		//			break;
-		//		}
-		//		else
-		//		{
-		//			StayShowMessage(1);
-		//			timer = 0;
-		//			break;
-		//		}
-		//	}
+		timer += 1.0f / 60.0f;
+		{
+			if (timer > 8.0f)
+			{
+				if (messageSp->getTag() == 0)
+				{
+					StayCloseMessage();
+					timer = 0;
+					break;
+				}
+				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
+				{
+					StayShowMessage(2);
+					timer = 0;
+					break;
+				}
+				else
+				{
+					StayShowMessage(1);
+					timer = 0;
+					break;
+				}
+			}
 			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby) 
 			{
 				StayCloseMessage();
 				timer = 0;
 				gameState = GAMESTATE::MOVE_START;
 			}
-		//}
+		}
 		break;
 	case MOVE_START:
 			//カウントダウン中に行動をキャンセルしたときに戻る
@@ -268,7 +268,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -299,7 +298,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -319,7 +317,6 @@ void GameManager::checkGoalSprite()
 		spMask = Sprite::create("Game/Clear/Green_mask.png");
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-		spMask->setScaleY(0);
 		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
@@ -351,7 +348,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -372,7 +368,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -392,7 +387,6 @@ void GameManager::checkGoalSprite()
 		spMask = Sprite::create("Game/Clear/Pink_mask.png");
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-		spMask->setScaleY(0);
 		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
@@ -647,4 +641,3 @@ void GameManager::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 
 };
-
