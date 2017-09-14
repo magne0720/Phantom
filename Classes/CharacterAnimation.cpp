@@ -15,8 +15,8 @@ bool CharacterAnimation::init(string fileName, string ponFileName, Size chipSize
 	Sprite* pn = Sprite::create(ponFileName);	// ポン読み込み
 	_mySprite = Sprite::create();			// キャラクタースプライト作成
 	_ponSprite = Sprite::create();		// ポンスプライト作成
-	this->addChild(_ponSprite);
 	this->addChild(_mySprite);
+	this->addChild(_ponSprite);
 	
 	_animationChache = AnimationCache::sharedAnimationCache();		// アニメーションキャッシュに溜めることで読み込み減らす
 
