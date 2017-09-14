@@ -88,6 +88,11 @@ void SaveData::saveLookedSky(bool is)
 	user->setBoolForKey(LOOKED_SKY, is);
 }
 
+// すでにクリアーしているかどうか。
+void SaveData::saveGameCleared(bool is)
+{
+	user->setBoolForKey(GAME_CLEARED, is);
+}
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 //ロード
@@ -146,10 +151,17 @@ void SaveData::AllResset()
 	saveTimeZone(TIME_ZONE::ZEROTIME);
 	saveLookedSky(false);
 	saveStarAppear(false);
+	saveGameCleared(false);
 };
 
 // 空の色が変わった後にタイトルを見たかどうか。
 bool SaveData::loadLookedSky()
 {
 	return user->getBoolForKey(LOOKED_SKY);
+}
+
+// 既にゲームをクリアーしているかどうか。
+bool SaveData::loadGameCleared()
+{
+	return user->getBoolForKey(GAME_CLEARED);
 }

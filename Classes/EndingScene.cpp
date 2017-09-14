@@ -3,6 +3,8 @@
 #include "EndStart.h"
 #include "EndTitle.h"
 #include "TitleSelectScene.h"
+#include "TitleSelectScene.h"
+#include "ColorEnum.h"
 
 using namespace cocos2d;
 
@@ -10,6 +12,27 @@ bool EndingScene::init()
 {
 	if (!Scene::init()) return false;
 
+	_saveData = SaveData::create();
+	this->addChild(_saveData);
+	_gameCleared = _saveData->loadGameCleared();
+
+	// タッチされたことを取得するオブジェクト
+	auto listener = EventListenerTouchOneByOne::create();
+
+	listener->setSwallowTouches(true);
+	listener->onTouchBegan = CC_CALLBACK_2(EndingScene::onTouchBegan, this);
+	//listener->onTouchEnded = CC_CALLBACK_2(TitleScene::onTouchEnded, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+
+
+	return true;
+}
+
+bool EndingScene::onTouchBegan(cocos2d::Touch* pTouch, cocos2d::Event* pEvent)
+{
+	if (!_gameCleared) return false;
+	if (_isReplaceScene) return false;
+	replaceSelect();
 	return true;
 }
 
@@ -87,7 +110,16 @@ void EndingScene::replace(Layer* layer)
 	_fadeSp->setOpacity(0);
 	_fadeSp->setPosition(designResolutionSize*0.5f);
 	_fadeSp->setGlobalZOrder(10);
-	_fadeSp->setColor(Color3B::BLACK);
+	_fadeSp->setColor(Color3B::WHITE);
 	this->addChild(_fadeSp);
 	_fadeSp->runAction(seq);
+}
+
+void EndingScene::replaceSelect()
+{
+	_isReplaceScene = true;
+	_saveData->saveGameCleared(true);
+	TitleSelectScene* ts = TitleSelectScene::createTitleScene();
+	auto transition = TransitionFade::create(1.0f, ts, getColorCode(eColor::YELLOW));
+	Director::getInstance()->replaceScene(transition);
 }

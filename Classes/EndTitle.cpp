@@ -4,6 +4,7 @@
 #include "CharacterAnimation.h"
 #include "AllTags.h"
 #include "ColorEnum.h"
+#include "EndingScene.h"
 
 using namespace cocos2d;
 
@@ -59,7 +60,8 @@ void EndTitle::update(float delta)
 			}
 			else
 			{
-				this->unschedule(schedule_selector(EndTitle::update));
+				this->unscheduleUpdate();
+				((EndingScene*)this->getParent())->replaceSelect();
 			}
 		}
 	}

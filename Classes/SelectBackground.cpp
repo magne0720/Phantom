@@ -32,6 +32,7 @@ bool SelectBackground::init(Color4F color)
 	p->setEndColor(Color4F(color.r, color.g, color.b, 0.5f));
 	p->setStartSpin(0.0f);
 	p->setStartSpinVar(0.0f);
+	p->setEndSizeVar(0.0f);
 	p->setEmissionRate(0.00010417 * (designResolutionSize.width*designResolutionSize.height));
 	this->addChild(p);
 
