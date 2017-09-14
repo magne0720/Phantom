@@ -19,6 +19,7 @@ public:
 	const char* STAR_APPEAR_KEY = "star";//星が出ていいか
 	const char* START_UP_NUM_KEY = "startnum";//起動回数
 	const char* LOOKED_SKY = "changeSky";// 空の色が変わった後にタイトルを見たかどうか。
+	const char* GAME_CLEARED = "gameCleared";// 既にクリアーしているかどうか。
 	UserDefault* user;
 
 	static SaveData* create();
@@ -31,6 +32,7 @@ public:
 	void saveTimeZone(TIME_ZONE time);
 	void saveStarAppear(bool is);
 	void saveLookedSky(bool is);
+	void saveGameCleared(bool is);
 	
 	int loadClear();
 	int loadLastClear();
@@ -40,6 +42,7 @@ public:
 	bool loadStarAppear();
 	void startUpNum();
 	bool loadLookedSky();
+	bool loadGameCleared();
 
 	void AllResset();
 };
