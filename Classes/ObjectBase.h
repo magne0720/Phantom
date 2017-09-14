@@ -7,13 +7,12 @@
 
 USING_NS_CC;
 
+//オブジェクトすべてにある機能
+//歩いて移動する機能は持たない
+//お互いの衝突判定はある予定
 class ObjectBase :public Node 
 {
 public:	
-	//自身と当たり判定のある物
-	Vector<ObjectBase*> targets;
-
-
 
 	//初期設定
 	void initialize(Vec2 pos);
@@ -27,17 +26,21 @@ public:
 	virtual bool onCollision(Vec2 start, Vec2 end,float range);
 	//当たり判定のあるものを設定
 	void setTarget(ObjectBase* p);
-
+	//衝突範囲の設定
+	void setObjectRange(float range);
 
 	//移動可能範囲を示す円環
 	DrawNode* moveRangeSp;
 	//自身の画像
 	CharacterAnimation* mySprite;
-	BlendFunc* blender;
-
 	//自身の場所
 	Vec2 myPosition;
 
+
+	//自身と当たり判定のある物
+	Vector<ObjectBase*> targets;
+
+	float objectRange;//衝突範囲
 };
 
 

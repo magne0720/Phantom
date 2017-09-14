@@ -1,4 +1,7 @@
 CMakeLists.txt
+bin/
+bin/debug/
+bin/debug/android/
 cocos2d/
 proj.win10/
 proj.tizen/

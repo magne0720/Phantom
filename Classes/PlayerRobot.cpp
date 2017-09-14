@@ -30,13 +30,16 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(12.0f);
+	setSpeed(10.0f);
 	setGameSpeed(1.0f);
-	setMoveRange(100.0f);
+	setMoveRange(70.0f);
 	setDoubtDgree(150.0f);
+	setObjectRange(70.0f);
 	checkTime = 120.0f;
 
 	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210));
+	mySprite->getSp()->setAnchorPoint(Vec2(0.5f, 0.34f));
+	mySprite->getPon()->setAnchorPoint(Vec2(0.5f, 0.34f));
 	mySprite->getPon()->setColor(Color3B(col.r*255.0f, col.g*255.0f, col.b*255.0f));
 
 	messageSp = Sprite::create("Game/Player/Stop.png");
@@ -48,14 +51,21 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	endPosition = pos + Vec2(1, 0);
 	initialize(pos, DIR_DEGREE::DIR_RIGHT);
 
+	lastTargetPosition = targetPosition;
+
 	angleNum = 0;
 	isStandby = false;
+	isNext = false;
+	isMove = false;
 	setState(STATUS::STAND);
 
 	goalPa = CutParticle::create("Game/Player/Goal.png",1,2, col);
 	//goalPa->set
 	addChild(goalPa,5);
 
+	moveRangeSp = DrawNode::create();
+	addChild(moveRangeSp);
+	moveRangeSp->drawCircle(Vec2(0, 0), moveRange, 0, 360, false, Color4F::GRAY);
 
 	return true;
 };
@@ -63,33 +73,19 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 void PlayerRobot::plusAction()
 {
 	//log("type=%d", (int)myState);
-		moveTimer+=1.0*gameSpeed;
 		switch (myState)
 		{
 		case STATUS::STAND:
-			if (moveTimer > checkTime / 2)
+			if (isNext)
 			{
-				moveTimer = 0;
-				if (isMove) {
-					if (angles.size() > angleNum)
-					{
-						nextPosition();
-					}
-					else
-					{
-						stopPosition();
-					}
-				}
+				nextPosition();
 			}
 			break;
 		case STATUS::MOVE:
-			//一コマ分移動したら
-			if (onCollision(targets.at(0)->myPosition, moveRange))
-			{
-				findPosition();
-			}
+			if (onCollision(goal))findPosition();
 			break;
 		case STATUS::STOP:
+			isNext = true;
 			break;
 		case STATUS::FIND:
 			break;
@@ -97,7 +93,6 @@ void PlayerRobot::plusAction()
 			break;
 		}
 		//mySprite->setScale((moveTimer/checkTime)+0.5f);
-
 };
 
 //角度の保存
@@ -114,7 +109,7 @@ void PlayerRobot::setAngle(Vec2 from, Vec2 to)
 };
 
 //歩き始める
-void PlayerRobot::moveStartPosition() 
+void PlayerRobot::moveStart() 
 {
 	if (myState == STATUS::FIND)return;
 	if (angles.size() <= 0)return;
@@ -125,9 +120,19 @@ void PlayerRobot::moveStartPosition()
 //行くべきところの設定
 void PlayerRobot::nextPosition()
 {
-	SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
-	targetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
-	angleNum++;
+	isNext = false;
+	if (angleNum< angles.size())
+	{
+		SimpleAudioEngine::getInstance()->playEffect("Sounds/move_4.mp3");
+		lastTargetPosition = getDirectionDegree(Vec2(1, 0), angles.at(angleNum), doubtDegree) + myPosition;
+		targetPosition = lastTargetPosition;
+		angleNum++;
+	}
+	else
+	{
+		//次に向かう場所がない場合
+		stopPosition();
+	}
 };
 
 //立ち止まった時
@@ -138,11 +143,7 @@ void PlayerRobot::stopPosition()
 	
 	isMove = false;
 	isStandby= false;
-	isStart = false;
-	targetPosition = myPosition;
 	angleNum = 0;
-	startPosition = myPosition;
-	setState(STATUS::STOP);
 	stopAnimation();
 };
 
@@ -153,6 +154,7 @@ void PlayerRobot::findPosition()
 	angles.clear();
 
 	isMove = false;
+	isStandby = true;
 	angleNum = 0;
 	findAnimation();
 	SimpleAudioEngine::getInstance()->playEffect("Sounds/PlayerGoal.mp3");
@@ -183,24 +185,17 @@ void PlayerRobot::findAnimation()
 //プレイヤーの操作が異なるので仮想化
 bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 {
-	endPosition = myPosition + Vec2(1, 0);
-	if (isStart) 
-	{
-		isMoveWait = false;
-		return false;
-	}
+	if (isMove)return false;
+	if (myState == STATUS::FIND)return false;
+
 	if (myState == STATUS::STAND) {
+		endPosition = myPosition + Vec2(1, 0);
 		if (onMoveRange(touch->getLocation()))
 		{
 			isMoveWait = true;
-			if (!isMove)
-			{
-				if (isStandby)
-				{
-					angles.clear();
-					endPosition = myPosition + Vec2(1, 0);
-				}
-			}
+			isStandby = false;
+			angles.clear();
+			endPosition = myPosition + Vec2(1, 0);
 		}
 		else
 		{
@@ -212,12 +207,13 @@ bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
+	if (isMove)return;
+	if (myState == STATUS::FIND)return;
+
 	Vec2 touchPosition = touch->getLocation();
 	Vec2 stepPosition = myPosition;
 
-	if (myState == STATUS::FIND)return;
-
-		touchPosition = touch->getLocation();
+	touchPosition = touch->getLocation();
 	//画面外に出たときの処理
 	if (touch->getLocation().x > designResolutionSize.width)
 		touchPosition.x = designResolutionSize.width;
@@ -247,15 +243,14 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 			}
 		}
 	}
-	//ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 };
 
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 	//歩いているなら無効にする
-	if (isMove)return;
+	if(isMove)return;
+	if (myState == STATUS::FIND)return;
 
-	angleNum = 0;
 	//歩数の確定
 	if (angles.size() > 0)
 	{

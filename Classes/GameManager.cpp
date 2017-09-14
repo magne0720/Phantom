@@ -39,7 +39,7 @@ bool GameManager::init(int num)
 	isGoal = &map->robot->isGoal;
 	stageColor = map->goal->getStageColor();
 
-	playerCount = 5;
+	animationCount = START_COUNT;
 	timer = 0;
 	gameState = GAMESTATE::SANDBY;
 
@@ -64,9 +64,14 @@ bool GameManager::init(int num)
 	}
 	dispLife(playerLife,maxLife);
 
+	map->robot->rightRobot->goal = map->goal;
+	map->robot->leftRobot->goal = map->goal;
+
 	map->robot->rightRobot->goalPa->setParticleColor(stageColor);
 	map->robot->leftRobot->goalPa->setParticleColor(stageColor);
-
+/*
+	map->robot->rightRobot->myPosition = map->goal->getPosition();
+*/
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameClear.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/GameStart.mp3");
 	SimpleAudioEngine::getInstance()->preloadEffect("Sounds/PlayerLife.mp3");
@@ -117,18 +122,26 @@ void GameManager::update(float delta)
 			{
 				StayCloseMessage();
 				timer = 0;
-				map->robot->rightRobot->isStart = true;
-				map->robot->leftRobot->isStart = true;
 				gameState = GAMESTATE::MOVE_START;
 			}
 		}
 		break;
 	case MOVE_START:
+			//カウントダウン中に行動をキャンセルしたときに戻る
+		if (!map->robot->rightRobot->isStandby || !map->robot->leftRobot->isStandby)
+		{
+			timer = 0;
+			animationCount = START_COUNT;
+			gameState = GAMESTATE::PLAY;
+			break;
+		}
 		//プレイヤーが始める時
 		if (startAnimation())
 		{
 			map->robot->startRobot();
 			gameState = GAMESTATE::MOVING;
+			map->robot->rightRobot->isNext = true;
+			map->robot->leftRobot->isNext = true;
 		}
 		break;
 	case MOVING:
@@ -148,8 +161,6 @@ void GameManager::update(float delta)
 			if (playerLife == 0)
 				gameState = GAMESTATE::MISS;
 			else {
-				map->robot->rightRobot->setState(STATUS::STAND);
-				map->robot->leftRobot->setState(STATUS::STAND);
 				gameState = GAMESTATE::PLAY;
 			}
 		}
@@ -203,10 +214,18 @@ void GameManager::dispGoal()
 			lifeSps.at(i)->runAction(mFech);
 		}
 
-		//ゴールのアニメーション
+		//セレクトに戻る
 		CallFunc* goSelect = CallFunc::create([&]()
 		{
-			Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
+			if (this->map->getLevel() != GAME_CLEAR_NUM) 
+			{
+				Director::getInstance()->replaceScene(TitleSelectScene::createSelectScene(map->goal->getStageColor()));
+			}
+			else
+			{
+				auto transition = TransitionFade::create(1.0f, EndingScene::createLayer(eLAYER::OPEN), getColorCode(eColor::YELLOW));
+				Director::getInstance()->replaceScene(transition);
+			}
 		});
 		//音の再生
 		CallFunc* goSound = CallFunc::create([&]()
@@ -257,7 +276,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -288,7 +306,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -308,7 +325,6 @@ void GameManager::checkGoalSprite()
 		spMask = Sprite::create("Game/Clear/Green_mask.png");
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-		spMask->setScaleY(0);
 		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
@@ -340,7 +356,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.1f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -361,7 +376,6 @@ void GameManager::checkGoalSprite()
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 		spMask->setScaleY(0);
-		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
 			Sequence::create(ScaleTo::create(0.3f, 1, 1.2), ScaleTo::create(0.1f, 1, 1), FadeOut::create(1.0f),
@@ -381,7 +395,6 @@ void GameManager::checkGoalSprite()
 		spMask = Sprite::create("Game/Clear/Pink_mask.png");
 		spMask->setPosition(Vec2(designResolutionSize.width*0.5f, designResolutionSize.height*0.4f));
 		spMask->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-		spMask->setScaleY(0);
 		spMask->setScaleY(0);
 		addChild(spMask);
 		spMask->runAction(
@@ -440,26 +453,79 @@ bool GameManager::standbyAnimation()
 
 bool GameManager::startAnimation() 
 {
+	Sprite* sp;
+	DelayTime* delay;
+	ScaleTo* scaleOut;
+	RemoveSelf* remove;
+	RotateBy* rTo;
+	ScaleTo* sZoomIn;
+	ScaleTo* sZoomOut;
+	FadeOut* out;
+
 	if (timer == 0)
 	{
-		Sprite* sp = Sprite::create("Game/Message/Start.png");
-		sp->setPosition(designResolutionSize*0.5f);
-		addChild(sp);
-		RotateBy* rTo = RotateBy::create(1, 360);
-		ScaleTo* sZoomIn = ScaleTo::create(0.5, 2);
-		ScaleTo* sZoomOut = ScaleTo::create(0.5, 2);
-		FadeOut* out = FadeOut::create(0.5f);
-		sp->runAction(Sequence::create(sZoomIn, rTo, sZoomOut, out, nullptr));
+		switch (animationCount)//カウントダウンによって出す番号を変える
+		{
+		case 3:
+			sp = Sprite::create("Game/Number/Num_3.png");
+			sp->setPosition(designResolutionSize*0.5f);
+			addChild(sp);
+			delay = DelayTime::create(0.2f);
+			out = FadeOut::create(0.5f);
+			remove = RemoveSelf::create(true);
+			sp->runAction(Sequence::create(delay, out, remove, nullptr));
+			break;
+		case 2:
+			sp = Sprite::create("Game/Number/Num_2.png");
+			sp->setPosition(designResolutionSize*0.5f);
+			addChild(sp);
+			delay = DelayTime::create(0.2f);
+			out = FadeOut::create(0.5f);
+			remove = RemoveSelf::create(true);
+			sp->runAction(Sequence::create(delay, out, remove, nullptr));
+			break;
+		case 1:
+			sp = Sprite::create("Game/Number/Num_1.png");
+			sp->setPosition(designResolutionSize*0.5f);
+			addChild(sp);
+			delay = DelayTime::create(0.2f);
+			out = FadeOut::create(0.5f);
+			remove = RemoveSelf::create(true);
+			sp->runAction(Sequence::create(delay, out, remove, nullptr));
+			break;
+		case 0:
+			sp = Sprite::create("Game/Message/Start.png");
+			sp->setPosition(designResolutionSize*0.5f);
+			addChild(sp);
+			sZoomIn = ScaleTo::create(0.5, 2);
+			sZoomOut = ScaleTo::create(0.5, 2);
+			out = FadeOut::create(0.5f);
+			sp->runAction(Sequence::create(sZoomIn, sZoomOut, out, nullptr));
+			break;
+		default:
+			break;
+		}
+
+		sp->setColor(Color3B(map->robot->myColor));
 	}
-	if (timer > 2.5f) {
+	if (timer > 1.0f) {
+		if (animationCount == 0) {
+			map->robot->scheduleUpdate();
 
-		map->robot->scheduleUpdate();
-
-		timer = 0;
-		return true;
+			animationCount = START_COUNT;
+			timer = 0;
+			return true;
+		}
+		else 
+		{
+			animationCount--;
+			timer = 0;
+			return false;
+		}
 	}
 	timer += 1.0 / 60.0f;
-	return false;
+
+		return false;
 };
 
 bool GameManager::stopAnimation()
@@ -571,11 +637,15 @@ bool GameManager::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void GameManager::onTouchMoved(const Touch * touch, Event *unused_event)
 {
-
+	if (touch->getLocation().x<designResolutionSize.width*0.05f&&
+		touch->getLocation().y>designResolutionSize.height*0.95f) 
+	{
+		timer = 0;
+		gameState = GAMESTATE::MISS;
+	}
 };
 
 void GameManager::onTouchEnded(const Touch * touch, Event *unused_event)
 {
 
 };
-

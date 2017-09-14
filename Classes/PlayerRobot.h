@@ -6,11 +6,12 @@
 #include "CutParticle.h"
 
 #define MODE 0
+#define MOVE_MAX 128 
 
 USING_NS_CC;
 
 //なぞった方向に移動をする
-//
+//キャラクターが移動する軌道を一度に設定しておくことができるクラス
 class PlayerRobot :public Character 
 {
 public:
@@ -22,7 +23,7 @@ public:
 	//角度の保存
 	void setAngle(Vec2 from, Vec2 to);
 	//歩き始める
-	void moveStartPosition();
+	void moveStart();
 	//つぎに行くべきところの設定
 	void nextPosition();
 	//次に行く場所がなくなった時に配列の中を削除し、動きを止める
@@ -41,24 +42,22 @@ public:
 	virtual void onTouchMoved(const Touch * touch, Event *unused_event);
 	virtual void onTouchEnded(const Touch * touch, Event *unused_event);
 
-	//
-	//設定時のスタート位置
-	Vec2 startPosition;
-	//一定区間超えた位置
+	//一定区間超えた位置(起動設定に必要)
 	Vec2 endPosition;
-	//移動準備しているか
+	//移動準備完了しているか
 	bool isStandby;
-	//動き始めたか
-	bool isStart;
+	//次回の移動を決められたか
+	bool isNext;
 	//動いているか
 	bool isMove;
 
-	float moveTimer;//一コマのタイマー
 	float checkTime;//コマの区切り
+	//現在移動している区間番号
 	int angleNum;
+	//区間の軌道角度
 	std::vector<float> angles;
 	Sprite* messageSp;
 	CutParticle* goalPa;
-
+	ObjectBase* goal;
 };
 #endif // !__PLAYER_ROBOT_H__

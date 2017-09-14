@@ -7,10 +7,12 @@
 #include "SaveData.h"
 #include "Button.h"
 #include "ColorEnum.h"
+#include "EndingScene.h"
 
 USING_NS_CC;
 
 #define MAX_LIFE 6
+#define START_COUNT 3
 
 class GameManager :public Node 
 {
@@ -44,7 +46,7 @@ public:
 	Vector<Sprite*> lifeSps;
 	int playerLife,maxLife;
 
-	int playerCount;//プレイヤーの行動可能回数
+	int animationCount;//カウントダウンに用いる
 
 	float timer;
 

@@ -6,6 +6,8 @@
 
 USING_NS_CC;
 
+#define GAME_CLEAR_NUM 9
+
 class SaveData :public Node 
 {
 public:

@@ -11,7 +11,6 @@ using namespace CocosDenshion;
 #define PLAYER_AI 0
 #define PLAYER_HANSOME 1
 #define MASS_SIZE 50
-#define MOVE_MAX 12
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1920, 1200);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
@@ -136,6 +135,15 @@ static Vec2 getDirectionDegree(Vec2 target, float deg, float range=1.0f)
 	vector.y = ay*range;
 
 	return vector;
+};
+
+static bool onCollisionCircle(Vec2 posA, float circleA, Vec2 posB, float circleB) 
+{
+	if (pow(posA.x - posB.x, 2) + pow(posA.y - posB.y, 2)<=pow(circleA+circleB,2)) 
+	{
+		return true;
+	}
+	return false;
 };
 
 enum GAMESTATE 
