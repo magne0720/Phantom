@@ -14,12 +14,13 @@ bool TitleLogo::init(Color3B color)
 	_logoSp->runAction(move);
 	this->addChild(_logoSp);
 
-	_shadowSp = Sprite::createWithSpriteFrame(_logoSp->getSpriteFrame());
-	_shadowSp->setColor(Color3B::BLACK);
-	_shadowSp->setOpacity(70);
-	_shadowSp->setScaleY(1.01f);
-	_shadowSp->setScaleX(1.04f);
-	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.45f);
+	//_shadowSp = Sprite::createWithSpriteFrame(_logoSp->getSpriteFrame());
+	_shadowSp = Sprite::create("Title/LogosLight.png");
+	//_shadowSp->setColor(Color3B::BLACK);
+	_shadowSp->setOpacity(95);
+	//_shadowSp->setScaleY(1.01f);
+	//_shadowSp->setScaleX(1.04f);
+	_shadowSp->setPosition(_logoSp->getContentSize().width*0.5f, _logoSp->getContentSize().height*0.5f);
 	_logoSp->addChild(_shadowSp, -1);
 
 	return true;
