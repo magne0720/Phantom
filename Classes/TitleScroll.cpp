@@ -11,16 +11,18 @@ bool TitleScroll::init(float scrollSpeed, int clearedStage)
 	float spriteWidthAll = 0.0f;
 	int cnt = 0;
 
+	int scrollDir = scrollSpeed / abs(scrollSpeed);
 
 	while (1)
 	{
 		auto ts = TitleBackground::create(clearedStage);
-		if (scrollSpeed > 0.0f) ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-		else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+		/*if (scrollSpeed > 0.0f) */
+		ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+		//else ts->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 		this->addChild(ts);
 
 		Size size = ts->getBoundingBox().size;
-		ts->setPosition(size.width * (cnt - 1), 0.0f);
+		ts->setPosition(size.width * cnt * scrollDir, 0.0f);
 		_bgSprites.push_back(ts);
 		spriteWidthAll += size.width;
 

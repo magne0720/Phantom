@@ -2,7 +2,8 @@
 #define _EndStart_h_
 
 #include "cocos2d.h"
-#include "CharacterAnimation.h"
+#include "Wood.h"
+#include "EndingCharacterAnimation.h"
 
 class EndStart : public cocos2d::Layer
 {
@@ -13,9 +14,10 @@ public:
 	cocos2d::Sprite* _upSp;
 	cocos2d::Sprite* _downSp;
 
-	cocos2d::Sprite* _charShadow[5];
-	CharacterAnimation* _charAnim[5];
-	CharacterAnimation* _char;
+	cocos2d::Sprite* _woodShadow[8];
+	Wood* _wood[8];
+	cocos2d::Sprite* _charaShadow[6];
+	EndingCharacterAnimation* _chara[6];
 };
 
 #endif // !_EndStart_h_

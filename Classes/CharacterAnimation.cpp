@@ -8,6 +8,7 @@ bool CharacterAnimation::init(string fileName, string ponFileName, Size chipSize
 {
 	if (!Node::init()) return false;
 
+	size = chipSize;
 	vector<SpriteFrame*> charSp;	// 切り取ったチップを一時的に格納
 	vector<SpriteFrame*> ponSp;		// 切り取ったチップをポンに格納
 	Sprite* sp = Sprite::create(fileName);	// 画像読み込み
@@ -363,4 +364,21 @@ void CharacterAnimation::setDir(eDIR dirName)
 Sprite* CharacterAnimation::getPon()
 {
 	return _ponSprite;
+}
+
+Size CharacterAnimation::getSpriteSize()
+{
+	return size;
+}
+
+void CharacterAnimation::setFlipX(bool is)
+{
+	if (_isFliped == is) return;
+	this->setRotation3D(Vec3(0, 180, 0));
+}
+
+void CharacterAnimation::setFlipY(bool is)
+{
+	if (_isFliped == is) return;
+	this->setRotation3D(Vec3(180, 0, 0));
 }

@@ -13,7 +13,7 @@ enum class eLAYER
 class EndingScene : public cocos2d::Scene
 {
 public:
-	static EndingScene* createLayer(eLAYER el = eLAYER::START);
+	static EndingScene* createLayer(eLAYER el = eLAYER::TITLE);
 	bool init();
 	CREATE_FUNC(EndingScene);
 	void replace(cocos2d::Layer* layer);

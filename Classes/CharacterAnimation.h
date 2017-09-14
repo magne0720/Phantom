@@ -28,7 +28,7 @@ public:
 		LEFT,
 		RIGHT
 	};
-	bool init(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay, bool move);
+	virtual bool init(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay, bool move);
 	static CharacterAnimation* create(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
 	static CharacterAnimation* createInStop(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
 	static CharacterAnimation* createInMove(std::string fileName, std::string ponFileName, cocos2d::Size chipSize, float delay = 0.5f);
@@ -52,11 +52,17 @@ public:
 	void setDir(cocos2d::Vec2 dir);	// アニメーションの向きを変更
 	void setDir(eDIR dirName);		// アニメーションの向きを変更(enum型)
 
+	cocos2d::Size getSpriteSize();
+	void setFlipX(bool is);
+	void setFlipY(bool is);
+
 private:
 	cocos2d::Sprite* _mySprite;
 	cocos2d::Sprite* _ponSprite;
 	eDIR _dir;
 	bool _movedAnim;
+	cocos2d::Size size;
+	bool _isFliped = false;
 
 	cocos2d::AnimationCache* _animationChache;
 };
