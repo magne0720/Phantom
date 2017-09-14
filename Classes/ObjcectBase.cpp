@@ -8,9 +8,9 @@ void ObjectBase::initialize(Vec2 pos)
 };
 
 //‰æ‘œ‚ğ’†‰›‚É‚µ‚Ä©g‚Ì‰æ‘œ‚ğ’u‚­
-void ObjectBase::initWithFileCenter(std::string body, std::string head, Size chipSize)
+void ObjectBase::initWithFileCenter(std::string body, std::string head, Size chipSize,float delay)
 {
-	mySprite = CharacterAnimation::create(body, head,chipSize, 0.5f);
+	mySprite = CharacterAnimation::create(body, head,chipSize, delay);
 	addChild(mySprite, 5);
 };
 

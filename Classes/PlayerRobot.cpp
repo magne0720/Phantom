@@ -30,17 +30,18 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	listener->onTouchEnded = CC_CALLBACK_2(PlayerRobot::onTouchEnded, this);
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
 
-	setSpeed(10.0f);
+	setSpeed(2.73f);
 	setGameSpeed(1.0f);
 	setMoveRange(70.0f);
 	setDoubtDgree(150.0f);
 	setObjectRange(70.0f);
 	checkTime = 120.0f;
 
-	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210));
+	initWithFileCenter("Character/GameAnim_Body.png", "Character/GameAnim_Head.png",Size(210, 210),0.3f);
 	mySprite->getSp()->setAnchorPoint(Vec2(0.5f, 0.34f));
 	mySprite->getPon()->setAnchorPoint(Vec2(0.5f, 0.34f));
 	mySprite->getPon()->setColor(Color3B(col.r*255.0f, col.g*255.0f, col.b*255.0f));
+	mySprite->stopAnimation();
 
 	messageSp = Sprite::create("Game/Player/Stop.png");
 	messageSp->setPosition(Vec2(0, myPosition.y + 50));

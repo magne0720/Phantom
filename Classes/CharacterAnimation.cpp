@@ -15,8 +15,9 @@ bool CharacterAnimation::init(string fileName, string ponFileName, Size chipSize
 	Sprite* pn = Sprite::create(ponFileName);	// ポン読み込み
 	_mySprite = Sprite::create();			// キャラクタースプライト作成
 	_ponSprite = Sprite::create();		// ポンスプライト作成
-	this->addChild(_mySprite);
 	this->addChild(_ponSprite);
+	this->addChild(_mySprite);
+	
 	_animationChache = AnimationCache::sharedAnimationCache();		// アニメーションキャッシュに溜めることで読み込み減らす
 
 	int i = 0;
@@ -234,36 +235,36 @@ void CharacterAnimation::stopAnimation(eDIR dirName)
 {
 	if (_movedAnim == false && _dir == dirName) return;
 	_mySprite->stopAllActions();
-	_ponSprite->stopAllActions();
+	//_ponSprite->stopAllActions();
 	_dir = dirName;
 	_movedAnim = false;
 	Animation* anim;
-	Animation* ponA;
+	//Animation* ponA;
 	switch (dirName)
 	{
 	case eDIR::FRONT:
 		anim = _animationChache->animationByName("STOP_F");
-		ponA = _animationChache->animationByName("P_STOP_F");
+		//ponA = _animationChache->animationByName("P_STOP_F");
 		break;
 	case eDIR::BACK:
 		anim = _animationChache->animationByName("STOP_B");
-		ponA = _animationChache->animationByName("P_STOP_B");
+		//ponA = _animationChache->animationByName("P_STOP_B");
 		break;
 	case eDIR::LEFT:
 		anim = _animationChache->animationByName("STOP_L");
-		ponA = _animationChache->animationByName("P_STOP_L");
+		//ponA = _animationChache->animationByName("P_STOP_L");
 		break;
 	case eDIR::RIGHT:
 		anim = _animationChache->animationByName("STOP_R");
-		ponA = _animationChache->animationByName("P_STOP_R");
+		//ponA = _animationChache->animationByName("P_STOP_R");
 		break;
 	default:
 		break;
 	}
 	auto action = RepeatForever::create(Animate::create(anim));
-	auto pAction = RepeatForever::create(Animate::create(ponA));
+	//auto pAction = RepeatForever::create(Animate::create(ponA));
 	_mySprite->runAction(action);
-	_ponSprite->runAction(pAction);
+	//_ponSprite->runAction(pAction);
 }
 
 void CharacterAnimation::stopAnimation()
