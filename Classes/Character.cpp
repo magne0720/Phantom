@@ -135,6 +135,7 @@ void Character::moveStart()
 	setState(STATUS::MOVE);
 	moveTimer = 0;
 	startPosition = myPosition;
+	mySprite->startAnimation();
 };
 
 void Character::moveStop()
@@ -142,6 +143,7 @@ void Character::moveStop()
 	setState(STATUS::STOP);
 	lastTargetPosition = myPosition;
 	targetPosition = myPosition;
+	mySprite->stopAnimation();
 };
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -307,7 +309,6 @@ bool Character::onDirectionLeft(const Vec2 target)
 //è’ìÀîªíËÇ‹Ç∆Çﬂ
 void Character::allCollision()
 {
-	if (length(targetPosition - myPosition) < moveSpeed)return;
 
 	SEGMENT mySeg = SEGMENT(myPosition, Vec2(normalize(lastTargetPosition - myPosition)*objectRange + myPosition));
 	Vec2 movement = normalize(lastTargetPosition - myPosition)*objectRange;

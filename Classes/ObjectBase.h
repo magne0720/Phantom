@@ -17,7 +17,7 @@ public:
 	//初期設定
 	void initialize(Vec2 pos);
 	//初期画像を中心に配置
-	void initWithFileCenter(std::string body, std::string head, Size chipSize = Size(100, 100));
+	void initWithFileCenter(std::string body, std::string head, Size chipSize = Size(100, 100),float delay=0.5f);
 	//ターゲット範囲に入っているか
 	virtual bool onCollision(Vec2 pos, float range);
 	//自身と引数(相手)の円判定
