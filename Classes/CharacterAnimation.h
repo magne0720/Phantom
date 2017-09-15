@@ -42,6 +42,9 @@ public:
 	void startAnimation(eDIR dirName);	// 移動アニメーションに切り替え(向き指定)
 	void startAnimation();				// 移動アニメーションに切り替え
 
+	void stopPonAnim(eDIR dirName);		// ぽんのアニメーションを停止(向き指定)
+	void stopPonAnim();					// ぽんのアニメーションを停止
+
 	void stopAction();					// アニメーション自体を停止
 	cocos2d::Sprite* getSp();			// クラス内のスプライトを取得(オススメしない)
 	cocos2d::Sprite* getPon();

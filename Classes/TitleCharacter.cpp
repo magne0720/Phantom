@@ -43,6 +43,7 @@ void TitleCharacter::update(float delta)
 			_state = eSTATE::STAND;
 			_timer = 0.0f;
 			_charAnim->stopAnimation(DIR::FRONT);
+			_charAnim->stopPonAnim(DIR::FRONT);
 			changeState();
 			((TitleLayer*)this->getParent())->setScrollStop();
 		}

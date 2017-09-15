@@ -144,7 +144,7 @@ bool EndStart::init()
 		_chara[5]->changeAnimation(eENDSTATE::WALK);
 		
 	});
-	auto move0 = MoveBy::create(2.0f, Vec2(100.0f, 0.0f));
+	auto move0 = MoveBy::create(2.0f, Vec2(110.0f, 0.0f));
 	auto call1 = CallFunc::create([&]() {
 		_chara[5]->changeDir(eDIR::FRONT);
 		_chara[5]->changeAnimation(eENDSTATE::STAND);
