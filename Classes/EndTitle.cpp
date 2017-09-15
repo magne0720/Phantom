@@ -37,13 +37,13 @@ bool EndTitle::init()
 	colopon->setDir(DIR::LEFT);
 	colopon->getPon()->setColor(getColorCode(eColor::YELLOW));
 
-	_map = Sprite::create("Ending/StuffRoll.png");
+	/*_map = Sprite::create("Ending/StuffRoll.png");
 	_map->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 
 	_map->setPosition(designResolutionSize.width*0.5f, 0.0f);
 	this->addChild(_map);
 
-	this->scheduleUpdate();
+	this->scheduleUpdate();*/
 
 	return true;
 }
@@ -73,13 +73,13 @@ void EndTitle::update(float delta)
 		{
 			_isStopped = true;
 			cnt++;
-			_map->setPositionY(designResolutionSize.height * cnt);
+			_map->setPositionY(designResolutionSize.height * 0.5f + cnt * 690 + 690 * 0.5f);
 			_timer = 0.0;
 		}
 		else
 		{
 			float per = _timer / _MOVE_TIME;
-			_map->setPositionY(designResolutionSize.height * cnt + designResolutionSize.height*per);
+			_map->setPositionY(690 * cnt + (690 * 0.5f + designResolutionSize.height * 0.5f) + 690 * per);
 		}
 	}
 }
