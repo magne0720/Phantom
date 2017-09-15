@@ -7,6 +7,7 @@
 #include "EndingScene.h"
 
 using namespace cocos2d;
+using namespace std;
 
 bool EndTitle::init()
 {
