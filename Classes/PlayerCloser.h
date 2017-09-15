@@ -30,6 +30,8 @@ public:
 
 	Vec2 startPosition;
 	Vec2 endPosition;
+	Vec2 endRightPosition;
+	Vec2 endLeftPosition;
 	Color4F myColor;
 	void drawMoveLineRight();
 	void drawMoveLineLeft();

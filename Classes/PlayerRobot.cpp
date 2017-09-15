@@ -61,7 +61,6 @@ bool PlayerRobot::init(Vec2 pos,Color4F col)
 	setState(STATUS::STAND);
 
 	goalPa = CutParticle::create("Game/Player/Goal.png",1,2, col);
-	//goalPa->set
 	addChild(goalPa,5);
 
 	moveRangeSp = DrawNode::create();
@@ -260,5 +259,6 @@ void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 	else {
 		isStandby = false;
 	}
+	isMoveWait = false;
 };
 

@@ -26,6 +26,7 @@ public:
 	bool startAnimation();
 	bool stopAnimation();
 	bool missAnimation();
+	void lifeAnimation();
 
 	void StayShowMessage(int num);
 	void StayCloseMessage();

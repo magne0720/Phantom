@@ -91,7 +91,10 @@ void Character::action()
 		break;
 	case STOP:
 		//plusAction‚ðˆê“x’Ê‚Á‚½Œã‚É’Ê‚é
-		setState(STATUS::STAND);
+		if (moveTimer >= 0.7f) 
+		{
+			setState(STATUS::STAND);
+		}
 		break;
 	case FIND:
 		break;
@@ -141,6 +144,7 @@ void Character::moveStart()
 void Character::moveStop()
 {
 	setState(STATUS::STOP);
+	moveTimer = 0;
 	lastTargetPosition = myPosition;
 	targetPosition = myPosition;
 	mySprite->stopAnimation();

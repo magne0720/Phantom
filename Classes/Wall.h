@@ -34,6 +34,7 @@ public:
 	//”»’è‚ğæ‚éü
 	Vec2 *fromPos,*toPos;
 	CutParticle* particle;
+	Sprite*clippSprite;
 
 	//------------------------------------------
 	//Ÿ‚Í‚±‚ê‚ğg‚Á‚Ä•ªŠ„ˆ—‚ğ‚·‚é

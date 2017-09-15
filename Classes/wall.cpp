@@ -90,8 +90,6 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	particle = CutParticle::create("Game/Wall/Slash.png",20,1);
 	addChild(particle, 60);
 
-	Sprite* sp = Sprite::create();
-
 	for (int i = 0; i < count; i++) 
 	{
 		points[i] = vecs[i];
@@ -104,17 +102,20 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	debug->setPosition(-getPosition());
 	addChild(debug, 51);
 
-	myWall->drawPolygon(&vecs[0], 4, fillColor, 1, segmentColor);
+	myWall->drawPolygon(&vecs[0], 4, Color4F::WHITE, 1, Color4F::BLACK);
 	//myWall->drawSegment(points[0], points[2], 5, Color4F::WHITE);
 	//myWall->drawSegment(points[1], points[3], 5, Color4F::WHITE); 
 
 
-	myWall->setPosition(-getPosition());
 	addChild(myWall);
+
+	clippSprite = Sprite::create("Game/Wall/wallMask.png");
+	clippSprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	//addChild(clippSprite);
 
 	clipp = ClippingNode::create();
 	clipp->setStencil(myWall);
-	clipp->addChild(sp);
+	clipp->addChild(clippSprite);
 	addChild(clipp);
 
 	isCuted = false;
@@ -132,18 +133,18 @@ void Wall::update(float delta)
 		particle->setLine(*fromPos,*toPos);
 		callCollision();
 	}
-	if (cutTimer < 0)cutTimer += 0.02f;//速度変化
-	else	cutTimer += 0.01f;
+	if (cutTimer < 0.5f)cutTimer += 0.01f;//速度変化
+	else	cutTimer += 0.005f;
 	
 	if (cutTimer >= 1.0f)//ループさせる
 	{
-		cutTimer = -1.0f;
+		cutTimer = 0;
 		isCuted = false;
 	}
 	debug->clear();
 	for (int i = 0; i < segmentCount; i++)
 	{
-			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(cos(cutTimer) * 2, cos(cutTimer) * 2, cos(cutTimer) * 2, 1));
+			debug->drawSegment(points[i], getOverPoint(points, segmentCount, i + 1), 7, Color4F(sin(cutTimer*M_PI)/2 , sin(cutTimer*M_PI)/2 , sin(cutTimer*M_PI)/2 , 1));
 	}
 };
 

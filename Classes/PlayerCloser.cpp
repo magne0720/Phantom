@@ -49,6 +49,8 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 
 	myColor = col;
 
+	endRightPosition = right;
+	endLeftPosition = left;
 
 	rightRobot->scheduleUpdate();
 	leftRobot->scheduleUpdate();
@@ -95,7 +97,7 @@ void PlayerCloser::update(float delta)
 //右のロボットが進む軌道の表示
 void PlayerCloser::drawMoveLineRight()
 {
-	Vec2 start=rightRobot->myPosition, end= Vec2(1, 0);;
+	Vec2 start = rightRobot->myPosition,end=rightRobot->myPosition;
 	moveLineRight->clear();
 	for (int i =0; i < rightRobot->angles.size(); i++) 
 	{
@@ -113,13 +115,15 @@ void PlayerCloser::drawMoveLineRight()
 		}
 		start = end;
 	}
+	if (rightRobot->isMoveWait)
+	moveLineRight->drawSegment(end, endRightPosition, 5, Color4F::GRAY);
 	//rightRobot->isPut = false;
 };
 
 //左のロボットが進む軌道を表示
 void PlayerCloser::drawMoveLineLeft()
 {
-	Vec2 start = leftRobot->myPosition, end = Vec2(1, 0);
+	Vec2 start = leftRobot->myPosition,end=leftRobot->myPosition;
 	moveLineLeft->clear();
 	for (int i = 0; i < leftRobot->angles.size(); i++)
 	{
@@ -136,6 +140,8 @@ void PlayerCloser::drawMoveLineLeft()
 		}
 		start = end;
 	}
+	if(leftRobot->isMoveWait)
+	moveLineLeft->drawSegment(end, endLeftPosition, 5, Color4F::GRAY);
 	//leftRobot->isPut = false;
 };
 
@@ -150,12 +156,16 @@ void PlayerCloser::startRobot()
 };
 bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
+	if (rightRobot->isMoveWait)endRightPosition = touch->getLocation();
+	if (leftRobot->isMoveWait)endLeftPosition = touch->getLocation();
+
 	return true;
 };
 
 void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event) 
 {
-
+	if (rightRobot->isMoveWait)endRightPosition = touch->getLocation();
+	if (leftRobot->isMoveWait)endLeftPosition = touch->getLocation();
 };
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
@@ -168,7 +178,8 @@ void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event)
 			delayTimer = 0;
 		}
 	}
-	else {
+	else 
+	{
 		isRobotMoving = false;
 	}
 };

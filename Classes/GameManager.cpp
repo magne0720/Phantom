@@ -145,6 +145,13 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVING:
+		if (map->robot->isRobotMoving) 
+		{
+			playerLife--;
+			lifeAnimation();	
+			if (playerLife == 0)
+				gameState = GAMESTATE::MISS;
+		}
 		if (!map->robot->rightRobot->isMove&&!map->robot->leftRobot->isMove) 
 		{
 			gameState = GAMESTATE::MOVE_STOP;
@@ -533,18 +540,13 @@ bool GameManager::stopAnimation()
 	if (timer == 0)
 	{
 		DelayTime* delay = DelayTime::create(1.0f);
-		ScaleTo* sZoomOne = ScaleTo::create(0.4f, 1.3f);
-		FadeIn* outOne = FadeIn::create(0.4f);
-		Spawn* sOne = Spawn::createWithTwoActions(sZoomOne, outOne);
-		ScaleTo* sZoomTwo = ScaleTo::create(0.5f, 1);
-		FadeOut* outTwo = FadeOut::create(0.1f);
-		CallFunc* goSound = CallFunc::create([&]()
+		CallFunc* goLife = CallFunc::create([&]()
 		{
-			SimpleAudioEngine::getInstance()->playEffect("Sounds/PlayerLife.mp3");
-		}); 
-		lifeSps.at(playerLife)->runAction(Sequence::create(delay,sOne,goSound,sZoomTwo,outTwo, nullptr));
+			lifeAnimation();
+		});
 
-	
+		lifeSps.at(playerLife)->runAction(Sequence::create(delay,goLife, nullptr));
+
 	}
 	if (timer > 2.5f) {
 		timer = 0;
@@ -604,6 +606,20 @@ bool GameManager::missAnimation()
 	}
 };
 
+void GameManager::lifeAnimation() 
+{
+	ScaleTo* sZoomOne = ScaleTo::create(0.4f, 1.3f);
+	FadeIn* outOne = FadeIn::create(0.4f);
+	Spawn* sOne = Spawn::createWithTwoActions(sZoomOne, outOne);
+	ScaleTo* sZoomTwo = ScaleTo::create(0.5f, 1);
+	FadeOut* outTwo = FadeOut::create(0.1f);
+	CallFunc* goSound = CallFunc::create([&]()
+	{
+		SimpleAudioEngine::getInstance()->playEffect("Sounds/PlayerLife.mp3");
+	});
+	lifeSps.at(playerLife)->runAction(Sequence::create(sOne, goSound, sZoomTwo, outTwo, nullptr));
+};
+
 void GameManager::StayShowMessage(int num)
 {
 	return;
@@ -629,7 +645,6 @@ void GameManager::StayCloseMessage()
 	}
 };
 
-//プレイヤーの操作が異なるので仮想化
 bool GameManager::onTouchBegan(const Touch * touch, Event *unused_event) 
 {
 	return true;
@@ -637,12 +652,7 @@ bool GameManager::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void GameManager::onTouchMoved(const Touch * touch, Event *unused_event)
 {
-	if (touch->getLocation().x<designResolutionSize.width*0.05f&&
-		touch->getLocation().y>designResolutionSize.height*0.95f) 
-	{
-		timer = 0;
-		gameState = GAMESTATE::MISS;
-	}
+
 };
 
 void GameManager::onTouchEnded(const Touch * touch, Event *unused_event)
