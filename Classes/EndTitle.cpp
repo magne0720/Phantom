@@ -34,6 +34,7 @@ bool EndTitle::init()
 	this->addChild(colopon);
 	colopon->setPosition(designResolutionSize.width*0.5f, designResolutionSize.height*0.18f);
 	colopon->setDir(DIR::LEFT);
+	colopon->getPon()->setColor(getColorCode(eColor::YELLOW));
 
 	_map = Sprite::create("Ending/StuffRoll.png");
 	_map->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);

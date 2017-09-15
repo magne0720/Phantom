@@ -11,6 +11,6 @@ public:
 
 	cocos2d::Sprite* _leftWall;
 	cocos2d::Sprite* _rightWall;
-	cocos2d::DrawNode* _light;
+	cocos2d::Sprite* _light;
 };
 #endif // !_EndOpen_h_

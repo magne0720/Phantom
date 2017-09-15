@@ -8,6 +8,10 @@ bool EndOpen::init()
 {
 	if (!Layer::init()) return false;
 
+	auto door = Sprite::create("Ending/Door.png");
+	door->setPosition(designResolutionSize*0.5f);
+	this->addChild(door);	
+
 	_leftWall = Sprite::create("Ending/WallLeft.png");
 	_leftWall->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	_leftWall->setPosition(designResolutionSize*0.5f);
@@ -59,10 +63,11 @@ bool EndOpen::init()
 	colo0B->runAction(repB);
 	colo0H->runAction(repH);
 
-	auto delay1H = DelayTime::create(4.0f);
+	float fadeStartTime = 2.5f;
+	auto delay1H = DelayTime::create(fadeStartTime);
 	auto fade1H = FadeOut::create(3.0f);
 	auto seq1H = Sequence::create(delay1H, fade1H, NULL);
-	auto delay1B = DelayTime::create(4.0f);
+	auto delay1B = DelayTime::create(fadeStartTime);
 	auto fade1B = FadeOut::create(3.0f);
 	auto seq1B = Sequence::create(delay1B, fade1B, NULL);
 	colo1H->runAction(seq1H);
@@ -81,9 +86,11 @@ bool EndOpen::init()
 	_leftWall->runAction(seqL);
 	_rightWall->runAction(seqR);
 
-	_light = DrawNode::create();
-	_light->drawDot(Vec2::ZERO, 20.0f, Color4F::WHITE);
+	/*_light = DrawNode::create();
+	_light->drawDot(Vec2::ZERO, 20.0f, Color4F::WHITE);*/
+	_light = Sprite::create("Ending/Light.png");
 	_light->setPosition(designResolutionSize*0.5f);
+	_light->setScale(0.0f);
 	_light->setZOrder(-1);
 	this->addChild(_light);
 
@@ -91,7 +98,7 @@ bool EndOpen::init()
 	auto call = CallFunc::create([&]() {
 		_light->setZOrder(1);
 	});
-	auto scale = ScaleTo::create(6.0f, designResolutionSize.width*1.3f / 20.0f);
+	auto scale = ScaleTo::create(2.0f, 2.0f);
 	auto ease = EaseIn::create(scale, 3.0f);
 	auto end = CallFunc::create([&]() {
 		((EndingScene*)this->getParent())->replace(this);
