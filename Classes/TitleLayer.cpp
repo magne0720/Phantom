@@ -79,12 +79,6 @@ bool TitleLayer::init(SaveData* saveData)
 	if (_saveData->loadClear() >= 0) titleLogo = TitleLogo::create(getColorCode(_saveData->loadLastClear()));
 	else titleLogo = TitleLogo::create();
 	this->addChild(titleLogo);
-	
-
-	/*label = Label::create("", "fonts/arial.ttf",120);
-	label->setTextColor(Color4B::BLACK);
-	label->setPosition(designResolutionSize*0.5f);
-	this->addChild(label);*/
 
 	return true;
 }
