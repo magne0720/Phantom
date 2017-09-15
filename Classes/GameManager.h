@@ -11,7 +11,7 @@
 
 USING_NS_CC;
 
-#define MAX_LIFE 6
+#define MAX_LIFE 3
 #define START_COUNT 3
 
 class GameManager :public Node 

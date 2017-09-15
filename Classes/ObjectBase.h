@@ -21,7 +21,7 @@ public:
 	//ターゲット範囲に入っているか
 	virtual bool onCollision(Vec2 pos, float range);
 	//自身と引数(相手)の円判定
-	virtual bool onCollision(ObjectBase* p);
+	virtual float onCollision(ObjectBase* p);
 	//赤外線判定
 	virtual bool onCollision(Vec2 start, Vec2 end,float range);
 	//当たり判定のあるものを設定

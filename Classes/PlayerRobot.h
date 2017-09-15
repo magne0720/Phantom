@@ -6,7 +6,7 @@
 #include "CutParticle.h"
 
 #define MODE 0
-#define MOVE_MAX 128 
+#define MOVE_MAX 13
 
 USING_NS_CC;
 

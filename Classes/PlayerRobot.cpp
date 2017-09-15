@@ -207,6 +207,7 @@ bool PlayerRobot::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 {
+	setGameSpeed(1.5f);
 	if (isMove)return;
 	if (myState == STATUS::FIND)return;
 
@@ -247,6 +248,7 @@ void PlayerRobot::onTouchMoved(const Touch * touch, Event *unused_event)
 
 void PlayerRobot::onTouchEnded(const Touch * touch, Event *unused_event)
 {
+	setGameSpeed(1.0f);
 	//•à‚¢‚Ä‚¢‚é‚È‚ç–³Œø‚É‚·‚é
 	if(isMove)return;
 	if (myState == STATUS::FIND)return;

@@ -97,14 +97,19 @@ void GameManager::update(float delta)
 		//プレイヤーの軌道を決めている時
 		timer += 1.0f / 60.0f;
 		{
-			if (timer > 8.0f)
+			if (map->robot->rightRobot->isMoveWait || map->robot->leftRobot->isMoveWait)
 			{
+				StayCloseMessage();
+				timer = 0;
+			}
+			if (timer > 3.0f)
+			{/*
 				if (messageSp->getTag() == 0)
 				{
 					StayCloseMessage();
 					timer = 0;
 					break;
-				}
+				}*/
 				if ((map->robot->rightRobot->myState == STATUS::FIND) | (map->robot->leftRobot->myState == STATUS::FIND))
 				{
 					StayShowMessage(2);
@@ -118,7 +123,7 @@ void GameManager::update(float delta)
 					break;
 				}
 			}
-			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby) 
+			if (map->robot->rightRobot->isStandby&&map->robot->leftRobot->isStandby)
 			{
 				StayCloseMessage();
 				timer = 0;
@@ -127,7 +132,7 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVE_START:
-			//カウントダウン中に行動をキャンセルしたときに戻る
+		//カウントダウン中に行動をキャンセルしたときに戻る
 		if (!map->robot->rightRobot->isStandby || !map->robot->leftRobot->isStandby)
 		{
 			timer = 0;
@@ -145,13 +150,6 @@ void GameManager::update(float delta)
 		}
 		break;
 	case MOVING:
-		if (map->robot->isRobotMoving) 
-		{
-			playerLife--;
-			lifeAnimation();	
-			if (playerLife == 0)
-				gameState = GAMESTATE::MISS;
-		}
 		if (!map->robot->rightRobot->isMove&&!map->robot->leftRobot->isMove) 
 		{
 			gameState = GAMESTATE::MOVE_STOP;
@@ -622,7 +620,6 @@ void GameManager::lifeAnimation()
 
 void GameManager::StayShowMessage(int num)
 {
-	return;
 	if (messageSp->getTag() != 0) 
 	{
 		String* name = String::createWithFormat("Game/Message/MessageBox_%d.png", num);
@@ -636,7 +633,6 @@ void GameManager::StayShowMessage(int num)
 
 void GameManager::StayCloseMessage() 
 {
-	return;
 	if (messageSp->getTag() != 1) {
 		messageSp->stopAllActions();
 		MoveTo* moveUpS = MoveTo::create(1, Vec2(designResolutionSize.width*0.9f, designResolutionSize.height*-0.1f));

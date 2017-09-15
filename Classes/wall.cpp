@@ -122,6 +122,9 @@ bool Wall::init(Vec2* vecs, int count,Color4F fillColor, Color4F segmentColor)
 	segmentCount = 4;
 	scheduleUpdate();
 
+	int a[] = { 0,1,2,3,-1 };
+	log("area=%0.2f",sumArea(vecs, a));
+
 	return true;
 };
 
@@ -297,8 +300,8 @@ float Wall::sumArea(Vec2 points[],int point[])
 		area += (
 			length(points[point[i]] - points[point[i+1]])+
 			length(points[point[i+1]] - points[point[i+2]])+ 
-			length(points[point[i+2]] - points[point[i]]))
-			/2;
+			length(points[point[i+2]] - points[point[i]])
+			)/2;
 	}
 	return area;
 };
@@ -362,7 +365,7 @@ void Wall::checkCutArea(Vec2* points)
 	sumLeft = sumArea(points, left);
 	log("sumLeft=%0.0f", sumArea(points, left));
 
-	if (abs((sumRight-sumLeft))/(sumRight+sumLeft)<=0.05f)
+	if (abs((sumRight-sumLeft))/(sumRight+sumLeft)<=0.002f)
 	{
 		//log("allCut");
 		//大きさがほぼ一緒(クリティカル) 
@@ -421,7 +424,7 @@ void Wall::rebuildingArea(Vec2 points[], int corner)
 	std::vector<Vec2>vecs;
 	for (int i = 0; i < corner; i++) {
 		vecs.push_back(points[i]);
-		//log("plus-[%0.0f,%0.0f]", points[i].x, points[i].y);
+		log("plus-[%0.0f,%0.0f]", points[i].x, points[i].y);
 	}
 	myWall->clear();
 	myWall->drawPolygon(&vecs[0], corner, Color4F::BLACK, 4, Color4F::WHITE);

@@ -47,6 +47,9 @@ bool PlayerCloser::init(Vec2 right,Vec2 left,Color4F col)
 	addChild(leftRobot);
 	leftRobot->setTag(1);
 
+	rightRobot->setTarget(leftRobot);
+	leftRobot->setTarget(rightRobot);
+
 	myColor = col;
 
 	endRightPosition = right;
@@ -164,8 +167,8 @@ bool PlayerCloser::onTouchBegan(const Touch * touch, Event *unused_event)
 
 void PlayerCloser::onTouchMoved(const Touch * touch, Event *unused_event) 
 {
-	if (rightRobot->isMoveWait)endRightPosition = touch->getLocation();
-	if (leftRobot->isMoveWait)endLeftPosition = touch->getLocation();
+	if (rightRobot->isMoveWait&&rightRobot->angles.size()<MOVE_MAX)endRightPosition = touch->getLocation();
+	if (leftRobot->isMoveWait&&leftRobot->angles.size()<MOVE_MAX)endLeftPosition = touch->getLocation();
 };
 
 void PlayerCloser::onTouchEnded(const Touch * touch, Event *unused_event) 
